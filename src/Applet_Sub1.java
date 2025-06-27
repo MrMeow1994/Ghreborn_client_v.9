@@ -134,8 +134,8 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
                     client.cameraZoom = max_zoom_1;
                 }
 
-                if(client.cameraZoom > 1200) {
-                    client.cameraZoom = 1200;
+                if(client.cameraZoom > 2200) {
+                    client.cameraZoom = 2200;
                 }
 
                 if(client.currentScreenMode == client.ScreenMode.FIXED) {
@@ -499,7 +499,7 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
         }
 
         if(i == 34) {
-            if(client.cameraZoom == 1300) {
+            if(client.cameraZoom == 2300) {
                 return;
             }
 

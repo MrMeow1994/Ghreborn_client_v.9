@@ -304,6 +304,10 @@ final class ObjectManager {
 										k23 = class22_2.rgb = 0x767676;
 										j23 = -2;
 										textureId = -1;
+									} else if(floorId == 71) {                                        //Seer's court stairs
+										k23 = class22_2.rgb = 0x767676;
+										j23 = -2;
+										textureId = -1;
 									} else if(floorId == 177) {                                        //Castle Wars, lobby floor
 										k23 = class22_2.rgb = 0x4D4D4D;
 										j23 = method177(0,0,55);

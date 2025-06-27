@@ -3367,7 +3367,7 @@ public class client extends Applet_Sub1 {
         if(j != 0) {
             int k = this.variousSettings[i];
             if(flag) {
-                this.anInt961 = this.aISAACRandomGen_1000.getNextKey();
+                this.anInt961 = (int) this.aISAACRandomGen_1000.getNextKey();
             }
 
             if(j == 1) {
@@ -5379,8 +5379,8 @@ public class client extends Applet_Sub1 {
             server = Configuration.SERVER_ADDRESS;
             System.out.println("Connecting to " + Configuration.SERVER_ADDRESS);
             instance.method1(currentGameHeight, currentGameWidth);
-            ClientDiscordRPC var10000 = RICH_PRESENCE;
-            ClientDiscordRPC.initialize();
+           // ClientDiscordRPC var10000 = RICH_PRESENCE;
+          //  ClientDiscordRPC.initialize();
         } catch (Exception var2) {
             var2.printStackTrace();
         }
@@ -12484,7 +12484,7 @@ public class client extends Applet_Sub1 {
 
     public final void method102(boolean flag) {
         if(!flag) {
-            this.anInt939 = this.aISAACRandomGen_1000.getNextKey();
+            this.anInt939 = (int) this.aISAACRandomGen_1000.getNextKey();
         }
 
         if(this.aBoolean1255) {
@@ -15123,7 +15123,7 @@ public class client extends Applet_Sub1 {
         if(byte0 == 1) {
             boolean byte01 = false;
         } else {
-            this.anInt1218 = this.aISAACRandomGen_1000.getNextKey();
+            this.anInt1218 = (int) this.aISAACRandomGen_1000.getNextKey();
         }
     }
 
@@ -15952,7 +15952,7 @@ public class client extends Applet_Sub1 {
                     this.socketStream.flushInputStream(this.in.buffer, 0, 1);
                     this.packet = this.in.buffer[0] & 255;
                     if(this.aISAACRandomGen_1000 != null) {
-                        this.packet = this.packet - this.aISAACRandomGen_1000.getNextKey() & 255;
+                        this.packet = (int) (this.packet - this.aISAACRandomGen_1000.getNextKey() & 255);
                     }
 
                     this.packetSize = Class31.packetSizes[this.packet];
