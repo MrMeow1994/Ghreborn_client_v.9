@@ -30,7 +30,7 @@ final class Class30_Sub2_Sub4_Sub4 extends Animable
             return null;
         int j = -1;
         if(aClass23_1592.aClass20_407 != null)
-            j = aClass23_1592.aClass20_407.anIntArray353[anInt1593];
+            j = aClass23_1592.aClass20_407.frames[anInt1593];
         Model model_1 = new Model(9, true, Class36.method532(j, false), false, model);
         if(j != -1)
         {
@@ -49,15 +49,14 @@ final class Class30_Sub2_Sub4_Sub4 extends Animable
             return model_1;
     }
 
-    public Class30_Sub2_Sub4_Sub4(int i, int j, int k, int l, int i1, int j1, int k1, 
+    public Class30_Sub2_Sub4_Sub4(int i, int j, int l, int i1, int j1, int k1,
             int l1, int i2, int j2, int k2, int l2)
     {
         anInt1573 = 9;
         aBoolean1579 = false;
         aBoolean1591 = true;
         aClass23_1592 = Class23.aClass23Array403[l2];
-        if(k != 46883)
-            aBoolean1591 = !aBoolean1591;
+
         anInt1597 = k1;
         anInt1580 = j2;
         anInt1581 = i2;
@@ -87,7 +86,7 @@ final class Class30_Sub2_Sub4_Sub4 extends Animable
             {
                 anInt1594 -= aClass23_1592.aClass20_407.method258(anInt1593, (byte)-39) + 1;
                 anInt1593++;
-                if(anInt1593 >= aClass23_1592.aClass20_407.anInt352)
+                if(anInt1593 >= aClass23_1592.aClass20_407.frameCount)
                     anInt1593 = 0;
             }
 

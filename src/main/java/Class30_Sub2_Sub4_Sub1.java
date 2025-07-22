@@ -189,8 +189,8 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
     int primaryanim_replaycount;
     int anInt1531;
     int anInt1532;
-    int anInt1533;
-    int anInt1534;
+    int currentHealth;
+    int maxHealth;
     int textCycle;
     private int anInt1536;
     int anInt1537;

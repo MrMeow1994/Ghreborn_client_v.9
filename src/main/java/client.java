@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -620,6 +621,7 @@ public class client extends Applet_Sub1 {
     static final int[] anIntArray1204 = new int[]{9104, 10275, 7595, 3610, 7975, 8526, 918, '\u9792', 24466, 10145, '\ue51e', 5027, 1457, 16565, '\u88af', 25486};
     private static int[] anIntArray1019;
     public static int[] anIntArray1232;
+    private final boolean loginmusicEnabled = true;
 
     public void appearInChat(String x) {
         this.pushMessage(" ", 80, x);
@@ -779,10 +781,12 @@ public class client extends Applet_Sub1 {
         if(currentScreenMode != mode) {
             currentScreenMode = mode;
             if(mode == client.ScreenMode.FIXED) {
-                currentGameWidth = 765;
-                currentGameHeight = 503;
-                screenAreaWidth = 516;
-                screenAreaHeight = 338;
+                currentGameWidth = 765;       // ✅ Total client width
+                currentGameHeight = 503;      // ✅ Total client height
+
+                screenAreaWidth = 516;        // ✅ Game viewport (rendered world) width
+                screenAreaHeight = 338;       // ✅ Game viewport height
+
                 changeChatArea = false;
                 changeTabArea = false;
                 cameraZoom = 600;
@@ -985,9 +989,13 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method15(int i) {
-        signlink.music.stop();
-        signlink.fadeMidi = 0;
-        signlink.midi = "stop";
+        if (!loginmusicEnabled) { // some boolean you toggle
+            if (signlink.music != null) {
+                signlink.music.stop();
+            }
+            signlink.fadeMidi = 0;
+            signlink.midi = "stop";
+        }
     }
 
     public void processExtraMenus() {
@@ -1140,78 +1148,82 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method16() {
-        int j = 5;
+        int backoffSeconds = 5;
         this.anIntArray1090[8] = 0;
-        int k = 0;
+        int attempts = 0;
 
-        while(this.anIntArray1090[8] == 0) {
-            String s = "Unknown problem";
-            this.method13(20, (byte)4, "Connecting to Ghreborn web server");
+        while (this.anIntArray1090[8] == 0) {
+            String errorMessage = "Unknown problem";
+            method13(20, (byte) 4, "Connecting to Ghreborn web server...");
 
             try {
-                DataInputStream l = this.method132("crc" + (int)(Math.random() * 9.9999999E7D) + "-" + 317);
-                Stream stream = new Stream(new byte[40], 891);
-                l.readFully(stream.buffer, 0, 40);
-                l.close();
+                // Randomized CRC URL
+                String url = "crc" + ((int) (Math.random() * 99999999)) + "-317";
+                DataInputStream in = method132(url);
 
-                int j1;
-                for(j1 = 0; j1 < 9; ++j1) {
-                    this.anIntArray1090[j1] = stream.readDWord();
+                // Read 40 bytes (expected CRC stream)
+                byte[] crcData = new byte[40];
+                in.readFully(crcData, 0, 40);
+                in.close();
+
+                Stream stream = new Stream(crcData, 891);
+
+                // Fill local CRCs
+                for (int i = 0; i < 9; i++) {
+                    this.anIntArray1090[i] = stream.readDWord();
                 }
 
-                j1 = stream.readDWord();
-                int k1 = 1234;
+                // Validate the 10th checksum word
+                int expectedChecksum = stream.readDWord();
+                int computedChecksum = 1234;
 
-                for(int l1 = 0; l1 < 9; ++l1) {
-                    k1 = (k1 << 1) + this.anIntArray1090[l1];
+                for (int i = 0; i < 9; i++) {
+                    computedChecksum = (computedChecksum << 1) + this.anIntArray1090[i];
                 }
 
-                if(j1 != k1) {
-                    s = "checksum problem";
+                if (expectedChecksum != computedChecksum) {
+                    errorMessage = "Checksum mismatch.";
                     this.anIntArray1090[8] = 0;
                 }
-            } catch (EOFException var10) {
-                s = "EOF problem";
+
+            } catch (EOFException e) {
+                errorMessage = "EOF while reading CRCs";
                 this.anIntArray1090[8] = 0;
-            } catch (IOException var11) {
-                s = "connection problem";
+            } catch (IOException e) {
+                errorMessage = "I/O error during CRC check";
                 this.anIntArray1090[8] = 0;
-            } catch (Exception var12) {
-                s = "logic problem";
+            } catch (Exception e) {
+                errorMessage = "Unhandled error: " + e.getMessage();
                 this.anIntArray1090[8] = 0;
-                if(!signlink.reporterror) {
+
+                if (!signlink.reporterror) {
                     return;
                 }
             }
 
-            if(this.anIntArray1090[8] == 0) {
-                ++k;
+            // If failed, retry with backoff
+            if (this.anIntArray1090[8] == 0) {
+                attempts++;
 
-                for(int var13 = j; var13 > 0; --var13) {
-                    if(k >= 10) {
-                        this.method13(10, (byte)4, "Game updated - please reload page");
-                        var13 = 10;
+                for (int countdown = backoffSeconds; countdown > 0; countdown--) {
+                    if (attempts >= 10) {
+                        method13(10, (byte) 4, "Game updated - please reload page.");
+                        countdown = 1;
                     } else {
-                        this.method13(10, (byte)4, s + " - Will retry in " + var13 + " secs.");
+                        method13(10, (byte) 4, errorMessage + " - Retrying in " + countdown + " seconds.");
                     }
 
                     try {
                         Thread.sleep(1000L);
-                    } catch (Exception var9) {
-                        ;
-                    }
+                    } catch (InterruptedException ignored) {}
                 }
 
-                j *= 2;
-                if(j > 60) {
-                    j = 60;
-                }
-
+                backoffSeconds = Math.min(backoffSeconds * 2, 60);
                 this.aBoolean872 = !this.aBoolean872;
             }
         }
-
     }
+
 
     public final boolean method17(int i, int j) {
         if(j < 0) {
@@ -1992,60 +2004,70 @@ public class client extends Applet_Sub1 {
     }
 
     public void drawChannelButtons() {
-        int yOffset = currentScreenMode == client.ScreenMode.FIXED?0:currentGameHeight - 165;
-        this.gameframe[27].drawSprite(0, 143 + yOffset);
-        String[] text = new String[]{"On", "Friends", "Off", "Hide", "Autochat"};
-        int[] textColor = new int[]{'\uff00', 16776960, 16711680, '\uffff', 892380};
-        switch(this.cButtonCPos) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                this.gameframe[5].drawSprite(this.channelButtonsX[this.cButtonCPos], 143 + yOffset);
-            default:
-                if(this.cButtonHPos == this.cButtonCPos) {
-                    switch(this.cButtonHPos) {
-                        case 0:
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
-                            this.gameframe[6].drawSprite(this.channelButtonsX[this.cButtonHPos], 143 + yOffset);
-                    }
-                } else {
-                    switch(this.cButtonHPos) {
-                        case 0:
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                            this.gameframe[3].drawSprite(this.channelButtonsX[this.cButtonHPos], 143 + yOffset);
-                            break;
-                        case 6:
-                            this.gameframe[8].drawSprite(this.channelButtonsX[this.cButtonHPos], 143 + yOffset);
-                    }
-                }
+        int yOffset = currentScreenMode == client.ScreenMode.FIXED ? 0 : currentGameHeight - 165;
+        gameframe[27].drawSprite(0, 143 + yOffset);
 
-                int[] modes = new int[]{this.publicChatMode, this.privateChatMode, this.clanChatMode, this.tradeMode};
+        String[] text = {"On", "Friends", "Off", "Hide", "Autochat"};
+        int[] textColor = {0x00FF00, 0xFFFF00, 0xFF0000, 0xFFFFFF, 0xDAA520};
 
-                int i;
-                for(i = 0; i < this.modeNamesX.length; ++i) {
-                    this.smallText.method389(true, true, this.modeNamesX[i], 16777215, this.modeNames[i], this.modeNamesY[i] + yOffset);
-                }
+        // Draw selected tab
+        switch (cButtonCPos) {
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6:
+                gameframe[5].drawSprite(channelButtonsX[cButtonCPos], 143 + yOffset);
+                break;
+        }
 
-                for(i = 0; i < this.modeX.length; ++i) {
-                    this.smallText.method382(textColor[modes[i]], this.modeX[i], this.anInt939, text[modes[i]], 164 + yOffset, true);
-                }
+        // Draw hover highlight
+        if (cButtonHPos == cButtonCPos) {
+            switch (cButtonHPos) {
+                case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+                    gameframe[6].drawSprite(channelButtonsX[cButtonHPos], 143 + yOffset);
+                    break;
+            }
+        } else {
+            switch (cButtonHPos) {
+                case 0: case 1: case 2: case 3: case 4: case 5:
+                    gameframe[3].drawSprite(channelButtonsX[cButtonHPos], 143 + yOffset);
+                    break;
+                case 6:
+                    gameframe[8].drawSprite(channelButtonsX[cButtonHPos], 143 + yOffset);
+                    break;
+            }
+        }
 
+        // Label the buttons
+        for (int i = 0; i < modeNamesX.length; ++i) {
+            smallText.method389(true, true, modeNamesX[i], 0xFFFFFF, modeNames[i], modeNamesY[i] + yOffset);
+        }
+
+        // Safely draw chat mode status
+        int[] modes = {publicChatMode, privateChatMode, clanChatMode, tradeMode};
+        for (int i = 0; i < modeX.length && i < modes.length; ++i) {
+            int modeIndex = modes[i];
+
+            if (modeIndex >= 0 && modeIndex < text.length && modeIndex < textColor.length) {
+                smallText.method382(
+                        textColor[modeIndex],
+                        modeX[i],
+                        anInt939,
+                        text[modeIndex],
+                        164 + yOffset,
+                        true
+                );
+            } else {
+                // Optional: draw a fallback or log warning
+                smallText.method382(
+                        0x888888,
+                        modeX[i],
+                        anInt939,
+                        "??",
+                        164 + yOffset,
+                        true
+                );
+            }
         }
     }
+
 
     public void rightClickChatButtons() {
         if(this.mouseY >= currentGameHeight - 22 && this.mouseY <= currentGameHeight) {
@@ -2529,8 +2551,8 @@ public class client extends Applet_Sub1 {
         ObjectDefinition.aClass12_785.method224();
         loggedIn &= flag;
         if(super.gameFrame != null) {
-            this.stream.createFrame(210);
-            this.stream.writeDWord(1057001181);
+            //this.stream.createFrame(210);
+           // this.stream.writeDWord(1057001181);
         }
 
         if(lowMemory && signlink.cache_dat != null) {
@@ -3367,7 +3389,7 @@ public class client extends Applet_Sub1 {
         if(j != 0) {
             int k = this.variousSettings[i];
             if(flag) {
-                this.anInt961 = (int) this.aISAACRandomGen_1000.getNextKey();
+                this.anInt961 = (int) this.aISAACRandomGen_1000.getNextIntKey();
             }
 
             if(j == 1) {
@@ -3394,22 +3416,22 @@ public class client extends Applet_Sub1 {
             if(j == 3) {
                 boolean flag1 = this.musicEnabled;
                 if(k == 0) {
-                    this.adjustVolume(this.musicEnabled, 500);
+                    this.adjustVolume(this.musicEnabled, 100);
                     this.musicEnabled = true;
                 }
 
                 if(k == 1) {
-                    this.adjustVolume(this.musicEnabled, 300);
+                    this.adjustVolume(this.musicEnabled, 80);
                     this.musicEnabled = true;
                 }
 
                 if(k == 2) {
-                    this.musicEnabled = false;
+                    this.method123((byte)0, this.musicEnabled, 70);
                     this.musicEnabled = true;
                 }
 
                 if(k == 3) {
-                    this.method123((byte)0, this.musicEnabled, -1200);
+                    this.method123((byte)0, this.musicEnabled, 40);
                     this.musicEnabled = true;
                 }
 
@@ -3434,22 +3456,22 @@ public class client extends Applet_Sub1 {
                 SoundPlayer.setVolume(k);
                 if(k == 0) {
                     this.aBoolean848 = true;
-                    this.method111((byte)2, 0);
+                    this.method111((byte)2, -1200);
                 }
 
                 if(k == 1) {
                     this.aBoolean848 = true;
-                    this.method111((byte)2, -400);
+                    this.method111((byte)2, -800);
                 }
 
                 if(k == 2) {
                     this.aBoolean848 = true;
-                    this.method111((byte)2, -800);
+                    this.method111((byte)2, -400);
                 }
 
                 if(k == 3) {
                     this.aBoolean848 = true;
-                    this.method111((byte)2, -1200);
+                    this.method111((byte)2, 0);
                 }
 
                 if(k == 4) {
@@ -3572,22 +3594,76 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-                if(((Class30_Sub2_Sub4_Sub1)var12).anInt1532 > loopCycle) {
-                    this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507 + 15);
-                    if(this.spriteDrawX > -1) {
-                        var14 = ((Class30_Sub2_Sub4_Sub1)var12).anInt1533 * 30 / ((Class30_Sub2_Sub4_Sub1)var12).anInt1534;
-                        if(var14 > 30) {
-                            var14 = 30;
+                Class30_Sub2_Sub4_Sub1 entity = (Class30_Sub2_Sub4_Sub1) var12;
+
+                if (entity.anInt1532 > loopCycle) {
+                    this.method127(true, entity, entity.anInt1507 + 15);
+
+                    if (this.spriteDrawX > -1 && entity.maxHealth > 0) {
+                        int fullBarWidth = 30;
+                        if (entity instanceof Npc) {
+                            int maxHp = entity.maxHealth;
+                            fullBarWidth = (maxHp >= 255) ? Math.min(maxHp, 300) : 30;
                         }
 
-                        if(this.hp) {
-                            this.boldText.method382(16711680, this.spriteDrawX, -918, ((Class30_Sub2_Sub4_Sub1)var12).anInt1533 + "/" + ((Class30_Sub2_Sub4_Sub1)var12).anInt1534, this.spriteDrawY - 9, true);
+                        int current = entity.currentHealth;
+                        int max = entity.maxHealth;
+
+// Sanity checks
+                        if (max <= 0) max = 1;
+                        if (current > max) current = max;
+                        if (current < 0) current = 0;
+
+                        int barHeight = currentScreenMode == ScreenMode.FIXED ? 5 : 7;
+                        int barX = this.spriteDrawX - (fullBarWidth / 2);
+                        int barY = this.spriteDrawY - 3;
+
+                        int hpBarWidth = current * fullBarWidth / max;
+                        int missingBarWidth = fullBarWidth - hpBarWidth;
+
+                        double healthPercent = (double) current / max;
+                        int barColor;
+
+                        if (healthPercent <= 0.25) {
+                            barColor = 0xFFA500; // Orange
+                        } else if (healthPercent <= 0.5) {
+                            barColor = 0xFFFF00; // Yellow
+                        } else {
+                            barColor = 0x00FF00; // Green
                         }
 
-                        DrawingArea.drawPixels(5, this.spriteDrawY - 3, this.spriteDrawX - 15, '\uff00', var14);
-                        DrawingArea.drawPixels(5, this.spriteDrawY - 3, this.spriteDrawX - 15 + var14, 16711680, 30 - var14);
+// Optional: show text like 29/99
+                        if (this.hp) {
+                            this.boldText.method382(
+                                    0xFF0000,
+                                    this.spriteDrawX,
+                                    -918,
+                                    current + "/" + max,
+                                    this.spriteDrawY - 9,
+                                    true
+                            );
+                        }
+
+// Draw green portion (current HP)
+                        DrawingArea.drawPixels(
+                                barHeight,
+                                barY,
+                                barX,
+                                barColor,
+                                hpBarWidth
+                        );
+
+// Draw red portion (missing HP)
+                        DrawingArea.drawPixels(
+                                barHeight,
+                                barY,
+                                barX + hpBarWidth,
+                                0xFF0000,
+                                missingBarWidth
+                        );
                     }
                 }
+
 
                 for(var14 = 0; var14 < 4; ++var14) {
                     if(((Class30_Sub2_Sub4_Sub1)var12).anIntArray1516[var14] > loopCycle) {
@@ -5571,7 +5647,6 @@ public class client extends Applet_Sub1 {
                     }
                 }
             }
-
             if(onDemandData.dataType == 2 && onDemandData.ID == this.nextSong && onDemandData.buffer != null) {
                 this.method21(this.songChanging, 0, onDemandData.buffer);
             }
@@ -5599,7 +5674,9 @@ public class client extends Applet_Sub1 {
             if(onDemandData.dataType == 4) {
                 Texture.decode(onDemandData.ID, onDemandData.buffer);
             }
-
+            if (onDemandData.dataType == 5) {
+                SoundRequestQueue.process(onDemandData);
+            }
             if(onDemandData.dataType == 93 && onDemandFetcher.method564(onDemandData.ID, -520)) {
                 ObjectManager.method173((byte)-107, new Stream(onDemandData.buffer, 891), onDemandFetcher);
             }
@@ -5659,7 +5736,7 @@ public class client extends Applet_Sub1 {
 
         int packetsHandled = 0;
 
-        while(this.parsePacket() && packetsHandled++ < 10) {
+        while(this.parsePacket() && packetsHandled++ < 100) {
             ;
         }
 
@@ -6275,155 +6352,129 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final FileArchive method67(int i, String s, String s1, int j, byte byte0, int k) {
-        byte[] abyte0 = null;
-        int l = 5;
+    public final FileArchive loadArchive(int index, String displayName, String urlPrefix, int expectedCrc, byte unusedByte, int statusType) {
+        final int MAX_RETRIES = 3;
+        final int MAX_CHUNK = 1000;
+        final int INITIAL_WAIT = 5;
 
+        byte[] data = null;
+        int waitTime = INITIAL_WAIT;
+        int retryCount = 0;
+        String statusMessage = "Unknown error";
+
+        // Try cache first
         try {
-            if(this.aClass14Array970[0] != null) {
-                abyte0 = this.aClass14Array970[0].method233(i);
+            if (aClass14Array970[0] != null) {
+                data = aClass14Array970[0].method233(index);
             }
-        } catch (Exception var23) {
-            ;
-        }
+        } catch (Exception ignored) {}
 
-        int j1;
-        if(Configuration.Enable_JagGrab && abyte0 != null) {
-            this.aCRC32_930.reset();
-            this.aCRC32_930.update(abyte0);
-            j1 = (int)this.aCRC32_930.getValue();
-            if(j1 != j) {
-                abyte0 = null;
+        // CRC check if enabled
+        if (Configuration.Enable_JagGrab && data != null) {
+            aCRC32_930.reset();
+            aCRC32_930.update(data);
+            int actualCrc = (int) aCRC32_930.getValue();
+            if (actualCrc != expectedCrc) {
+                data = null;
             }
         }
 
-        if(abyte0 != null) {
-            FileArchive var28 = new FileArchive(abyte0);
-            return var28;
-        } else {
-            j1 = 0;
+        if (data != null) {
+            return new FileArchive(data);
+        }
 
-            while(abyte0 == null) {
-                String fileArchive_1 = "Unknown error";
-                this.method13(k, (byte)4, "Requesting " + s);
-                Object obj = null;
+        // Retry loop if not cached or CRC mismatch
+        while (data == null) {
+            method13(statusType, (byte) 4, "Requesting " + displayName);
 
-                int l1;
+            try (DataInputStream in = method132(urlPrefix + expectedCrc)) {
+                byte[] header = new byte[6];
+                in.readFully(header);
+                Stream stream = new Stream(header, 891); // 891 is original seed
+                stream.currentPosition = 3;
+                int length = stream.read3Bytes() + 6;
+
+                data = new byte[length];
+                System.arraycopy(header, 0, data, 0, 6);
+
+                int bytesRead = 6;
+                int lastPercent = 0;
+
+                while (bytesRead < length) {
+                    int toRead = Math.min(length - bytesRead, MAX_CHUNK);
+                    int read = in.read(data, bytesRead, toRead);
+                    if (read < 0) throw new IOException("EOF during stream");
+
+                    bytesRead += read;
+                    int percent = bytesRead * 100 / length;
+                    if (percent != lastPercent) {
+                        method13(statusType, (byte) 4, "Loading " + displayName + " - " + percent + "%");
+                        lastPercent = percent;
+                    }
+                }
+
+                // Cache
                 try {
-                    l1 = 0;
-                    DataInputStream datainputstream = this.method132(s1 + j);
-                    byte[] abyte1 = new byte[6];
-                    datainputstream.readFully(abyte1, 0, 6);
-                    Stream stream = new Stream(abyte1, 891);
-                    stream.currentPosition = 3;
-                    int i2 = stream.read3Bytes() + 6;
-                    int j2 = 6;
-                    abyte0 = new byte[i2];
-
-                    int i3;
-                    for(i3 = 0; i3 < 6; ++i3) {
-                        abyte0[i3] = abyte1[i3];
+                    if (aClass14Array970[0] != null) {
+                        aClass14Array970[0].method234(data.length, data, (byte) 2, index);
                     }
+                } catch (Exception ignored) {
+                    aClass14Array970[0] = null;
+                }
 
-                    int k3;
-                    for(; j2 < i2; l1 = k3) {
-                        i3 = i2 - j2;
-                        if(i3 > 1000) {
-                            i3 = 1000;
-                        }
-
-                        int j3 = datainputstream.read(abyte0, j2, i3);
-                        if(j3 < 0) {
-                            (new StringBuilder()).append("Length error: ").append(j2).append("/").append(i2).toString();
-                            throw new IOException("EOF");
-                        }
-
-                        j2 += j3;
-                        k3 = j2 * 100 / i2;
-                        if(k3 != l1) {
-                            this.method13(k, (byte)4, "Loading " + s + " - " + k3 + "%");
-                        }
+                // CRC check again
+                if (Configuration.Enable_JagGrab) {
+                    aCRC32_930.reset();
+                    aCRC32_930.update(data);
+                    int actualCrc = (int) aCRC32_930.getValue();
+                    if (actualCrc != expectedCrc) {
+                        data = null;
+                        retryCount++;
+                        statusMessage = "Checksum error: " + actualCrc;
                     }
+                }
 
-                    datainputstream.close();
+            } catch (IOException e) {
+                statusMessage = "Connection error";
+                data = null;
+            } catch (NullPointerException e) {
+                statusMessage = "Null error";
+                data = null;
+                if (!signlink.reporterror) return null;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                statusMessage = "Bounds error";
+                data = null;
+                if (!signlink.reporterror) return null;
+            } catch (Exception e) {
+                statusMessage = "Unexpected error";
+                data = null;
+                if (!signlink.reporterror) return null;
+            }
+
+            // Retry delay
+            if (data == null) {
+                for (int countdown = waitTime; countdown > 0; countdown--) {
+                    if (retryCount >= MAX_RETRIES) {
+                        method13(statusType, (byte) 4, "Game updated - please reload page");
+                        break;
+                    } else {
+                        method13(statusType, (byte) 4, statusMessage + " - Retrying in " + countdown);
+                    }
 
                     try {
-                        if(this.aClass14Array970[0] != null) {
-                            this.aClass14Array970[0].method234(abyte0.length, abyte0, (byte)2, i);
-                        }
-                    } catch (Exception var22) {
-                        this.aClass14Array970[0] = null;
-                    }
-
-                    if(Configuration.Enable_JagGrab && abyte0 != null) {
-                        this.aCRC32_930.reset();
-                        this.aCRC32_930.update(abyte0);
-                        i3 = (int)this.aCRC32_930.getValue();
-                        if(i3 != j) {
-                            abyte0 = null;
-                            ++j1;
-                            fileArchive_1 = "Checksum error: " + i3;
-                        }
-                    }
-                } catch (IOException var24) {
-                    if(fileArchive_1.equals("Unknown error")) {
-                        fileArchive_1 = "Connection error";
-                    }
-
-                    abyte0 = null;
-                } catch (NullPointerException var25) {
-                    fileArchive_1 = "Null error";
-                    abyte0 = null;
-                    if(!signlink.reporterror) {
-                        return null;
-                    }
-                } catch (ArrayIndexOutOfBoundsException var26) {
-                    fileArchive_1 = "Bounds error";
-                    abyte0 = null;
-                    if(!signlink.reporterror) {
-                        return null;
-                    }
-                } catch (Exception var27) {
-                    fileArchive_1 = "Unexpected error";
-                    abyte0 = null;
-                    if(!signlink.reporterror) {
-                        return null;
-                    }
+                        Thread.sleep(1000L);
+                    } catch (InterruptedException ignored) {}
                 }
 
-                if(abyte0 == null) {
-                    for(l1 = l; l1 > 0; --l1) {
-                        if(j1 >= 3) {
-                            this.method13(k, (byte)4, "Game updated - please reload page");
-                            l1 = 10;
-                        } else {
-                            this.method13(k, (byte)4, fileArchive_1 + " - Retrying in " + l1);
-                        }
-
-                        try {
-                            Thread.sleep(1000L);
-                        } catch (Exception var21) {
-                            ;
-                        }
-                    }
-
-                    l *= 2;
-                    if(l > 60) {
-                        l = 60;
-                    }
-
-                    this.aBoolean872 = !this.aBoolean872;
-                }
-            }
-
-            FileArchive var29 = new FileArchive(abyte0);
-            if(byte0 != -41) {
-                throw new NullPointerException();
-            } else {
-                return var29;
+                waitTime = Math.min(waitTime * 2, 60); // Cap at 60
+                aBoolean872 = !aBoolean872;
             }
         }
+
+        if (unusedByte != -41) throw new NullPointerException(); // preserve legacy behavior
+        return new FileArchive(data);
     }
+
 
     public final void method68(int i) {
         if(this.anInt1011 > 0) {
@@ -6473,22 +6524,23 @@ public class client extends Applet_Sub1 {
             int l = this.menuActionID[i];
             int i1 = (int)this.menuActionCmd1[i];
             long keyLong = this.menuActionCmd1[i];
+            //System.out.println("action Button "+buttonPressed);
             switch(buttonPressed) {
-                case 19166:
+                case 19153:
                     if(currentScreenMode != client.ScreenMode.FIXED) {
                         currentScreenMode(client.ScreenMode.FIXED);
                     } else {
                         this.pushMessage("You are already in that screen mode.", 0, "");
                     }
                     break;
-                case 19167:
+                case 19154:
                     if(currentScreenMode != client.ScreenMode.RESIZABLE) {
                         currentScreenMode(client.ScreenMode.RESIZABLE);
                     } else {
                         this.pushMessage("You are already in that screen mode.", 0, "");
                     }
                     break;
-                case 19168:
+                case 19155:
                     if(currentScreenMode != client.ScreenMode.FULLSCREEN) {
                         currentScreenMode(client.ScreenMode.FULLSCREEN);
                     } else {
@@ -7994,7 +8046,7 @@ public class client extends Applet_Sub1 {
                                         this.menuActionID[this.menuActionRow] = 1062;
                                     }
 
-                                    this.menuActionCmd1[this.menuActionRow] = l.longValue();
+                                    this.menuActionCmd1[this.menuActionRow] = l;
                                     this.menuActionCmd2[this.menuActionRow] = i1;
                                     this.menuActionCmd3[this.menuActionRow] = j1;
                                     ++this.menuActionRow;
@@ -8009,7 +8061,7 @@ public class client extends Applet_Sub1 {
                         }
 
                         this.menuActionID[this.menuActionRow] = 1226;
-                        this.menuActionCmd1[this.menuActionRow] = l.longValue();
+                        this.menuActionCmd1[this.menuActionRow] = l;
                         this.menuActionCmd2[this.menuActionRow] = i1;
                         this.menuActionCmd3[this.menuActionRow] = j1;
                         ++this.menuActionRow;
@@ -9270,7 +9322,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     characterDisplay.method469((byte)-71);
-                    characterDisplay.method470(AnimationDefinition.anims[localPlayer.anInt1511].anIntArray353[0], '\u9e5e');
+                    characterDisplay.method470(AnimationDefinition.anims[localPlayer.anInt1511].frames[0], '\u9e5e');
                     characterDisplay.method479(64, 850, -30, -50, -30, true);
                     class9.anInt233 = 5;
                     class9.mediaID = 0;
@@ -9297,7 +9349,7 @@ public class client extends Applet_Sub1 {
 
                         staticFrame = localPlayer.anInt1511;
                         characterDisplay.method469((byte)-71);
-                        characterDisplay.method470(AnimationDefinition.anims[staticFrame].anIntArray353[0], '\u9e5e');
+                        characterDisplay.method470(AnimationDefinition.anims[staticFrame].frames[0], '\u9e5e');
                         class9.anInt233 = 5;
                         class9.mediaID = 0;
                         Widget.method208(0, this.aBoolean994, 5, characterDisplay);
@@ -10468,7 +10520,9 @@ public class client extends Applet_Sub1 {
                 this.aLong1220 = 0L;
                 this.anInt1022 = 0;
                 signlink.midiplay = false;
-                signlink.music.stop();
+                if (signlink.music != null) {
+                    signlink.music.stop();
+                }
                 this.aMouseDetection_879.coordsIndex = 0;
                 super.aBoolean17 = true;
                 this.aBoolean954 = true;
@@ -10703,7 +10757,11 @@ public class client extends Applet_Sub1 {
                     this.aString1267 = "@blu@Redownload the client.";
                     return;
                 }
-
+                if(responseCode == 26) {
+                    this.aString1266 = "@red@VPN Detected!";
+                    this.aString1267 = "@red@Please turn off your VPN to continue.";
+                    return;
+                }
                 if(responseCode == -1) {
                     if(i1 == 0) {
                         if(this.anInt1038 < 2) {
@@ -11028,8 +11086,8 @@ public class client extends Applet_Sub1 {
                 k2 = stream.readByteC(false);
                 npc.method447(-35698, k2, l1, loopCycle);
                 npc.anInt1532 = loopCycle + 300;
-                npc.anInt1533 = stream.readUnsignedShort();
-                npc.anInt1534 = stream.readUnsignedShort();
+                npc.currentHealth = stream.readUnsignedShort();
+                npc.maxHealth = stream.readUnsignedShort();
             }
 
             if((l & 128) != 0) {
@@ -11065,8 +11123,8 @@ public class client extends Applet_Sub1 {
                 k2 = stream.readByteA(2);
                 npc.method447(-35698, k2, l1, loopCycle);
                 npc.anInt1532 = loopCycle + 300;
-                npc.anInt1533 = stream.readUnsignedShort();
-                npc.anInt1534 = stream.readUnsignedShort();
+                npc.currentHealth = stream.readUnsignedShort();
+                npc.maxHealth = stream.readUnsignedShort();
             }
 
             if((l & 2) != 0) {
@@ -11406,7 +11464,7 @@ public class client extends Applet_Sub1 {
             aBoolean993 = true;
             boolean flag = true;
             if(signlink.cache_dat != null) {
-                for(int exception = 0; exception < 6; ++exception) {
+                for(int exception = 0; exception < 7; ++exception) {
                     this.aClass14Array970[exception] = new Class14(16777215, signlink.cache_dat, signlink.cache_idx[exception], exception + 1, true);
                 }
             }
@@ -11415,7 +11473,7 @@ public class client extends Applet_Sub1 {
                 if(Configuration.Enable_JagGrab) {
                     this.method16();
                 }
-                this.titleStreamLoader = this.method67(1, "title screen", "title", this.anIntArray1090[1], (byte)-41, 25);
+                this.titleStreamLoader = this.loadArchive(1, "title screen", "title", this.anIntArray1090[1], (byte)-41, 25);
                 this.smallText = new TextDrawingArea(false, "p11_full", 0, this.titleStreamLoader);
                 this.regularText = new TextDrawingArea(false, "p12_full", 0, this.titleStreamLoader);
                 this.boldText = new TextDrawingArea(false, "b12_full", 0, this.titleStreamLoader);
@@ -11430,12 +11488,12 @@ public class client extends Applet_Sub1 {
                 this.aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full", 0, this.titleStreamLoader);
                 this.method56(0);
                 this.loadTitleScreen(215);
-                FileArchive var33 = this.method67(2, "config", "config", this.anIntArray1090[2], (byte)-41, 30);
-                FileArchive fileArchive_1 = this.method67(3, "interface", "interface", this.anIntArray1090[3], (byte)-41, 35);
-                FileArchive fileArchive_2 = this.method67(4, "2d graphics", "media", this.anIntArray1090[4], (byte)-41, 40);
-                FileArchive fileArchive_3 = this.method67(6, "textures", "textures", this.anIntArray1090[6], (byte)-41, 45);
-                FileArchive fileArchive_4 = this.method67(7, "chat system", "wordenc", this.anIntArray1090[7], (byte)-41, 50);
-                FileArchive fileArchive_5 = this.method67(8, "sound effects", "sounds", this.anIntArray1090[8], (byte)-41, 55);
+                FileArchive var33 = this.loadArchive(2, "config", "config", this.anIntArray1090[2], (byte)-41, 30);
+                FileArchive fileArchive_1 = this.loadArchive(3, "interface", "interface", this.anIntArray1090[3], (byte)-41, 35);
+                FileArchive fileArchive_2 = this.loadArchive(4, "2d graphics", "media", this.anIntArray1090[4], (byte)-41, 40);
+                FileArchive fileArchive_3 = this.loadArchive(6, "textures", "textures", this.anIntArray1090[6], (byte)-41, 45);
+                FileArchive fileArchive_4 = this.loadArchive(7, "chat system", "wordenc", this.anIntArray1090[7], (byte)-41, 50);
+                FileArchive fileArchive_5 = this.loadArchive(8, "sound effects", "sounds", this.anIntArray1090[8], (byte)-41, 55);
                 this.aByteArrayArrayArray1258 = new byte[4][104][104];
                 this.anIntArrayArrayArray1214 = new int[4][105][105];
                 this.aClass25_946 = new Class25(104, 104, this.anIntArrayArrayArray1214, 4);
@@ -11445,7 +11503,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 this.minimapImage = new Sprite(512, 512);
-                FileArchive var34 = this.method67(5, "update list", "versionlist", this.anIntArray1090[5], (byte)-41, 60);
+                FileArchive var34 = this.loadArchive(5, "update list", "versionlist", this.anIntArray1090[5], (byte)-41, 60);
                 this.method13(60, (byte)4, "Connecting to update server");
                 onDemandFetcher = new OnDemandFetcher();
                 onDemandFetcher.start(var34, this);
@@ -11459,7 +11517,8 @@ public class client extends Applet_Sub1 {
                 Class36.method528(onDemandFetcher.method557(0));
                 Model.method459(onDemandFetcher.getModelCount(), onDemandFetcher);
                 this.method13(67, (byte)4, "Requesting Music");
-                if(!lowMemory) {
+                signlink.midiVolume = 70;
+                if(!lowMemory && loginmusicEnabled) {
                     this.nextSong = 457;
 
                     try {
@@ -11569,7 +11628,32 @@ public class client extends Applet_Sub1 {
                         ;
                     }
                 }
+                this.method13(75, (byte)4, "Requesting 2009 sounds");
+                k = onDemandFetcher.method555(79, 5);
 
+                for(sprite = 0; sprite < k; ++sprite) {
+                    i5 = onDemandFetcher.method559(sprite, -203);
+                    if((i5 & 1) != 0) {
+                        onDemandFetcher.method558(5, sprite);
+                    }
+                }
+
+                k = onDemandFetcher.method552();
+
+                while(onDemandFetcher.method552() > 0) {
+                    sprite = k - onDemandFetcher.method552();
+                    if(sprite > 0) {
+                        this.method13(75, (byte)4, "Loading 2009 sounds - " + sprite * 100 / k + "%");
+                    }
+
+                    this.method57(false);
+
+                    try {
+                        Thread.sleep(100L);
+                    } catch (Exception var22) {
+                        ;
+                    }
+                }
                 if(onDemandFetcher.anInt1349 > 3) {
                     this.method28("ondemand");
                 } else {
@@ -12415,12 +12499,12 @@ public class client extends Applet_Sub1 {
         if(class30_sub2_sub4_sub1.anInt1517 != -1) {
             class20_3 = AnimationDefinition.anims[class30_sub2_sub4_sub1.anInt1517];
             ++class30_sub2_sub4_sub1.anInt1519;
-            if(class30_sub2_sub4_sub1.anInt1518 < class20_3.anInt352 && class30_sub2_sub4_sub1.anInt1519 > class20_3.method258(class30_sub2_sub4_sub1.anInt1518, (byte)-39)) {
+            if(class30_sub2_sub4_sub1.anInt1518 < class20_3.frameCount && class30_sub2_sub4_sub1.anInt1519 > class20_3.method258(class30_sub2_sub4_sub1.anInt1518, (byte)-39)) {
                 class30_sub2_sub4_sub1.anInt1519 = 1;
                 ++class30_sub2_sub4_sub1.anInt1518;
             }
 
-            if(class30_sub2_sub4_sub1.anInt1518 >= class20_3.anInt352) {
+            if(class30_sub2_sub4_sub1.anInt1518 >= class20_3.frameCount) {
                 class30_sub2_sub4_sub1.anInt1519 = 1;
                 class30_sub2_sub4_sub1.anInt1518 = 0;
             }
@@ -12434,12 +12518,12 @@ public class client extends Applet_Sub1 {
             class20_3 = Class23.aClass23Array403[class30_sub2_sub4_sub1.anInt1520].aClass20_407;
             ++class30_sub2_sub4_sub1.anInt1522;
 
-            while(class30_sub2_sub4_sub1.anInt1521 < class20_3.anInt352 && class30_sub2_sub4_sub1.anInt1522 > class20_3.method258(class30_sub2_sub4_sub1.anInt1521, (byte)-39)) {
+            while(class30_sub2_sub4_sub1.anInt1521 < class20_3.frameCount && class30_sub2_sub4_sub1.anInt1522 > class20_3.method258(class30_sub2_sub4_sub1.anInt1521, (byte)-39)) {
                 class30_sub2_sub4_sub1.anInt1522 -= class20_3.method258(class30_sub2_sub4_sub1.anInt1521, (byte)-39);
                 ++class30_sub2_sub4_sub1.anInt1521;
             }
 
-            if(class30_sub2_sub4_sub1.anInt1521 >= class20_3.anInt352 && (class30_sub2_sub4_sub1.anInt1521 < 0 || class30_sub2_sub4_sub1.anInt1521 >= class20_3.anInt352)) {
+            if(class30_sub2_sub4_sub1.anInt1521 >= class20_3.frameCount && (class30_sub2_sub4_sub1.anInt1521 < 0 || class30_sub2_sub4_sub1.anInt1521 >= class20_3.frameCount)) {
                 class30_sub2_sub4_sub1.anInt1520 = -1;
             }
         }
@@ -12456,19 +12540,19 @@ public class client extends Applet_Sub1 {
             class20_3 = AnimationDefinition.anims[class30_sub2_sub4_sub1.primaryanim];
             ++class30_sub2_sub4_sub1.primaryanim_loops_remaining;
 
-            while(class30_sub2_sub4_sub1.primaryanim_frameindex < class20_3.anInt352 && class30_sub2_sub4_sub1.primaryanim_loops_remaining > class20_3.method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39)) {
+            while(class30_sub2_sub4_sub1.primaryanim_frameindex < class20_3.frameCount && class30_sub2_sub4_sub1.primaryanim_loops_remaining > class20_3.method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39)) {
                 class30_sub2_sub4_sub1.primaryanim_loops_remaining -= class20_3.method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39);
                 ++class30_sub2_sub4_sub1.primaryanim_frameindex;
             }
 
-            if(class30_sub2_sub4_sub1.primaryanim_frameindex >= class20_3.anInt352) {
+            if(class30_sub2_sub4_sub1.primaryanim_frameindex >= class20_3.frameCount) {
                 class30_sub2_sub4_sub1.primaryanim_frameindex -= class20_3.anInt356;
                 ++class30_sub2_sub4_sub1.primaryanim_replaycount;
                 if(class30_sub2_sub4_sub1.primaryanim_replaycount >= class20_3.anInt362) {
                     class30_sub2_sub4_sub1.primaryanim = -1;
                 }
 
-                if(class30_sub2_sub4_sub1.primaryanim_frameindex < 0 || class30_sub2_sub4_sub1.primaryanim_frameindex >= class20_3.anInt352) {
+                if(class30_sub2_sub4_sub1.primaryanim_frameindex < 0 || class30_sub2_sub4_sub1.primaryanim_frameindex >= class20_3.frameCount) {
                     class30_sub2_sub4_sub1.primaryanim = -1;
                 }
             }
@@ -12484,7 +12568,7 @@ public class client extends Applet_Sub1 {
 
     public final void method102(boolean flag) {
         if(!flag) {
-            this.anInt939 = (int) this.aISAACRandomGen_1000.getNextKey();
+            this.anInt939 = (int) this.aISAACRandomGen_1000.getNextIntKey();
         }
 
         if(this.aBoolean1255) {
@@ -12966,7 +13050,7 @@ public class client extends Applet_Sub1 {
                                     var33 = class9_1.method209(0, -1, -1, var30);
                                 } else {
                                     AnimationDefinition var34 = AnimationDefinition.anims[var32];
-                                    var33 = class9_1.method209(0, var34.anIntArray354[class9_1.anInt246], var34.anIntArray353[class9_1.anInt246], var30);
+                                    var33 = class9_1.method209(0, var34.secondaryFrames[class9_1.anInt246], var34.frames[class9_1.anInt246], var30);
                                 }
 
                                 if(var33 != null) {
@@ -13309,8 +13393,8 @@ public class client extends Applet_Sub1 {
             l2 = stream.readByteS(0);
             player.method447(-35698, l2, l1, loopCycle);
             player.anInt1532 = loopCycle + 300;
-            player.anInt1533 = stream.readByteC(false);
-            player.anInt1534 = stream.readUnsignedByte();
+            player.currentHealth = stream.readByteC(false);
+            player.maxHealth = stream.readUnsignedByte();
         }
 
         if((i & 512) != 0) {
@@ -13318,8 +13402,8 @@ public class client extends Applet_Sub1 {
             l2 = stream.readByteA(2);
             player.method447(-35698, l2, l1, loopCycle);
             player.anInt1532 = loopCycle + 300;
-            player.anInt1533 = stream.readUnsignedByte();
-            player.anInt1534 = stream.readByteC(false);
+            player.currentHealth = stream.readUnsignedByte();
+            player.maxHealth = stream.readByteC(false);
         }
 
     }
@@ -13903,9 +13987,9 @@ public class client extends Applet_Sub1 {
                         for(class9_1.anInt208 += i; class9_1.anInt208 > class20.method258(class9_1.anInt246, (byte)-39); flag1 = true) {
                             class9_1.anInt208 -= class20.method258(class9_1.anInt246, (byte)-39) + 1;
                             ++class9_1.anInt246;
-                            if(class9_1.anInt246 >= class20.anInt352) {
+                            if(class9_1.anInt246 >= class20.frameCount) {
                                 class9_1.anInt246 -= class20.anInt356;
-                                if(class9_1.anInt246 < 0 || class9_1.anInt246 >= class20.anInt352) {
+                                if(class9_1.anInt246 < 0 || class9_1.anInt246 >= class20.frameCount) {
                                     class9_1.anInt246 = 0;
                                 }
                             }
@@ -14794,24 +14878,36 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final DataInputStream method132(String s) throws IOException {
-        if(this.aSocket832 != null) {
+    public final DataInputStream method132(String archivePath) throws IOException {
+        // Close any existing socket cleanly
+        if (this.aSocket832 != null) {
             try {
                 this.aSocket832.close();
-            } catch (Exception var4) {
-                ;
-            }
-
+            } catch (Exception ignored) {}
             this.aSocket832 = null;
         }
 
-        this.aSocket832 = this.method19(29433);
-        this.aSocket832.setSoTimeout(10000);
-        InputStream inputstream = this.aSocket832.getInputStream();
-        OutputStream outputstream = this.aSocket832.getOutputStream();
-        outputstream.write(("JAGGRAB /" + s + "\n\n").getBytes());
-        return new DataInputStream(inputstream);
+        try {
+            // Establish fresh JagGrab connection
+            this.aSocket832 = this.method19(29433); // can also use dynamic config port
+            this.aSocket832.setSoTimeout(10_000);
+
+            InputStream input = this.aSocket832.getInputStream();
+            OutputStream output = this.aSocket832.getOutputStream();
+
+            String request = "JAGGRAB /" + archivePath + "\n\n";
+            output.write(request.getBytes(StandardCharsets.US_ASCII));
+            output.flush();
+
+
+
+            return new DataInputStream(input);
+        } catch (IOException e) {
+            System.err.println("❌ [JagGrab] Connection error for: /" + archivePath + " | " + e.getMessage());
+            throw e; // Let method67 handle retries
+        }
     }
+
 
     public final void method133(byte byte0) {
         short c = 256;
@@ -15123,7 +15219,7 @@ public class client extends Applet_Sub1 {
         if(byte0 == 1) {
             boolean byte01 = false;
         } else {
-            this.anInt1218 = (int) this.aISAACRandomGen_1000.getNextKey();
+            this.anInt1218 = (int) this.aISAACRandomGen_1000.getNextIntKey();
         }
     }
 
@@ -15421,7 +15517,7 @@ public class client extends Applet_Sub1 {
                                     k8 = k8 * 128 + 64;
                                     j11 = j11 * 128 + 64;
                                     k13 = k13 * 128 + 64;
-                                    Class30_Sub2_Sub4_Sub4 var38 = new Class30_Sub2_Sub4_Sub4(i21, l18, '\ub723', k19 + loopCycle, j20 + loopCycle, var36, this.anInt918, this.method42(this.anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
+                                    Class30_Sub2_Sub4_Sub4 var38 = new Class30_Sub2_Sub4_Sub4(i21, l18,  k19 + loopCycle, j20 + loopCycle, var36, this.anInt918, this.method42(this.anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
                                     var38.method455(k19 + loopCycle, k13, this.method42(this.anInt918, k13, true, j11) - l18, j11, (byte)-83);
                                     this.aDoubleEndedQueue_1013.insertHead(var38);
                                 }
@@ -15952,7 +16048,7 @@ public class client extends Applet_Sub1 {
                     this.socketStream.flushInputStream(this.in.buffer, 0, 1);
                     this.packet = this.in.buffer[0] & 255;
                     if(this.aISAACRandomGen_1000 != null) {
-                        this.packet = (int) (this.packet - this.aISAACRandomGen_1000.getNextKey() & 255);
+                        this.packet = (this.packet - this.aISAACRandomGen_1000.getNextIntKey() & 255);
                     }
 
                     this.packetSize = Class31.packetSizes[this.packet];
@@ -16045,6 +16141,66 @@ public class client extends Applet_Sub1 {
                     this.packet = -1;
                     return true;
                 }
+                if (this.packet == 232) {
+                    // No data in this packet (packet length is 0)
+                    // Just reset the packet and optionally do something visual
+                    // For example, reset camera angle or center map view
+                    this.packet = -1;
+                    return true;
+                }
+                if (this.packet == 17) {
+                    // Packet 17 is commonly used for camera reset or client heartbeat.
+                    // This packet usually has no payload (packetSize == 0).
+
+
+                    this.packet = -1;
+                    return true;
+                }
+                if (this.packet == 216) {
+                    // Packet 17 is commonly used for camera reset or client heartbeat.
+                    // This packet usually has no payload (packetSize == 0).
+
+
+                    this.packet = -1;
+                    return true;
+                }
+                if (this.packet == 51) {
+                    int i = in.readUnsignedByte();
+                    int j = in.readUnsignedByte();
+                    int k = in.readUnsignedByte();
+                    int l = in.readUnsignedByte();
+                    int i1 = in.readUnsignedShort();
+                    int j1 = in.readUnsignedShort();
+                    int k1 = in.readUnsignedByte();
+                    int l1 = in.readUnsignedByte();
+                    int i2 = in.readUnsignedShort();
+                    int j2 = in.readUnsignedShort();
+                    int k2 = in.readUnsignedByte();
+                    int l2 = in.readUnsignedByte();
+
+                    // Coordinates relative to region
+                    int fromX = i + baseX;
+                    int fromY = j + baseY;
+
+                    aDoubleEndedQueue_1179.insertHead(new Class30_Sub2_Sub4_Sub4(
+                            fromX * 128 + 64,
+                            fromY * 128 + 64,
+                            k * 128,
+                            l * 128,
+                            loopCycle,
+                            loopCycle + i2,
+                            j1,
+                            k1,
+                            l1,
+                            i1,
+                            k2
+                    ));
+
+
+                    this.packet = -1;
+                    return true;
+                }
+
 
                 if(this.packet == 64) {
                     this.anInt1268 = this.in.readByteC(false);
@@ -16088,7 +16244,7 @@ public class client extends Applet_Sub1 {
                     var23 = this.in.method436((byte)-74);
                     Widget.interfaceCache[var23].anInt233 = 3;
                     if(localPlayer.aClass5_1698 == null) {
-                        Widget.interfaceCache[var23].mediaID = (localPlayer.anIntArray1700[0] << 25) + (localPlayer.anIntArray1700[4] << 20) + (localPlayer.anIntArray1717[0] << 15) + (localPlayer.anIntArray1717[8] << 10) + (localPlayer.anIntArray1717[11] << 5) + localPlayer.anIntArray1717[1];
+                        Widget.interfaceCache[var23].mediaID = (localPlayer.anIntArray1700[0] << 25) + (localPlayer.anIntArray1700[4] << 20) + (localPlayer.equipment[0] << 15) + (localPlayer.equipment[8] << 10) + (localPlayer.equipment[11] << 5) + localPlayer.equipment[1];
                     } else {
                         Widget.interfaceCache[var23].mediaID = (int)(305419896L + localPlayer.aClass5_1698.aLong78);
                     }
@@ -16570,19 +16726,22 @@ public class client extends Applet_Sub1 {
                     return true;
                 }
 
-                if(this.packet == 174) {
-                    var23 = this.in.readUnsignedShort();
-                    byte var44 = 1;
-                    j20 = this.in.readUnsignedShort();
-                    i23 = this.in.readUnsignedByte();
-                    this.sound[this.currentSound] = var23;
-                    this.soundType[this.currentSound] = var44;
-                    this.soundDelay[this.currentSound] = j20 + Sound.anIntArray326[var23];
-                    this.soundVolume[this.currentSound] = i23;
-                    ++this.currentSound;
+                if (this.packet == 174) {
+                    int soundId = this.in.readUnsignedShort();
+                    int delay = this.in.readUnsignedShort(); // this can be 0
+                    int volume = this.in.readUnsignedByte();
+
+                    // Queue download
+                    client.onDemandFetcher.method558(5, soundId);
+
+                    // Store the play request in a queue or array for when data arrives
+                    SoundRequestQueue.add(new SoundRequest(soundId, volume, delay));
+
                     this.packet = -1;
                     return true;
                 }
+
+
 
                 if(this.packet == 104) {
                     var23 = this.in.readByteC(false);
@@ -17678,7 +17837,7 @@ public class client extends Applet_Sub1 {
         this.spriteDrawY = -1;
         this.anIntArray968 = new int[33];
         this.anIntArray969 = new int[256];
-        this.aClass14Array970 = new Class14[6];
+        this.aClass14Array970 = new Class14[7];
         this.variousSettings = new int[10000];
         this.aBoolean972 = false;
         this.aByte973 = -74;

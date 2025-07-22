@@ -34,7 +34,7 @@ final class Class30_Sub2_Sub4_Sub3 extends Animable
         Model model = aClass23_1568.method266();
         if(model == null)
             return null;
-        int j = aClass23_1568.aClass20_407.anIntArray353[anInt1569];
+        int j = aClass23_1568.aClass20_407.frames[anInt1569];
         Model model_1 = new Model(9, true, Class36.method532(j, false), false, model);
         if(!aBoolean1567)
         {
@@ -75,7 +75,7 @@ final class Class30_Sub2_Sub4_Sub3 extends Animable
         {
             anInt1570 -= aClass23_1568.aClass20_407.method258(anInt1569, (byte)-39) + 1;
             anInt1569++;
-            if(anInt1569 >= aClass23_1568.aClass20_407.anInt352 && (anInt1569 < 0 || anInt1569 >= aClass23_1568.aClass20_407.anInt352))
+            if(anInt1569 >= aClass23_1568.aClass20_407.frameCount && (anInt1569 < 0 || anInt1569 >= aClass23_1568.aClass20_407.frameCount))
             {
                 anInt1569 = 0;
                 aBoolean1567 = true;

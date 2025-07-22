@@ -13,22 +13,42 @@ public class AnimationDefinition
         anInt350 = stream.readUnsignedShort();
         if(anims == null)
             anims = new AnimationDefinition[anInt350];
-        for(int j = 0; j < anInt350; j++)
-        {
+        for(int j = 0; j < anInt350; j++) {
             if(anims[j] == null)
                 anims[j] = new AnimationDefinition();
             anims[j].method259(stream);
+            switch(j){
+                case 1066:
+                    anims[j].soundEffects = new int[] { 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438 };
+                    break;
+                case 1067:
+                    anims[j].soundEffects = new int[] { 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438 };
+                    break;
+                case 1068:
+                    anims[j].soundEffects = new int[] { 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438 };
+                    break;
+                case 1069:
+                    anims[j].soundEffects = new int[] { 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438, 287, 434, 435, 436, 437, 438 };
+                    break;
+            }
         }
+        int withSound = 0;
+        for (int i = 0; i < anims.length; i++) {
+            if (anims[i].soundEffects != null) {
+                withSound++;
+            }
+        }
+        System.out.println("Animations with sound effects: " + withSound);
         if (Configuration.dumpAnimationData) {
             System.out.println("Dumping animation lengths..");
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("./temp/animation_lengths.cfg"))) {
                 for (int j = 0; j < anInt350; j++) {
-                    if (anims[j].anIntArray355 != null && anims[j].anIntArray355.length > 0) {
+                    if (anims[j].frame_durations != null && anims[j].frame_durations.length > 0) {
                         int sum = 0;
-                        for (int i2 = 0; i2 < anims[j].anIntArray355.length; i2++) {
-                            if (anims[j].anIntArray355[i2] < 100) {
-                                sum += anims[j].anIntArray355[i2];
+                        for (int i2 = 0; i2 < anims[j].frame_durations.length; i2++) {
+                            if (anims[j].frame_durations[i2] < 100) {
+                                sum += anims[j].frame_durations[i2];
                             }
                         }
                         writer.write(j + ":" + sum);
@@ -51,10 +71,10 @@ public class AnimationDefinition
            BufferedWriter var21 = new BufferedWriter(new FileWriter(f));
 
            for(int j = 0; j < length; ++j) {
-              String frameCount = String.valueOf(anims[j].anInt352);
-              String frameIDs = Arrays.toString(anims[j].anIntArray353);
-              String frameIDs2 = Arrays.toString(anims[j].anIntArray354);
-              String delays = Arrays.toString(anims[j].anIntArray355);
+              String frameCount = String.valueOf(anims[j].frameCount);
+              String frameIDs = Arrays.toString(anims[j].frames);
+              String frameIDs2 = Arrays.toString(anims[j].secondaryFrames);
+              String delays = Arrays.toString(anims[j].frame_durations);
               String loopDelay = String.valueOf(anims[j].anInt356);
               String animationFlowControl = Arrays.toString(anims[j].anIntArray357);
               String oneSquareAnimation = String.valueOf(anims[j].anInt359);
@@ -84,16 +104,16 @@ public class AnimationDefinition
      }
     public int method258(int i, byte byte0)
     {
-        int j = anIntArray355[i];
+        int j = frame_durations[i];
         if(byte0 != -39)
         {
             for(int k = 1; k > 0; k++);
         }
         if(j == 0)
         {
-            Class36 class36 = Class36.method531(anInt348, anIntArray353[i]);
+            Class36 class36 = Class36.method531(anInt348, frames[i]);
             if(class36 != null)
-                j = anIntArray355[i] = class36.anInt636;
+                j = frame_durations[i] = class36.anInt636;
         }
         if(j == 0)
             j = 1;
@@ -107,16 +127,16 @@ public class AnimationDefinition
 			if(i == 0)
 				break;
 			if(i == 1) {
-				anInt352 = stream.readUnsignedShort();
-				anIntArray353 = new int[anInt352];
-				anIntArray354 = new int[anInt352];
-				anIntArray355 = new int[anInt352];
-				for(int i_ = 0; i_ < anInt352; i_++){
-					anIntArray353[i_] = stream.readDWord();
-					anIntArray354[i_] = -1;
+                frameCount = stream.readUnsignedShort();
+                frames = new int[frameCount];
+                secondaryFrames = new int[frameCount];
+                frame_durations = new int[frameCount];
+				for(int i_ = 0; i_ < frameCount; i_++){
+					frames[i_] = stream.readDWord();
+					secondaryFrames[i_] = -1;
 				}
-				for(int i_ = 0; i_ < anInt352; i_++)
-					anIntArray355[i_] = stream.readUnsignedByte();
+				for(int i_ = 0; i_ < frameCount; i_++)
+					frame_durations[i_] = stream.readUnsignedByte();
 			}
 			else if(i == 2)
 				anInt356 = stream.readUnsignedShort();
@@ -132,7 +152,7 @@ public class AnimationDefinition
 			else if(i == 5)
 				anInt359 = stream.readUnsignedByte();
 			else if(i == 6)
-                leftHandItem = stream.readUnsignedShort();
+                leftHandItem = stream.readUnsignedShort() ;
 			else if(i == 7)
                 rightHandItem = stream.readUnsignedShort();
 			else if(i == 8)
@@ -141,20 +161,40 @@ public class AnimationDefinition
 				anInt363 = stream.readUnsignedByte();
 			else if(i == 10)
 				anInt364 = stream.readUnsignedByte();
-			else if(i == 11)
-				replayMode = stream.readUnsignedByte();
-			else
+			else if(i == 11) {
+                replayMode = stream.readUnsignedByte();
+            } else if (i == 12) {
+               int  var3 = stream.readUnsignedByte();
+                this.chatFrameIds = new int[var3];
+
+                for (int var4 = 0; var4 < var3; ++var4) {
+                    this.chatFrameIds[var4] = stream.readUnsignedShort();
+                }
+
+                for (int var4 = 0; var4 < var3; ++var4) {
+                    this.chatFrameIds[var4] += stream.readUnsignedShort() << 16;
+                }
+            } else if (i == 13) {
+                int var3 = stream.readUnsignedByte();
+                this.soundEffects = new int[var3];
+
+                for (int var4 = 0; var4 < var3; ++var4) {
+                    this.soundEffects[var4] = stream.readDWord();
+                }
+            }
+
+            else
                 System.out.println("Unrecognized seq.dat config code: "+i);
 		} while(true);
-		if(anInt352 == 0)
+		if(frameCount == 0)
 		{
-			anInt352 = 1;
-			anIntArray353 = new int[1];
-			anIntArray353[0] = -1;
-			anIntArray354 = new int[1];
-			anIntArray354[0] = -1;
-			anIntArray355 = new int[1];
-			anIntArray355[0] = -1;
+			frameCount = 1;
+			frames = new int[1];
+			frames[0] = -1;
+			secondaryFrames = new int[1];
+			secondaryFrames[0] = -1;
+			frame_durations = new int[1];
+			frame_durations[0] = -1;
 		}
 		if(anInt363 == -1)
 			if(anIntArray357 != null)
@@ -189,10 +229,10 @@ public class AnimationDefinition
     private boolean aBoolean349;
     public static int anInt350;
     public static AnimationDefinition anims[];
-    public int anInt352;
-    public int anIntArray353[];
-    public int anIntArray354[];
-    private int anIntArray355[];
+    public int frameCount;
+    public int frames[];
+    public int secondaryFrames[];
+    private int frame_durations[];
     public int anInt356;
     public int anIntArray357[];
     public boolean aBoolean358;
@@ -203,6 +243,11 @@ public class AnimationDefinition
     public int anInt363;
     public int anInt364;
     public int replayMode;
+    int[] chatFrameIds;
+    public int[] soundEffectFrame;
+    public int[] soundEffectId;
+    public int[] soundEffectDelay;
+    public int[] soundEffects;
     public int anInt366;
     public static int anInt367;
 }

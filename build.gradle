@@ -1,0 +1,110 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'Ghreborn'
+version = '1.0.0'
+
+repositories {
+    maven {
+        url 'https://releases.guardsquare.com'
+    }
+    mavenCentral()
+    maven { url = uri('https://jitpack.io') }
+}
+// Java 8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+
+// Dependencies
+dependencies {
+    implementation fileTree(dir: 'lib', include: ['*.jar'])
+}
+
+// Shadow JAR task
+shadowJar {
+    archiveBaseName.set('Ghreborn')
+    archiveClassifier.set('all')
+    archiveVersion.set("")
+    destinationDirectory.set(file("$buildDir/jars"))
+
+    manifest {
+        attributes(
+                'Main-Class': 'client'
+        )
+    }
+
+    mergeServiceFiles()
+}
+
+
+// ✅ ProGuard integration
+configurations {
+    proguard
+}
+
+dependencies {
+    proguard 'com.guardsquare:proguard-base:7.4.0'
+}
+
+configurations {
+    proguard
+}
+
+dependencies {
+    proguard files("proguard/proguard.jar") // ProGuard jar location
+}
+
+task obfuscateJar(type: JavaExec) {
+    dependsOn shadowJar
+    group = 'build'
+    description = 'Run ProGuard to obfuscate the shadow jar.'
+
+    // Use ProGuard jar manually loaded from configuration
+    classpath = configurations.proguard
+    mainClass.set("proguard.ProGuard")
+
+    // Define paths
+    def inputJar = "${buildDir}/jars/Ghreborn-all.jar"
+    def outputJar = "${buildDir}/jars/Ghreborn-obfuscated.jar"
+    def javaHome = System.getProperty('java.home')
+
+    // Use rt.jar for Java 8 instead of jmods (jmods is Java 9+ only)
+    def runtimeJar = file("${javaHome}/lib/rt.jar")
+
+    args = [
+            "-injars", inputJar,
+            "-outjars", outputJar,
+            "-libraryjars", runtimeJar,
+            "@proguard.pro"
+    ]
+}
+
+task verifyJar(type: Exec) {
+    dependsOn obfuscateJar
+    description = 'Verifies that the obfuscated jar passes bytecode verification using JVM.'
+
+    // Grab java executable
+    def javaExec = "${System.getProperty('java.home')}/bin/java"
+    def obfuscatedJar = "${buildDir}/jars/Ghreborn-obfuscated.jar"
+
+    // Instead of using `-verify` which can't be combined with `-jar`,
+    // we load a verifier class manually via JVM (see below)
+    commandLine = [
+            javaExec,
+            "-cp", obfuscatedJar,
+            "client" // <-- Your main class; should trigger class loading
+    ]
+
+    // Fail the task if exit code is non-zero
+    ignoreExitValue = false
+}
+
+
+
+
+build.dependsOn obfuscateJar

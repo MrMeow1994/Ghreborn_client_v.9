@@ -146,6 +146,22 @@ final class ItemDefinition {
             out.close();
         } catch (IOException ioe) {ioe.printStackTrace();}
     }
+    public static void dumpNewItems() {
+        for(int i = 0; i < 30000; i++) {
+            ItemDefinition class8 = method198(i);
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter(new FileWriter("Item Dump.txt", true));
+                if(class8.name != null) {
+                    bw.write("<item members='true'  name='" + class8.name + "'  type='"+i+"'> </item>");
+                    bw.newLine();
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ioe2) {
+            }
+        }
+    }
     public static void dumpNotableList() {
         try {
             File file = new File("note_id.dat");
@@ -216,22 +232,7 @@ final class ItemDefinition {
         }
     }
 
-    public static void dumpNewItems() {
-        for (int i = 9000; i < 9200; i++) {
-            ItemDefinition class8 = method198(i);
-            BufferedWriter bw = null;
-            try {
-                bw = new BufferedWriter(new FileWriter(signlink.findcachedir() + ("/dumps/Item Dump.txt"), true));
-                if (class8.name != null) {
-                    bw.write("<item members='true'  name='" + class8.name + "'  type='" + i + "'> </item>");
-                    bw.newLine();
-                    bw.flush();
-                    bw.close();
-                }
-            } catch (IOException ioe2) {
-            }
-        }
-    }
+
     private int currentcolors;
     private int currenttextures;
     private int currentstackid;
@@ -509,6 +510,7 @@ final class ItemDefinition {
         //dumpStackable();
         //dumpNotes();
         //dumpItems2();
+        //dumpNewItems();
         if (Configuration.dumpDataLists) {
             TempWriter writer2 = new TempWriter("item_fields");
             FieldGenerator generator = new FieldGenerator(writer2::writeLine);

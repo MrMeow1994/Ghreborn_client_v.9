@@ -52,7 +52,7 @@ public static client Client;
 	 */
 	public enum FileType {
 		//CACHE(signlink.findcachedir(), "https://godzhell.net/cache/cache.zip", 8),
-		FILEDATA(signlink.findcachedir(), "http://" + Client.server + ":" + (29435 + Client.ondemand_offset)+"/fileData.zip", 10);
+		FILEDATA(signlink.findcachedir(), "http://" + Client.server + ":" + (29435 + Client.ondemand_offset)+"/fileData.zip", 12);
 		/**
 		 * The link to the file on the webserver
 		 */

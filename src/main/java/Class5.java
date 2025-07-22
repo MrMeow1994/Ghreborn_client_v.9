@@ -63,7 +63,7 @@ final class Class5
 			class5.anInt83 = -1;
 			class5.anIntArray94 = new int[1];
 			class5.anIntArray94[0] = 35229;
- 			class5.aByteArray89 = "It\'s a homer.".getBytes();
+ 			class5.aByteArray89 = "It's a homer.".getBytes();
 		}
 						if(i == 7943) {
 			class5.aStringArray66 = new String[5];
@@ -75,6 +75,9 @@ final class Class5
 						    class5.name = "Ghreborn Guide"; // NPC name
 						    class5.aByteArray89 = "It's a Ghreborn guide.".getBytes(); // NPC description, you must leave the .getBytes() at the end or it will not work.
 				}
+						if(i == 319) {
+						class5.aByte68 = 1;
+						}
 return class5;
     }
 	   public static void dumpNpc() {
@@ -354,137 +357,185 @@ return class5;
         return model_1;
     }
 
-	private void method165(Stream stream)
-	{
-		do
-		{
-			int i = stream.readUnsignedByte();
-			if(i == 0)
+	private void method165(Stream stream) {
+		while (true) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0)
 				return;
-			if(i == 1)
-			{
-				int j = stream.readUnsignedByte();
-				anIntArray94 = new int[j];
-				for(int j1 = 0; j1 < j; j1++)
-					anIntArray94[j1] = stream.readUnsignedShort();
 
-			} else
-			if(i == 2)
-				name = stream.readString();
-			else
-			if(i == 3)
-				aByteArray89 = stream.method416((byte)30);
-			else
-			if(i == 12)
-				aByte68 = stream.readSignedByte();
-			else
-			if(i == 13)
-				anInt77 = stream.readUnsignedShort();
-			else
-			if(i == 14)
-				anInt67 = stream.readUnsignedShort();
-			else
-			if(i == 17)
-			{
-				anInt67 = stream.readUnsignedShort();
-				anInt58 = stream.readUnsignedShort();
-				anInt83 = stream.readUnsignedShort();
-				anInt55 = stream.readUnsignedShort();
-                if (anInt67 == 65535)
-                    anInt67 = -1;
-                if (anInt58 == 65535)
-                    anInt58 = -1;
-                if (anInt83 == 65535)
-                    anInt83 = -1;
-                if (anInt55 == 65535)
-                    anInt55 = -1;
-			} else
-			if(i >= 30 && i < 40)
-			{
-				if(aStringArray66 == null)
-					aStringArray66 = new String[5];
-				aStringArray66[i - 30] = stream.readString();
-				if(aStringArray66[i - 30].equalsIgnoreCase("hidden"))
-					aStringArray66[i - 30] = null;
-			} else
-			if(i == 40)
-			{
-				int k = stream.readUnsignedByte();
-				anIntArray76 = new int[k];
-				anIntArray70 = new int[k];
-				for(int k1 = 0; k1 < k; k1++)
-				{
-					anIntArray76[k1] = stream.readUnsignedShort();
-					anIntArray70[k1] = stream.readUnsignedShort();
-				}
+			switch (opcode) {
+				case 1:
+					int modelCount = stream.readUnsignedByte();
+					anIntArray94 = new int[modelCount];
+					for (int i = 0; i < modelCount; i++)
+						anIntArray94[i] = stream.readUnsignedShort();
+					break;
 
-			} else
-			if(i == 60)
-			{
-				int l = stream.readUnsignedByte();
-				anIntArray73 = new int[l];
-				for(int l1 = 0; l1 < l; l1++)
-					anIntArray73[l1] = stream.readUnsignedShort();
+				case 2:
+					name = stream.readString();
+					break;
 
-			} else
-			if(i == 90)
-				stream.readUnsignedShort();
-			else
-			if(i == 91)
-				stream.readUnsignedShort();
-			else
-			if(i == 92)
-				stream.readUnsignedShort();
-			else
-			if(i == 93)
-				aBoolean87 = false;
-			else
-			if(i == 95)
-				anInt61 = stream.readUnsignedShort();
-			else
-			if(i == 97)
-				anInt91 = stream.readUnsignedShort();
-			else
-			if(i == 98)
-				anInt86 = stream.readUnsignedShort();
-			else
-			if(i == 99)
-				aBoolean93 = true;
-			else
-			if(i == 100)
-				anInt85 = stream.readSignedByte();
-			else
-			if(i == 101)
-				anInt92 = stream.readSignedByte() * 5;
-			else
-			if(i == 102)
-				anInt75 = stream.readUnsignedShort();
-			else
-			if(i == 103)
-				anInt79 = stream.readUnsignedShort();
-			else
-			if(i == 106)
-			{
-                anInt57 = stream.readUnsignedShort();
-                if(anInt57 == 65535)
-                    anInt57 = -1;
-                anInt59 = stream.readUnsignedShort();
-                if(anInt59 == 65535)
-                    anInt59 = -1;
-                int i1 = stream.readUnsignedByte();
-                anIntArray88 = new int[i1 + 1];
-                for(int i2 = 0; i2 <= i1; i2++)
-                {
-                    anIntArray88[i2] = stream.readUnsignedShort();
-                    if(anIntArray88[i2] == 65535)
-                        anIntArray88[i2] = -1;
-                }
+				case 3:
+					aByteArray89 = stream.method416((byte) 30);
+					break;
 
-			} else
-			if(i == 107)
-				aBoolean84 = false;
-		} while(true);
+				case 12:
+					aByte68 = stream.readSignedByte();
+					break;
+
+				case 13:
+					anInt77 = stream.readUnsignedShort();
+					break;
+
+				case 14:
+					anInt67 = stream.readUnsignedShort();
+					break;
+
+				case 17:
+					anInt67 = stream.readUnsignedShort();
+					anInt58 = stream.readUnsignedShort();
+					anInt83 = stream.readUnsignedShort();
+					anInt55 = stream.readUnsignedShort();
+					if (anInt67 == 65535) anInt67 = -1;
+					if (anInt58 == 65535) anInt58 = -1;
+					if (anInt83 == 65535) anInt83 = -1;
+					if (anInt55 == 65535) anInt55 = -1;
+					break;
+
+				case 18:
+					// Run animation (614+)
+					int runAnim = stream.readUnsignedShort();
+					break;
+
+				case 30: case 31: case 32: case 33: case 34:
+					if (aStringArray66 == null)
+						aStringArray66 = new String[5];
+					String action = stream.readString();
+					aStringArray66[opcode - 30] = action.equalsIgnoreCase("hidden") ? null : action;
+					break;
+
+				case 40:
+					int recolorCount = stream.readUnsignedByte();
+					anIntArray76 = new int[recolorCount];
+					anIntArray70 = new int[recolorCount];
+					for (int i = 0; i < recolorCount; i++) {
+						anIntArray76[i] = stream.readUnsignedShort();
+						anIntArray70[i] = stream.readUnsignedShort();
+					}
+					break;
+
+				case 41:
+					int retextureCount = stream.readUnsignedByte();
+					for (int i = 0; i < retextureCount; i++) {
+						int originalTex = stream.readUnsignedShort();
+						int replacementTex = stream.readUnsignedShort();
+						// Optional: Store in your own retexture arrays
+					}
+					break;
+
+				case 42:
+					int headIcon = stream.readUnsignedShort(); // Add to your field
+					break;
+
+				case 60:
+					int headModelCount = stream.readUnsignedByte();
+					anIntArray73 = new int[headModelCount];
+					for (int i = 0; i < headModelCount; i++)
+						anIntArray73[i] = stream.readUnsignedShort();
+					break;
+
+				case 90: case 91: case 92:
+					stream.readUnsignedShort(); // Dummy fields
+					break;
+
+				case 93:
+					aBoolean87 = false;
+					break;
+
+				case 95:
+					anInt61 = stream.readUnsignedShort();
+					break;
+
+				case 97:
+					anInt91 = stream.readUnsignedShort();
+					break;
+
+				case 98:
+					anInt86 = stream.readUnsignedShort();
+					break;
+
+				case 99:
+					aBoolean93 = true;
+					break;
+
+				case 100:
+					anInt85 = stream.readSignedByte();
+					break;
+
+				case 101:
+					anInt92 = stream.readSignedByte() * 5;
+					break;
+
+				case 102:
+					anInt75 = stream.readUnsignedShort(); // Head icon again?
+					break;
+
+				case 103:
+					anInt79 = stream.readUnsignedShort();
+					break;
+
+				case 106:
+					anInt57 = stream.readUnsignedShort();
+					if (anInt57 == 65535) anInt57 = -1;
+					anInt59 = stream.readUnsignedShort();
+					if (anInt59 == 65535) anInt59 = -1;
+					int morphCount = stream.readUnsignedByte();
+					anIntArray88 = new int[morphCount + 1];
+					for (int i = 0; i <= morphCount; i++) {
+						anIntArray88[i] = stream.readUnsignedShort();
+						if (anIntArray88[i] == 65535)
+							anIntArray88[i] = -1;
+					}
+					break;
+
+				case 107:
+					aBoolean84 = false;
+					break;
+
+				case 109:
+					boolean interactable = stream.readUnsignedByte() == 1;
+					break;
+
+				case 111:
+					boolean renderOnMinimap = stream.readUnsignedByte() == 1;
+					break;
+
+				case 118:
+					anInt57 = stream.readUnsignedShort();
+					if (anInt57 == 65535) anInt57 = -1;
+					anInt59 = stream.readUnsignedShort();
+					if (anInt59 == 65535) anInt59 = -1;
+					int defaultMorph = stream.readUnsignedShort();
+					if (defaultMorph == 65535)
+						defaultMorph = -1;
+					int morphLen = stream.readUnsignedByte();
+					anIntArray88 = new int[morphLen + 1];
+					for (int i = 0; i <= morphLen; i++) {
+						anIntArray88[i] = stream.readUnsignedShort();
+						if (anIntArray88[i] == 65535)
+							anIntArray88[i] = -1;
+					}
+					break;
+
+				default:
+					// Unknown opcode — skip or print warning for debugging
+					System.out.println("Unhandled NPC opcode: " + opcode);
+					break;
+			}
+		}
 	}
+
+
 
     Class5()
     {

@@ -25,7 +25,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
     private int anInt1715 = 9;
     boolean aBoolean1699 = false;
     int[] anIntArray1700 = new int[5];
-    int[] anIntArray1717 = new int[12];
+    int[] equipment = new int[12];
     static Class12 aClass12_1704 = new Class12(false, 260);
 
     public final Model method444(int i) {
@@ -53,7 +53,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                             model_3.method475(0, -super.anInt1524, 16384, 0);
                             model_3.method469((byte)-71);
                             model_3.method478(132, 132, -1,132);
-                            model_3.method470(model_1.aClass20_407.anIntArray353[super.anInt1521], '\u9e5e');
+                            model_3.method470(model_1.aClass20_407.frames[super.anInt1521], '\u9e5e');
                             model_3.anIntArrayArray1658 = (int[][])null;
                             model_3.anIntArrayArray1657 = (int[][])null;
                             if(model_1.anInt410 != 128 || model_1.anInt411 != 128) {
@@ -123,17 +123,17 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
             for(i2 = 0; i2 < 12; ++i2) {
                 j1 = stream.readUnsignedByte();
                 if(j1 == 0) {
-                    this.anIntArray1717[i2] = 0;
+                    this.equipment[i2] = 0;
                 } else {
                     int i1 = stream.readUnsignedByte();
-                    this.anIntArray1717[i2] = (j1 << 8) + i1;
-                    if(i2 == 0 && this.anIntArray1717[0] == '\uffff') {
+                    this.equipment[i2] = (j1 << 8) + i1;
+                    if(i2 == 0 && this.equipment[0] == '\uffff') {
                         this.aClass5_1698 = Class5.method159(stream.readUnsignedShort());
                         break;
                     }
 
-                    if(this.anIntArray1717[i2] >= '\u8000' && this.anIntArray1717[i2] - '\u8000' < ItemDefinition.anInt203) {
-                        int l1 = ItemDefinition.method198(this.anIntArray1717[i2] - '\u8000').anInt202;
+                    if(this.equipment[i2] >= 32768  && this.equipment[i2] - 32768  < ItemDefinition.anInt203) {
+                        int l1 = ItemDefinition.method198(this.equipment[i2] - 32768 ).anInt202;
                         if(l1 != 0) {
                             this.team = l1;
                         }
@@ -193,17 +193,17 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
             for(i2 = 0; i2 < 12; ++i2) {
                 this.aLong1718 <<= 4;
-                if(this.anIntArray1717[i2] >= 256) {
-                    this.aLong1718 += (long)(this.anIntArray1717[i2] - 256);
+                if(this.equipment[i2] >= 256) {
+                    this.aLong1718 += (long)(this.equipment[i2] - 256);
                 }
             }
 
-            if(this.anIntArray1717[0] >= 256) {
-                this.aLong1718 += (long)(this.anIntArray1717[0] - 256 >> 4);
+            if(this.equipment[0] >= 256) {
+                this.aLong1718 += (long)(this.equipment[0] - 256 >> 4);
             }
 
-            if(this.anIntArray1717[1] >= 256) {
-                this.aLong1718 += (long)(this.anIntArray1717[1] - 256 >> 8);
+            if(this.equipment[1] >= 256) {
+                this.aLong1718 += (long)(this.equipment[1] - 256 >> 8);
             }
 
             for(i2 = 0; i2 < 5; ++i2) {
@@ -217,40 +217,46 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
     }
 
     public final Model method452(int i) {
-        if(this.aClass5_1698 != null) {
-            int var14 = -1;
-            if(super.primaryanim >= 0 && super.primaryanim_pause == 0) {
-                var14 = AnimationDefinition.anims[super.primaryanim].anIntArray353[super.primaryanim_frameindex];
-            } else if(super.anInt1517 >= 0) {
-                var14 = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
-            }
-
-            Model model = this.aClass5_1698.method164(0, -1, var14, (int[])null);
-            return model;
-        } else {
+        if (null == this.aClass5_1698) {
             long l = this.aLong1718;
             int k = -1;
             int i1 = -1;
             int j1 = -1;
             int k1 = -1;
             if(super.primaryanim >= 0 && super.primaryanim_pause == 0) {
-                AnimationDefinition model_1 = AnimationDefinition.anims[super.primaryanim];
-                k = model_1.anIntArray353[super.primaryanim_frameindex];
+                AnimationDefinition animation = AnimationDefinition.anims[super.primaryanim];
+                k = animation.frames[super.primaryanim_frameindex];
+                // 🔊 Trigger animation-linked sound (opcode 12/13)
+// 🔊 Play animation-based sound effect via SoundRequestQueue
+                if (animation.soundEffects != null && animation.soundEffects.length > super.primaryanim_frameindex) {
+                    int[] soundGroup = new int[]{animation.soundEffects[super.primaryanim_frameindex]};
+                    if (soundGroup != null) {
+                        for (int soundId : soundGroup) {
+                            // You may adjust volume mapping here based on how your mixer handles it
+                            // Queue download
+                            client.onDemandFetcher.method558(5, soundId);
+                            SoundRequestQueue.add(new SoundRequest(soundId, 5, 0));
+                        }
+                    }
+                }
+
+
                 if(super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-                    i1 = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
+                    i1 = AnimationDefinition.anims[super.anInt1517].frames[super.anInt1518];
                 }
 
-                if(model_1.leftHandItem >= 0) {
-                    j1 = model_1.leftHandItem + '\u8000';
-                    l += (long)(j1 - (this.anIntArray1717[5] << 8));
+
+                if (animation.leftHandItem >= 0) {
+                    j1 = animation.leftHandItem - '\u8000';
+                    l += j1 - equipment[5] << 40;
+                }
+                if (animation.rightHandItem >= 0) {
+                    k1 = animation.rightHandItem - '\u8000';
+                    l += k1 - equipment[3] << 48;
                 }
 
-                if(model_1.rightHandItem >= 0) {
-                    k1 = model_1.rightHandItem + '\u8000';
-                    l += (long)(k1 - (this.anIntArray1717[3] << 16));
-                }
             } else if(super.anInt1517 >= 0) {
-                k = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
+                k = AnimationDefinition.anims[super.anInt1517].frames[super.anInt1518];
             }
 
             Model var15 = (Model)aClass12_1704.method222(l);
@@ -266,7 +272,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 boolean var16 = false;
 
                 for(j2 = 0; j2 < 12; ++j2) {
-                    j3 = this.anIntArray1717[j2];
+                    j3 = this.equipment[j2];
                     if(k1 >= 0 && j2 == 3) {
                         j3 = k1;
                     }
@@ -275,11 +281,11 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                         j3 = j1;
                     }
 
-                    if(j3 >= 256 && j3 < '\u8000' && !Class38.aClass38Array656[j3 - 256].method537((byte)2)) {
+                    if(j3 >= 256 && j3 < 32768  && !Class38.aClass38Array656[(int) (j3 - 256)].method537((byte)2)) {
                         var16 = true;
                     }
 
-                    if(j3 >= '\u8000' && !ItemDefinition.method198(j3 - '\u8000').method195('\u9fc7', this.gender)) {
+                    if(j3 >= 32768  && !ItemDefinition.method198(j3 - 32768 ).method195('\u9fc7', this.gender)) {
                         var16 = true;
                     }
                 }
@@ -300,7 +306,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 j2 = 0;
 
                 for(j3 = 0; j3 < 12; ++j3) {
-                    int i3 = this.anIntArray1717[j3];
+                    int i3 = this.equipment[(int) j3];
                     if(k1 >= 0 && j3 == 3) {
                         i3 = k1;
                     }
@@ -310,15 +316,15 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                     }
 
                     Model class30_sub2_sub4_sub6_4;
-                    if(i3 >= 256 && i3 < '\u8000') {
-                        class30_sub2_sub4_sub6_4 = Class38.aClass38Array656[i3 - 256].method538(false);
+                    if(i3 >= 256 && i3 < 32768 ) {
+                        class30_sub2_sub4_sub6_4 = Class38.aClass38Array656[(int) (i3 - 256)].method538(false);
                         if(class30_sub2_sub4_sub6_4 != null) {
                             var17[j2++] = class30_sub2_sub4_sub6_4;
                         }
                     }
 
-                    if(i3 >= '\u8000') {
-                        class30_sub2_sub4_sub6_4 = ItemDefinition.method198(i3 - '\u8000').method196(false, this.gender);
+                    if(i3 >= 32768 ) {
+                        class30_sub2_sub4_sub6_4 = ItemDefinition.method198(i3 - 32768 ).method196(false, this.gender);
                         if(class30_sub2_sub4_sub6_4 != null) {
                             var17[j2++] = class30_sub2_sub4_sub6_4;
                         }
@@ -328,10 +334,10 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 var15 = new Model(j2, var17, -38);
 
                 for(j3 = 0; j3 < 5; ++j3) {
-                    if(this.anIntArray1700[j3] != 0) {
-                        var15.method476(client.anIntArrayArray1003[j3][0], client.anIntArrayArray1003[j3][this.anIntArray1700[j3]]);
+                    if(this.anIntArray1700[(int) j3] != 0) {
+                        var15.method476(client.anIntArrayArray1003[(int) j3][0], client.anIntArrayArray1003[(int) j3][this.anIntArray1700[(int) j3]]);
                         if(j3 == 1) {
-                            var15.method476(client.anIntArray1204[0], client.anIntArray1204[this.anIntArray1700[j3]]);
+                            var15.method476(client.anIntArray1204[0], client.anIntArray1204[this.anIntArray1700[(int) j3]]);
                         }
                     }
                 }
@@ -358,6 +364,16 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 var18.anIntArrayArray1657 = (int[][])null;
                 return var18;
             }
+        } else {
+            int var14 = -1;
+            if(super.primaryanim >= 0 && super.primaryanim_pause == 0) {
+                var14 = AnimationDefinition.anims[super.primaryanim].frames[super.primaryanim_frameindex];
+            } else if(super.anInt1517 >= 0) {
+                var14 = AnimationDefinition.anims[super.anInt1517].frames[super.anInt1518];
+            }
+
+            Model model = this.aClass5_1698.method164(0, -1, var14, (int[])null);
+            return model;
         }
     }
 
@@ -383,12 +399,12 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
             int k;
             for(int aclass30_sub2_sub4_sub6 = 0; aclass30_sub2_sub4_sub6 < 12; ++aclass30_sub2_sub4_sub6) {
-                k = this.anIntArray1717[aclass30_sub2_sub4_sub6];
-                if(k >= 256 && k < '\u8000' && !Class38.aClass38Array656[k - 256].method539(false)) {
+                k = this.equipment[aclass30_sub2_sub4_sub6];
+                if(k >= 256 && k < 32768  && !Class38.aClass38Array656[k - 256].method539(false)) {
                     flag = true;
                 }
 
-                if(k >= '\u8000' && !ItemDefinition.method198(k - '\u8000').method192(-2836, this.gender)) {
+                if(k >= 32768  && !ItemDefinition.method198(k - 32768 ).method192(-2836, this.gender)) {
                     flag = true;
                 }
             }
@@ -401,17 +417,17 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
                 int j1;
                 for(int model = 0; model < 12; ++model) {
-                    j1 = this.anIntArray1717[model];
+                    j1 = this.equipment[model];
                     Model class30_sub2_sub4_sub6_2;
-                    if(j1 >= 256 && j1 < '\u8000') {
+                    if(j1 >= 256 && j1 < 32768 ) {
                         class30_sub2_sub4_sub6_2 = Class38.aClass38Array656[j1 - 256].method540(0);
                         if(class30_sub2_sub4_sub6_2 != null) {
                             var8[k++] = class30_sub2_sub4_sub6_2;
                         }
                     }
 
-                    if(j1 >= '\u8000') {
-                        class30_sub2_sub4_sub6_2 = ItemDefinition.method198(j1 - '\u8000').method194(-705, this.gender);
+                    if(j1 >= 32768 ) {
+                        class30_sub2_sub4_sub6_2 = ItemDefinition.method198(j1 - 32768 ).method194(-705, this.gender);
                         if(class30_sub2_sub4_sub6_2 != null) {
                             var8[k++] = class30_sub2_sub4_sub6_2;
                         }

@@ -1,13 +1,8 @@
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 import sign.signlink;
@@ -48,9 +43,9 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    private boolean aBoolean1336 = true;
    private CRC32 aCRC32_1338 = new CRC32();
    private byte[] ioBuffer = new byte[500];
-   private byte[][] fileStatus = new byte[6][];
+   private byte[][] fileStatus = new byte[7][];
    private DoubleEndedQueue aDoubleEndedQueue_1344 = new DoubleEndedQueue(169);
-   private DoubleEndedQueue aDoubleEndedQueue_1358 = new DoubleEndedQueue(169);
+   private final DoubleEndedQueue aDoubleEndedQueue_1358 = new DoubleEndedQueue(169);
    private byte[] gzipInputBuffer = new byte[9999999];
    private Class2 aClass2_1361;
    private int[][] versions;
@@ -73,139 +68,131 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
    private final void readData() {
       try {
-         int ioexception = this.inputStream.available();
-         int i1;
-         int k1;
-         if(this.expectedSize == 0 && ioexception >= 8) {
-            this.waiting = true;
+         int available = inputStream.available();
+         int dataType, fileId, totalLength, chunkIndex;
 
-            int abyte0;
-            for(abyte0 = 0; abyte0 < 8; abyte0 += this.inputStream.read(this.ioBuffer, abyte0, 8 - abyte0)) {
-               ;
-            }
+         if (expectedSize == 0 && available >= 8) {
+            waiting = true;
 
-            abyte0 = this.ioBuffer[0] & 0xFF;
+            readFully(inputStream, ioBuffer, 0, 8);
 
-            i1 = ((this.ioBuffer[1] & 0xFF) << 16) // i1 as a medium (3-byte integer)
-                    + ((this.ioBuffer[2] & 0xFF) << 8)
-                    + (this.ioBuffer[3] & 0xFF);
+            dataType = ioBuffer[0] & 0xFF;
+            fileId = ((ioBuffer[1] & 0xFF) << 16) | ((ioBuffer[2] & 0xFF) << 8) | (ioBuffer[3] & 0xFF);
+            totalLength = ((ioBuffer[4] & 0xFF) << 16) | ((ioBuffer[5] & 0xFF) << 8) | (ioBuffer[6] & 0xFF);
+            chunkIndex = ioBuffer[7] & 0xFF;
 
-            k1 = ((this.ioBuffer[4] & 0xFF) << 16) // k1 as a medium (3-byte integer)
-                    + ((this.ioBuffer[5] & 0xFF) << 8)
-                    + (this.ioBuffer[6] & 0xFF);
+            current = null;
+            OnDemandData req = (OnDemandData) requested.reverseGetFirst();
 
-            int i2 = this.ioBuffer[7] & 0xFF; // i2 remains as a byte
-            //System.out.println(": abyte0=" + abyte0 + ", i1=" + i1 + ", k1=" + k1 + ", i2=" + i2);
-            this.current = null;
-            OnDemandData onDemandData = (OnDemandData)this.requested.reverseGetFirst();
-
-            while(true) {
-               if(onDemandData == null) {
-                  if(this.current != null) {
-                     this.loopCycle = 0;
-                     if(k1 == 0) {
-                        signlink.reporterror("Rej: " + abyte0 + "," + i1);
-                        this.current.buffer = null;
-                        if(this.current.incomplete) {
-                           DoubleEndedQueue onDemandData1 = this.aDoubleEndedQueue_1358;
-                           synchronized(this.aDoubleEndedQueue_1358) {
-                              this.aDoubleEndedQueue_1358.insertHead(this.current);
-                           }
-                        } else {
-                           this.current.unlink();
-                        }
-
-                        this.current = null;
-                     } else {
-                        if(this.current.buffer == null && i2 == 0) {
-                           this.current.buffer = new byte[k1];
-                        }
-
-                        if(this.current.buffer == null && i2 != 0) {
-                           throw new IOException("missing start of file");
-                        }
-                     }
-                  }
-
-                  this.completedSize = i2 * 500;
-                  this.expectedSize = 500;
-                  if(this.expectedSize > k1 - i2 * 500) {
-                     this.expectedSize = k1 - i2 * 500;
-                  }
+            while (req != null) {
+               if (req.dataType == dataType && req.ID == fileId) {
+                  current = req;
                   break;
                }
-
-               if(onDemandData.dataType == abyte0 && onDemandData.ID == i1) {
-                  this.current = onDemandData;
-               }
-
-               if(this.current != null) {
-                  onDemandData.loopCycle = 0;
-               }
-
-               onDemandData = (OnDemandData)this.requested.reverseGetNext(false);
-            }
-         }
-
-         if(this.expectedSize > 0 && ioexception >= this.expectedSize) {
-            this.waiting = true;
-            byte[] abyte01 = this.ioBuffer;
-            i1 = 0;
-            if(this.current != null) {
-               abyte01 = this.current.buffer;
-               i1 = this.completedSize;
+               req = (OnDemandData) requested.reverseGetNext(false);
             }
 
-            for(k1 = 0; k1 < this.expectedSize; k1 += this.inputStream.read(abyte01, k1 + i1, this.expectedSize - k1)) {
-               ;
+            if (current == null) {
+               if (totalLength == 0) {
+                  signlink.reporterror("Rej: " + dataType + "," + fileId);
+                  return;
+               } else {
+                  return; // orphaned packet
+               }
             }
 
-            if(this.expectedSize + this.completedSize >= abyte01.length && this.current != null) {
-               if(this.aClient1343.aClass14Array970[0] != null) {
-                  this.aClient1343.aClass14Array970[this.current.dataType + 1].method234(abyte01.length, abyte01, (byte)2, i1);
-               }
+            if (totalLength == 0) {
+               signlink.reporterror("Rej: " + dataType + "," + fileId);
+               current.buffer = null;
 
-               if(!this.current.incomplete && this.current.dataType == 3) {
-                  this.current.incomplete = true;
-                  this.current.dataType = 93;
-               }
-
-               if(this.current.incomplete) {
-                  DoubleEndedQueue k11 = this.aDoubleEndedQueue_1358;
-                  synchronized(this.aDoubleEndedQueue_1358) {
-                     this.aDoubleEndedQueue_1358.insertHead(this.current);
+               if (current.incomplete) {
+                  synchronized (aDoubleEndedQueue_1358) {
+                     aDoubleEndedQueue_1358.insertHead(current);
                   }
                } else {
-                  this.current.unlink();
+                  current.unlink();
+               }
+
+               current = null;
+            } else {
+               if (current.buffer == null) {
+                  current.buffer = new byte[totalLength];
                }
             }
 
-            this.expectedSize = 0;
-            return;
+            completedSize = chunkIndex * 500;
+            expectedSize = Math.min(500, totalLength - completedSize);
          }
-      } catch (IOException var12) {
+
+         if (expectedSize > 0 && available >= expectedSize) {
+            waiting = true;
+            byte[] target = ioBuffer;
+            int writePos = 0;
+
+            if (current != null) {
+               target = current.buffer;
+               writePos = completedSize;
+            }
+
+            readFully(inputStream, target, writePos, expectedSize);
+
+            completedSize += expectedSize;
+
+            if (current != null && completedSize >= current.buffer.length) {
+               // Save to cache
+               if (aClient1343.aClass14Array970[0] != null) {
+                  aClient1343.aClass14Array970[current.dataType + 1]
+                          .method234(current.buffer.length, current.buffer, (byte) 2, 0);
+               }
+
+               // MIDI fix-up
+               if (!current.incomplete && current.dataType == 3) {
+                  current.incomplete = true;
+                  current.dataType = 93;
+               }
+
+               if (current.incomplete) {
+                  synchronized (aDoubleEndedQueue_1358) {
+                     aDoubleEndedQueue_1358.insertHead(current);
+                  }
+               } else {
+                  current.unlink();
+               }
+            }
+
+            expectedSize = 0;
+         }
+
+      } catch (IOException e) {
          try {
-            this.socket.close();
-         } catch (Exception var9) {
-            ;
-         }
+            socket.close();
+         } catch (Exception ignored) { }
 
-         this.socket = null;
-         this.inputStream = null;
-         this.outputStream = null;
-         this.expectedSize = 0;
+         socket = null;
+         inputStream = null;
+         outputStream = null;
+         expectedSize = 0;
       }
-
    }
 
+   private void readFully(InputStream in, byte[] buffer, int offset, int length) throws IOException {
+      int total = 0;
+      while (total < length) {
+         int read = in.read(buffer, offset + total, length - total);
+         if (read == -1) throw new IOException("Stream closed early");
+         total += read;
+      }
+   }
+
+
    public final void start(FileArchive fileArchive, client client1) throws IOException {
-      String[] as = new String[]{"model_version", "anim_version", "midi_version", "map_version", "texture_version"};
+      String[] as = new String[]{"model_version", "anim_version", "midi_version", "map_version", "texture_version", "sound_version"};
 
       byte[] abyte2;
       int j1;
       Stream class30_sub2_sub2_2;
       int k2;
-      for(int as1 = 0; as1 < 5; ++as1) {
+      for(int as1 = 0; as1 < 6; ++as1) {
          abyte2 = fileArchive.method571(as[as1]);
          j1 = abyte2.length / 2;
          class30_sub2_sub2_2 = new Stream(abyte2, 891);
@@ -217,10 +204,10 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          }
       }
 
-      String[] var10 = new String[]{"model_crc", "anim_crc", "midi_crc", "map_crc", "texture_crc"};
+      String[] var10 = new String[]{"model_crc", "anim_crc", "midi_crc", "map_crc", "texture_crc", "sound_crc"};
 
       int var13;
-      for(int var11 = 0; var11 < 5; ++var11) {
+      for(int var11 = 0; var11 < 6; ++var11) {
          byte[] var12 = fileArchive.method571(var10[var11]);
          var13 = var12.length / 4;
          Stream var14 = new Stream(var12, 891);
@@ -302,7 +289,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
             }
          }
 
-         System.out.println("Finished dumping Map index");
+        //System.out.println("Finished dumping Map index");
          writer.close();
       } catch (Exception var7) {
          var7.printStackTrace();
@@ -509,106 +496,167 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
       return this.aByteArray1372[i] & 255;
    }
+   public static byte[] decompress(byte[] compressed) throws IOException {
+      try (GZIPInputStream gzip = new GZIPInputStream(new ByteArrayInputStream(compressed));
+           ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+         byte[] buffer = new byte[4096];
+         int len;
+
+         while ((len = gzip.read(buffer)) > 0) {
+            out.write(buffer, 0, len);
+         }
+
+         return out.toByteArray();
+      }
+   }
+   private final Queue<OnDemandData> retryQueue = new ConcurrentLinkedQueue<>();
 
    public final void run() {
+      final int MAX_IDLE_CYCLES = 750;
+      final int MAX_RETRY_COUNT = 250;
+      final int MAX_LOOP_CYCLES = 100;
+      final int SLEEP_TIME_ACTIVE = 20;
+      final int SLEEP_TIME_IDLE = 50;
+      final int HEARTBEAT_INTERVAL = 500;
+      final int READ_TIMEOUT_MS = 10_000;
+      final int MAX_RETRIES_PER_TICK = 10;
+
+      long lastProgress = System.currentTimeMillis();
+
       try {
-         while(this.aBoolean1353) {
-            ++this.anInt1341;
-            byte exception = 20;
-            if(this.anInt1332 == 0 && this.aClient1343.aClass14Array970[0] != null) {
-               exception = 50;
-            }
+         while (aBoolean1353) {
+            int sleepTime = (anInt1332 == 0 && aClient1343.aClass14Array970[0] != null)
+                    ? SLEEP_TIME_IDLE
+                    : SLEEP_TIME_ACTIVE;
 
             try {
-               Thread.sleep((long)exception);
-            } catch (Exception var6) {
-               ;
-            }
+               Thread.sleep(sleepTime);
+            } catch (InterruptedException ignored) {}
 
-            this.waiting = true;
+            waiting = true;
 
-            for(int flag = 0; flag < 100 && this.waiting; ++flag) {
-               this.waiting = false;
-               this.method567(true);
-               this.method565(false);
-               if(this.anInt1366 == 0 && flag >= 5) {
-                  break;
+            for (int i = 0; i < MAX_LOOP_CYCLES && waiting; i++) {
+               waiting = false;
+
+               try {
+                  method567(true);
+                  method565(false);
+               } catch (Exception e) {
+                  //System.err.println("❌ method567/method565 error: " + e.getMessage());
+                  e.printStackTrace();
                }
 
-               this.method568((byte)-56);
-               if(this.inputStream != null) {
-                  this.readData();
+               if (anInt1366 == 0 && i >= 5) break;
+
+               try {
+                  method568((byte) -56);
+               } catch (Exception e) {
+                  //System.err.println("❌ method568 error: " + e.getMessage());
                }
-            }
 
-            boolean var8 = false;
-
-            OnDemandData _ex;
-            for(_ex = (OnDemandData)this.requested.reverseGetFirst(); _ex != null; _ex = (OnDemandData)this.requested.reverseGetNext(false)) {
-               if(_ex.incomplete) {
-                  var8 = true;
-                  ++_ex.loopCycle;
-                  if(_ex.loopCycle > 50) {
-                     _ex.loopCycle = 0;
-                     this.method556(8, _ex);
-                  }
-               }
-            }
-
-            if(!var8) {
-               for(_ex = (OnDemandData)this.requested.reverseGetFirst(); _ex != null; _ex = (OnDemandData)this.requested.reverseGetNext(false)) {
-                  var8 = true;
-                  ++_ex.loopCycle;
-                  if(_ex.loopCycle > 50) {
-                     _ex.loopCycle = 0;
-                     this.method556(8, _ex);
-                  }
-               }
-            }
-
-            if(var8) {
-               ++this.loopCycle;
-               if(this.loopCycle > 750) {
+               if (inputStream != null) {
                   try {
-                     this.socket.close();
-                  } catch (Exception var5) {
-                     ;
+                     readData();
+                     lastProgress = System.currentTimeMillis();
+                  } catch (Exception e) {
+                     //System.err.println("❌ readData() failure. Resetting socket.");
+                     e.printStackTrace();
+                     resetSocket();
+                     continue;
                   }
-
-                  this.socket = null;
-                  this.inputStream = null;
-                  this.outputStream = null;
-                  this.expectedSize = 0;
                }
-            } else {
-               this.loopCycle = 0;
-               this.aString1333 = "";
             }
 
-            client var10000 = this.aClient1343;
-            if(client.loggedIn && this.socket != null && this.outputStream != null && (this.anInt1332 > 0 || this.aClient1343.aClass14Array970[0] == null)) {
-               ++this.anInt1334;
-               if(this.anInt1334 > 500) {
-                  this.anInt1334 = 0;
-                  this.ioBuffer[0] = 0;
-                  this.ioBuffer[1] = 0;
-                  this.ioBuffer[2] = 0;
-                  this.ioBuffer[3] = 10;
+            // Retry failed/incomplete files (JS5-style)
+            int retries = 0;
+            Iterator<OnDemandData> iter = retryQueue.iterator();
+            while (iter.hasNext() && retries++ < MAX_RETRIES_PER_TICK) {
+               OnDemandData data = iter.next();
+
+               if (!data.incomplete || !containsInRequested(data)) {
+                  iter.remove();
+                  continue;
+               }
+
+               data.loopCycle++;
+               if (data.loopCycle >= 50) {
+                  data.loopCycle = 0;
+
+                  if (++data.retryCount > MAX_RETRY_COUNT) {
+                     //System.err.println("⚠ Max retries reached: type=" + data.dataType + ", id=" + data.ID);
+                     data.incomplete = false;
+                     data.unlink();
+                     iter.remove();
+                     continue;
+                  }
 
                   try {
-                     this.outputStream.write(this.ioBuffer, 0, 4);
-                  } catch (IOException var4) {
-                     this.loopCycle = 5000;
+                     method556(8, data);
+                    //System.out.println("⟳ Retrying: type=" + data.dataType + ", id=" + data.ID + ", attempt=" + data.retryCount);
+                  } catch (Exception e) {
+                     //System.err.println("❌ method556 failed: type=" + data.dataType + ", id=" + data.ID);
+                     e.printStackTrace();
+                     resetSocket(); // optional if you suspect socket desync
+                  }
+               }
+            }
+
+            // Resync retryQueue with any new failures
+            for (OnDemandData data = (OnDemandData) requested.reverseGetFirst();
+                 data != null;
+                 data = (OnDemandData) requested.reverseGetNext(false)) {
+
+               if (data.incomplete && !retryQueue.contains(data)) {
+                  retryQueue.offer(data);
+               }
+            }
+
+            // Kill socket if no progress in 10 seconds
+            if (System.currentTimeMillis() - lastProgress > READ_TIMEOUT_MS) {
+               //System.err.println("⚠ Socket idle >10s. Resetting.");
+               resetSocket();
+               lastProgress = System.currentTimeMillis();
+               continue;
+            }
+
+            // Heartbeat
+            if (client.loggedIn && socket != null && outputStream != null &&
+                    (anInt1332 > 0 || aClient1343.aClass14Array970[0] == null)) {
+               anInt1334++;
+               if (anInt1334 > HEARTBEAT_INTERVAL) {
+                  anInt1334 = 0;
+                  try {
+                     outputStream.write(new byte[]{0, 0, 0, 10});
+                  } catch (IOException e) {
+                     //System.err.println("❌ Heartbeat failed.");
+                     lastProgress = 0;
                   }
                }
             }
          }
-
-      } catch (Exception var7) {
-         signlink.reporterror("od_ex " + var7.getMessage());
-         var7.printStackTrace();
+      } catch (Exception e) {
+         signlink.reporterror("od_ex " + e.getMessage());
+         e.printStackTrace();
       }
    }
+   private boolean containsInRequested(OnDemandData target) {
+      for (OnDemandData data = (OnDemandData) requested.reverseGetFirst();
+           data != null;
+           data = (OnDemandData) requested.reverseGetNext(false)) {
+         if (data == target) return true; // or `.equals()` if overridden
+      }
+      return false;
+   }
+
+   private void resetSocket() {
+      try { if (socket != null) socket.close(); } catch (IOException ignored) {}
+      socket = null;
+      inputStream = null;
+      outputStream = null;
+      expectedSize = 0;
+   }
+
 
    public final void method560(int var1, int var2, boolean var3) {
       if(this.aClient1343.aClass14Array970[0] != null && this.versions[var2][var1] != 0 && this.fileStatus[var2][var1] != 0 && this.anInt1332 != 0) {
@@ -630,54 +678,35 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    }
 
    public final OnDemandData method561() {
-      DoubleEndedQueue i = this.aDoubleEndedQueue_1358;
       OnDemandData onDemandData;
-      synchronized(this.aDoubleEndedQueue_1358) {
-         onDemandData = (OnDemandData)this.aDoubleEndedQueue_1358.method251();
+
+      synchronized (aDoubleEndedQueue_1358) {
+         onDemandData = (OnDemandData) aDoubleEndedQueue_1358.method251();
       }
 
-      if(onDemandData == null) {
+      if (onDemandData == null) {
          return null;
-      } else {
-         Class2 var8 = this.aClass2_1361;
-         synchronized(this.aClass2_1361) {
-            onDemandData.method330();
-         }
-
-         if(onDemandData.buffer == null) {
-            return onDemandData;
-         } else {
-            int var9 = 0;
-
-            try {
-               GZIPInputStream j = new GZIPInputStream(new ByteArrayInputStream(onDemandData.buffer));
-
-               while(true) {
-                  if(var9 == this.gzipInputBuffer.length) {
-                     throw new RuntimeException("buffer overflow!");
-                  }
-
-                  int k = j.read(this.gzipInputBuffer, var9, this.gzipInputBuffer.length - var9);
-                  if(k == -1) {
-                     break;
-                  }
-
-                  var9 += k;
-               }
-            } catch (IOException var7) {
-               System.err.println("Failed to unzip [" + onDemandData.ID + "] type = " + onDemandData.dataType);
-            }
-
-            onDemandData.buffer = new byte[var9];
-
-            for(int var10 = 0; var10 < var9; ++var10) {
-               onDemandData.buffer[var10] = this.gzipInputBuffer[var10];
-            }
-
-            return onDemandData;
-         }
       }
+
+      synchronized (aClass2_1361) {
+         onDemandData.method330(); // maybe resource release
+      }
+
+      if (onDemandData.buffer == null) {
+         return onDemandData; // Nothing to decompress
+      }
+
+      try {
+         onDemandData.buffer = decompress(onDemandData.buffer);
+      } catch (IOException e) {
+         //System.err.println("Failed to unzip [id=" + onDemandData.ID + ", type=" + onDemandData.dataType + "]: " + e.getMessage());
+         onDemandData.buffer = null;
+      }
+
+
+      return onDemandData;
    }
+
 
    public int method562(int i, int j, int k, int l) {
       if(j != 0) {
@@ -827,72 +856,75 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    }
 
    private final void method568(byte byte0) {
-      if(byte0 != -56) {
-         for(int onDemandData = 1; onDemandData > 0; ++onDemandData) {
-            ;
-         }
+      // Legacy byte check – likely unused now
+      if (byte0 != -56) {
+         for (int i = 1; i > 0; i++) { /* NOP loop */ }
       }
 
-      while(this.anInt1366 == 0 && this.anInt1367 < 10 && this.anInt1332 != 0) {
-         DoubleEndedQueue j = this.aDoubleEndedQueue_1344;
-         OnDemandData var10;
-         synchronized(this.aDoubleEndedQueue_1344) {
-            var10 = (OnDemandData)this.aDoubleEndedQueue_1344.method251();
+      // Exit early if no need to request more
+      while (anInt1366 == 0 && anInt1367 < 10 && anInt1332 != 0) {
+
+         // === STEP 1: Pull from aDoubleEndedQueue_1344 ===
+         OnDemandData onDemandData;
+         synchronized (aDoubleEndedQueue_1344) {
+            onDemandData = (OnDemandData) aDoubleEndedQueue_1344.method251();
          }
 
-         while(var10 != null) {
-            if(this.fileStatus[var10.dataType][var10.ID] != 0) {
-               this.fileStatus[var10.dataType][var10.ID] = 0;
-               this.requested.insertHead(var10);
-               this.method556(8, var10);
-               this.waiting = true;
-               if(this.anInt1351 < this.anInt1330) {
-                  ++this.anInt1351;
-               }
+         while (onDemandData != null) {
+            if (fileStatus[onDemandData.dataType][onDemandData.ID] != 0) {
+               fileStatus[onDemandData.dataType][onDemandData.ID] = 0;
 
-               this.aString1333 = "Loading extra files - " + this.anInt1351 * 100 / this.anInt1330 + "%";
-               ++this.anInt1367;
-               if(this.anInt1367 == 10) {
-                  return;
-               }
+               requested.insertHead(onDemandData);
+               method556(8, onDemandData);
+
+               waiting = true;
+               if (anInt1351 < anInt1330) anInt1351++;
+
+               // Protect against div-by-zero if anInt1330 is misconfigured
+               int progress = (anInt1330 == 0) ? 100 : (anInt1351 * 100 / anInt1330);
+               aString1333 = "Loading extra files - " + progress + "%";
+
+               anInt1367++;
+               if (anInt1367 == 10) return;
             }
 
-            j = this.aDoubleEndedQueue_1344;
-            synchronized(this.aDoubleEndedQueue_1344) {
-               var10 = (OnDemandData)this.aDoubleEndedQueue_1344.method251();
-            }
-         }
-
-         for(int var11 = 0; var11 < 5; ++var11) {
-            byte[] abyte0 = this.fileStatus[var11];
-            int k = abyte0.length;
-
-            for(int l = 0; l < k; ++l) {
-               if(abyte0[l] == this.anInt1332) {
-                  abyte0[l] = 0;
-                  OnDemandData onDemandData_1 = new OnDemandData();
-                  onDemandData_1.dataType = var11;
-                  onDemandData_1.ID = l;
-                  onDemandData_1.incomplete = false;
-                  this.requested.insertHead(onDemandData_1);
-                  this.method556(8, onDemandData_1);
-                  this.waiting = true;
-                  if(this.anInt1351 < this.anInt1330) {
-                     ++this.anInt1351;
-                  }
-
-                  this.aString1333 = "Loading extra files - " + this.anInt1351 * 100 / this.anInt1330 + "%";
-                  ++this.anInt1367;
-                  if(this.anInt1367 == 10) {
-                     return;
-                  }
-               }
+            synchronized (aDoubleEndedQueue_1344) {
+               onDemandData = (OnDemandData) aDoubleEndedQueue_1344.method251();
             }
          }
 
-         --this.anInt1332;
+         // === STEP 2: Scan for any [fileStatus] set to current pass ===
+         for (int type = 0; type < 5; type++) {
+            byte[] statusArray = fileStatus[type];
+            int length = statusArray.length;
+
+            for (int fileID = 0; fileID < length; fileID++) {
+               if (statusArray[fileID] == anInt1332) {
+                  statusArray[fileID] = 0;
+
+                  OnDemandData demand = new OnDemandData();
+                  demand.dataType = type;
+                  demand.ID = fileID;
+                  demand.incomplete = false;
+
+                  requested.insertHead(demand);
+                  method556(8, demand);
+
+                  waiting = true;
+                  if (anInt1351 < anInt1330) anInt1351++;
+
+                  int progress = (anInt1330 == 0) ? 100 : (anInt1351 * 100 / anInt1330);
+                  aString1333 = "Loading extra files - " + progress + "%";
+
+                  anInt1367++;
+                  if (anInt1367 == 10) return;
+               }
+            }
+         }
+
+         // Decrement and try again
+         anInt1332--;
       }
-
    }
 
    public final boolean method569(int i, int j) {
@@ -905,8 +937,8 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
    public OnDemandFetcher() {
       this.aClass2_1361 = new Class2(anInt1345);
-      this.versions = new int[6][];
-      this.anIntArrayArray1365 = new int[6][];
+      this.versions = new int[7][];
+      this.anIntArrayArray1365 = new int[7][];
       this.aDoubleEndedQueue_1368 = new DoubleEndedQueue(169);
       this.aDoubleEndedQueue_1370 = new DoubleEndedQueue(169);
    }

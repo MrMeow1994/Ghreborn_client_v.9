@@ -15,17 +15,17 @@ public class Class30_Sub2_Sub4_Sub5 extends Animable
             {
                 k -= aClass20_1607.method258(anInt1599, (byte)-39);
                 anInt1599++;
-                if(anInt1599 < aClass20_1607.anInt352)
+                if(anInt1599 < aClass20_1607.frameCount)
                     continue;
                 anInt1599 -= aClass20_1607.anInt356;
-                if(anInt1599 >= 0 && anInt1599 < aClass20_1607.anInt352)
+                if(anInt1599 >= 0 && anInt1599 < aClass20_1607.frameCount)
                     continue;
                 aClass20_1607 = null;
                 break;
             }
             anInt1608 = client.loopCycle - k;
             if(aClass20_1607 != null)
-                j = aClass20_1607.anIntArray353[anInt1599];
+                j = aClass20_1607.frames[anInt1599];
         }
         ObjectDefinition objectDefinition;
         if(anIntArray1600 != null)
@@ -88,7 +88,7 @@ private ObjectDefinition method457() {
             anInt1608 = client.loopCycle;
             if(flag && aClass20_1607.anInt356 != -1)
             {
-                anInt1599 = (int)(Math.random() * (double)aClass20_1607.anInt352);
+                anInt1599 = (int)(Math.random() * (double)aClass20_1607.frameCount);
                 anInt1608 -= (int)(Math.random() * (double)aClass20_1607.method258(anInt1599, (byte)-39));
             }
         }

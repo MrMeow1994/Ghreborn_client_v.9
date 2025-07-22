@@ -18,7 +18,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.MalformedURLException;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 public class Applet_Sub1 extends Applet implements Runnable, MouseListener, MouseMotionListener, KeyListener, FocusListener, WindowListener, MouseWheelListener {
     public int key;
@@ -61,7 +61,7 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
     public int[] anIntArray30 = new int[128];
     private int[] anIntArray31 = new int[128];
 
-    public void refreshFrameSize(boolean undecorated, int width, int height, boolean resizable, boolean full) throws MalformedURLException {
+    public void refreshFrameSize(boolean undecorated, int width, int height, boolean resizable, boolean full) throws Exception {
         boolean createdByApplet = this.isApplet && !full;
         this.myWidth = width;
         this.myHeight = height;
@@ -89,14 +89,41 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
         return this.gameFrame == null && this.isApplet;
     }
 
-    final void method1(int i, int j) throws MalformedURLException {
+    final void method1(int i, int j) {
         this.isApplet = false;
         this.myWidth = j;
         this.myHeight = i;
-        this.gameFrame = new ClientFrame(this, this.myWidth, this.myHeight, client.currentScreenMode == client.ScreenMode.RESIZABLE, client.currentScreenMode == client.ScreenMode.FULLSCREEN);
-        this.aGraphics12 = this.method11(0).getGraphics();
-        this.aRSImageProducer_13 = new RSImageProducer(this.myWidth, this.myHeight);
-        this.method12(this, 1);
+
+        // Push GUI setup to Event Dispatch Thread
+        SwingUtilities.invokeLater(() -> {
+            try {
+                // Set the Look and Feel safely
+                UIManager.setLookAndFeel("org.pushingpixels.substance.api.skin.SubstanceBusinessBlackSteelLookAndFeel");
+
+                // Build the JFrame properly
+                this.gameFrame = new ClientFrame(
+                        this,
+                        this.myWidth,
+                        this.myHeight,
+                        client.currentScreenMode == client.ScreenMode.RESIZABLE,
+                        client.currentScreenMode == client.ScreenMode.FULLSCREEN
+                );
+// This must come next
+                this.gameFrame.setVisible(true);
+
+// Now it's safe to fetch sizes with insets
+                client.currentGameWidth = this.gameFrame.getFrameWidth();
+                client.currentGameHeight = this.gameFrame.getFrameHeight();
+                // Continue graphical setup on the EDT
+                this.aGraphics12 = this.method11(0).getGraphics();
+                this.aRSImageProducer_13 = new RSImageProducer(this.myWidth, this.myHeight);
+
+                // Finish initialization
+                this.method12(this, 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public final void method2(int i, boolean flag, int j) {

@@ -13,15 +13,15 @@ final class Npc extends Class30_Sub2_Sub4_Sub1
         }
         if(super.primaryanim >= 0 && super.primaryanim_pause == 0)
         {
-            int k = AnimationDefinition.anims[super.primaryanim].anIntArray353[super.primaryanim_frameindex];
+            int k = AnimationDefinition.anims[super.primaryanim].frames[super.primaryanim_frameindex];
             int i1 = -1;
             if(super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511)
-                i1 = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
+                i1 = AnimationDefinition.anims[super.anInt1517].frames[super.anInt1518];
             return desc.method164(0, i1, k, AnimationDefinition.anims[super.primaryanim].anIntArray357);
         }
         int l = -1;
         if(super.anInt1517 >= 0)
-            l = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
+            l = AnimationDefinition.anims[super.anInt1517].frames[super.anInt1518];
         return desc.method164(0, -1, l, null);
     }
 
@@ -41,7 +41,7 @@ final class Npc extends Class30_Sub2_Sub4_Sub1
             Model model_1 = class23.method266();
             if(model_1 != null)
             {
-                int j = class23.aClass20_407.anIntArray353[super.anInt1521];
+                int j = class23.aClass20_407.frames[super.anInt1521];
                 Model class30_sub2_sub4_sub6_2 = new Model(9, true, Class36.method532(j, false), false, model_1);
                 class30_sub2_sub4_sub6_2.method475(0, -super.anInt1524, 16384, 0);
                 class30_sub2_sub4_sub6_2.method469((byte)-71);

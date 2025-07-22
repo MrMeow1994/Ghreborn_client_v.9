@@ -27,7 +27,10 @@ public final class ISAACRandomGen {
             indices[layer] = size;
         }
     }
-
+    public int getNextIntKey() {
+        long key = getNextKey();
+        return (int)(key ^ (key >>> 32)); // XOR fold into 32 bits
+    }
     public long getNextKey() {
         long output = 0;
         for (int layer = 0; layer < 10; layer++) {

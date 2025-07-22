@@ -223,10 +223,16 @@ public final class Class14 {
         }
     }
 
-    public synchronized void seekTo(RandomAccessFile randomaccessfile, int i, int j) {
+    public synchronized void seekTo(RandomAccessFile randomaccessfile, int indexId, int offset) {
+        if (offset < 0) {
+            System.err.println("seekTo(): Attempted to seek to negative offset: " + offset + " (index=" + indexId + ")");
+            return;
+        }
+
         try {
-            randomaccessfile.seek(j);
-        } catch (Exception e) {
+            randomaccessfile.seek(offset);
+        } catch (IOException e) {
+            System.err.println("seekTo(): Failed to seek to offset " + offset + " in index " + indexId);
             e.printStackTrace();
         }
     }

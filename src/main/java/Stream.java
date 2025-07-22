@@ -107,7 +107,7 @@ public final class Stream extends Class30_Sub2 {
     }
 
     public void createFrame(int i) {
-        this.buffer[this.currentPosition++] = (byte)(i + this.encryption.getNextKey());
+        this.buffer[this.currentPosition++] = (byte)(i + this.encryption.getNextIntKey());
     }
 
     public void writeUnsignedByte(int i) {
@@ -671,7 +671,10 @@ public final class Stream extends Class30_Sub2 {
             return j;
         }
     }
-
+    public int readUnsignedWordA() {
+        currentPosition += 2;
+        return ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] - 128 & 0xff);
+    }
     public int method438(boolean flag) {
         int j;
         if(flag) {
