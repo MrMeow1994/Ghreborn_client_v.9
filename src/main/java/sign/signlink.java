@@ -120,7 +120,9 @@ public final class signlink
                         fileoutputstream.write(savebuf, 0, savelen);
                         fileoutputstream.close();
                     }
-                    catch(Exception _ex) { }
+                    catch(Exception _ex) {
+
+                    }
                 if (waveplay) {
                     String wave = s + savereq;
                     waveplay = false;

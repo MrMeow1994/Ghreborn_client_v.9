@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.CRC32;
@@ -230,7 +232,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          }
       }
 
-      abyte2 = fileArchive.method571("525map_index");
+      abyte2 = fileArchive.method571("map_index");
       class30_sub2_sub2_2 = new Stream(abyte2, 891);
       j1 = class30_sub2_sub2_2.readUnsignedShort();
       this.mapIndices1 = new int[j1];
@@ -513,14 +515,15 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    private final Queue<OnDemandData> retryQueue = new ConcurrentLinkedQueue<>();
 
    public final void run() {
-      final int MAX_IDLE_CYCLES = 750;
-      final int MAX_RETRY_COUNT = 250;
-      final int MAX_LOOP_CYCLES = 100;
-      final int SLEEP_TIME_ACTIVE = 20;
-      final int SLEEP_TIME_IDLE = 50;
-      final int HEARTBEAT_INTERVAL = 500;
-      final int READ_TIMEOUT_MS = 10_000;
-      final int MAX_RETRIES_PER_TICK = 10;
+      final int MAX_IDLE_CYCLES = 100;      // Shorter idle = faster recovery
+      final int MAX_RETRY_COUNT = 50;       // Don't keep dead requests alive forever
+      final int MAX_LOOP_CYCLES = 500;      // Process more per loop = higher throughput
+      final int SLEEP_TIME_ACTIVE = 1;      // Minimal delay when active
+      final int SLEEP_TIME_IDLE = 10;       // Quick idle response
+      final int HEARTBEAT_INTERVAL = 100;   // Frequent ping/check-ins
+      final int READ_TIMEOUT_MS = 2_000;    // Fail faster if unreadable
+      final int MAX_RETRIES_PER_TICK = 50;  // Higher retry burst rate
+
 
       long lastProgress = System.currentTimeMillis();
 
@@ -706,7 +709,41 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
       return onDemandData;
    }
+   private final Map<Integer, Integer> mapRegionToIndex2 = new HashMap<>();
+   private final Map<Integer, Integer> mapRegionToIndex3 = new HashMap<>();
 
+   public int getRegionIndex(int type, int regionX, int regionY) {
+      int regionId = (regionY << 8) + regionX;
+
+      if (type == 0) {
+         // Fast path if already cached
+         if (mapRegionToIndex2.containsKey(regionId)) {
+            return mapRegionToIndex2.get(regionId);
+         }
+      } else {
+         if (mapRegionToIndex3.containsKey(regionId)) {
+            return mapRegionToIndex3.get(regionId);
+         }
+      }
+
+      // Fallback: scan arrays
+      for (int i = 0; i < mapIndices1.length; i++) {
+         if (mapIndices1[i] == regionId) {
+            if (type == 0) {
+               int map = mapIndices2[i];
+               int result = map <= 9999 ? map : -1;
+               mapRegionToIndex2.put(regionId, result);
+               return result;
+            } else {
+               int land = mapIndices3[i];
+               int result = land <= 9999 ? land : -1;
+               mapRegionToIndex3.put(regionId, result);
+               return result;
+            }
+         }
+      }
+      return -1;
+   }
 
    public int method562(int i, int j, int k, int l) {
       if(j != 0) {

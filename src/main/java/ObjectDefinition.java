@@ -25,6 +25,7 @@ public final class ObjectDefinition {
 	private boolean aBoolean214 = false;
 	private int cursor1Op = -1;
 	private int cursor1 = -1;
+	public byte description[];
 
 	public static ObjectDefinition forID(int i) {
 		if (i > anIntArray755.length)
@@ -62,14 +63,14 @@ public final class ObjectDefinition {
 }
 
 	public void method573() {
-		anIntArray773 = null;
-		anIntArray776 = null;
+		objectModelIDs = null;
+		objectModelTypes = null;
 		aString739 = null;
 		aByteArray777 = null;
 		anIntArray784 = null;
 		anIntArray747 = null;
-		anInt744 = 1;
-		anInt761 = 1;
+		sizeX = 1;
+		sizeY = 1;
 		aBoolean767 = true;
 		aBoolean757 = true;
 		hasactions = false;//hasactions
@@ -103,10 +104,10 @@ public final class ObjectDefinition {
 	}
 
 	public void method574(OnDemandFetcher onDemandFetcher, int luls) {
-		if (anIntArray773 == null)
+		if (objectModelIDs == null)
 			return;
-		for (int j = 0; j < anIntArray773.length; j++)
-			onDemandFetcher.method560(anIntArray773[j] & 0xffff, 0, false);
+		for (int j = 0; j < objectModelIDs.length; j++)
+			onDemandFetcher.method560(objectModelIDs[j] & 0xffff, 0, false);
 	}
 
 	public static void method575(int i) {
@@ -146,20 +147,20 @@ public final class ObjectDefinition {
 	}
 
 	public boolean method577(int i, boolean gfgfg) {
-		if (anIntArray776 == null) {
-			if (anIntArray773 == null)
+		if (objectModelTypes == null) {
+			if (objectModelIDs == null)
 				return true;
 			if (i != 10)
 				return true;
 			boolean flag1 = true;
-			for (int k = 0; k < anIntArray773.length; k++)
-				flag1 &= Model.method463(anIntArray773[k] & 0xffff);
+			for (int k = 0; k < objectModelIDs.length; k++)
+				flag1 &= Model.method463(objectModelIDs[k] & 0xffff);
 
 			return flag1;
 		}
-		for (int j = 0; j < anIntArray776.length; j++)
-			if (anIntArray776[j] == i)
-				return Model.method463(anIntArray773[j] & 0xffff);
+		for (int j = 0; j < objectModelTypes.length; j++)
+			if (objectModelTypes[j] == i)
+				return Model.method463(objectModelIDs[j] & 0xffff);
 
 		return true;
 	}
@@ -169,16 +170,16 @@ public final class ObjectDefinition {
 		if (model == null)
 			return null;
 		if (aBoolean762 || aBoolean769)
-			model = new Model(aBoolean762, -819, aBoolean769, model);
+			model = new Model(aBoolean762, aBoolean769, model);
 		if (aBoolean762) {
 			int l1 = (k + l + i1 + j1) / 4;
 			for (int i2 = 0; i2 < model.vertexCount; i2++) {
-				int j2 = model.verticesX[i2];
-				int k2 = model.verticesZ[i2];
+				int j2 = model.verticesX[i2] >> (model.scaledVertices ? 2 : 0);
+				int k2 = model.verticesZ[i2] >> (model.scaledVertices ? 2 : 0);
 				int l2 = k + ((l - k) * (j2 + 64)) / 128;
 				int i3 = j1 + ((i1 - j1) * (j2 + 64)) / 128;
 				int j3 = l2 + ((i3 - l2) * (k2 + 64)) / 128;
-				model.verticesY[i2] += j3 - l1;
+				model.verticesY[i2] += j3 - l1 << (model.scaledVertices ? 2 : 0);
 			}
 			model.method467(false);
 		}
@@ -186,11 +187,11 @@ public final class ObjectDefinition {
 	}
 
 	public boolean method579(boolean lolz) {
-		if (anIntArray773 == null)
+		if (objectModelIDs == null)
 			return true;
 		boolean flag1 = true;
-		for (int i = 0; i < anIntArray773.length; i++)
-			flag1 &= Model.method463(anIntArray773[i] & 0xffff);
+		for (int i = 0; i < objectModelIDs.length; i++)
+			flag1 &= Model.method463(objectModelIDs[i] & 0xffff);
 		return flag1;
 	}
 
@@ -221,19 +222,19 @@ public final class ObjectDefinition {
 	public Model method581(int i, int j, int k, int l) {
 		Model model = null;
 		long l1;
-		if (anIntArray776 == null) {
+		if (objectModelTypes == null) {
 			if (j != 10)
 				return null;
 			l1 = (long)((type << 6) + l) + ((long)(k + 1) << 32);
 			Model model_1 = (Model) aClass12_780.method222(l1);
 			if (model_1 != null)
 				return model_1;
-			if (anIntArray773 == null)
+			if (objectModelIDs == null)
 				return null;
 			boolean flag1 = aBoolean751 ^ (l > 3);
-			int k1 = anIntArray773.length;
+			int k1 = objectModelIDs.length;
 			for (int i2 = 0; i2 < k1; i2++) {
-				int l2 = anIntArray773[i2];
+				int l2 = objectModelIDs[i2];
 				if (flag1)
 					l2 += 0x10000;
 				model = (Model) aClass12_785.method222(l2);
@@ -253,8 +254,8 @@ public final class ObjectDefinition {
 				model = new Model(k1, A_MODEL_ARRAY_741, -38);
 		} else {
 			int i1 = -1;
-			for (int j1 = 0; j1 < anIntArray776.length; j1++) {
-				if (anIntArray776[j1] != j)
+			for (int j1 = 0; j1 < objectModelTypes.length; j1++) {
+				if (objectModelTypes[j1] != j)
 					continue;
 				i1 = j1;
 				break;
@@ -266,7 +267,7 @@ public final class ObjectDefinition {
 			Model model_2 = (Model) aClass12_780.method222(l1);
 			if (model_2 != null)
 				return model_2;
-			int j2 = anIntArray773[i1];
+			int j2 = objectModelIDs[i1];
 			boolean flag3 = aBoolean751 ^ (l > 3);
 			if (flag3)
 				j2 += 0x10000;
@@ -284,13 +285,13 @@ public final class ObjectDefinition {
 		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
-		Model model_3 = new Model(9, anIntArray784 == null, Class36
+		Model model_3 = new Model(9, anIntArray784 == null, FrameLoader
 				.method532(k, false), l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
-			model_3.method469((byte)-71);
+			model_3.createBones();
 			model_3.method470(k, 40542);
-			model_3.anIntArrayArray1658 = null;
-			model_3.anIntArrayArray1657 = null;
+			model_3.triangleSkin = null;
+			model_3.vertexSkin = null;
 		}
 		while (l-- > 0)
 			model_3.method473(360);
@@ -301,86 +302,88 @@ public final class ObjectDefinition {
 
 		}
 		if (flag)
-			model_3.method478(anInt748, anInt740, anInt743, anInt772);
+			model_3.scaleT(anInt748, anInt740, anInt743, anInt772);
 		if (flag2)
-			model_3.method475(anInt738, anInt745, 16384, anInt783);
+			model_3.translate(anInt738, anInt745, 16384, anInt783);
 		model_3.method479(64 + aByte737, 768 + aByte742, -50, -10, -50,
 				!aBoolean769);
 		if (anInt760 == 1)
-			model_3.anInt1654 = model_3.anInt1426;
+			model_3.anInt1654 = model_3.modelHeight;
 		aClass12_780.method223(model_3, l1, (byte)2);
 		return model_3;
 	}
 
 	private void method582(boolean hurr, Stream stream) {
 		while (true) {
-			int j = stream.readUnsignedByte();
-			if (j == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				break;
-			} else if (j == 1) {
+			} else if (opcode == 1) {
 					int k = stream.readUnsignedByte();
 					if (k > 0)
-						if (anIntArray773 == null) {
-							anIntArray776 = new int[k];
-							anIntArray773 = new int[k];
+						if (objectModelIDs == null) {
+							objectModelTypes = new int[k];
+							objectModelIDs = new int[k];
 							for (int k1 = 0; k1 < k; k1++) {
-								anIntArray773[k1] = stream.readUnsignedShort();
-								anIntArray776[k1] = stream.readUnsignedByte();
+								objectModelIDs[k1] = stream.readUnsignedShort();
+								objectModelTypes[k1] = stream.readUnsignedByte();
 							}
 						} else {
 							stream.currentPosition += k * 3;
 						}
-				} else if (j == 2)
+				} else if (opcode == 2) {
 					aString739 = stream.readString();
-				else if (j == 5) {
+				} else if (opcode == 3) {
+				aByteArray777 = stream.readBytes();
+				} else if (opcode == 5) {
 					int l = stream.readUnsignedByte();
 					if (l > 0)
-						if (anIntArray773 == null) {
-							anIntArray773 = new int[l];
-							anIntArray776 = null;
+						if (objectModelIDs == null) {
+							objectModelIDs = new int[l];
+							objectModelTypes = null;
 							for (int l1 = 0; l1 < l; l1++) {
-								anIntArray773[l1] = stream.readUnsignedShort();
+								objectModelIDs[l1] = stream.readUnsignedShort();
 							}
 						} else {
 							stream.currentPosition += l * 2;
 						}
-				} else if (j == 14)
-					anInt744 = stream.readUnsignedByte();
-				else if (j == 15)
-					anInt761 = stream.readUnsignedByte();
-				else if (j == 17)
+				} else if (opcode == 14)
+				sizeX = stream.readUnsignedByte();
+				else if (opcode == 15)
+				sizeY = stream.readUnsignedByte();
+				else if (opcode == 17)
 					aBoolean767 = false;
-				else if (j == 18)
+				else if (opcode == 18)
 					aBoolean757 = false;
-				else if (j == 19) {
+				else if (opcode == 19) {
 					int i = stream.readUnsignedByte();
 					if (i == 1)
 						hasactions = true;
-				} else if (j == 21)
+				} else if (opcode == 21)
 					aBoolean762 = true;
-				else if (j == 22)
+				else if (opcode == 22)
 					aBoolean769 = false; // change to false to fix gowwars waterfalls??
-				else if (j == 23)
+				else if (opcode == 23)
 					aBoolean764 = true;
-				else if (j == 24) {
+				else if (opcode == 24) {
 					anInt781 = stream.readUnsignedShort();
 					if (anInt781 == 65535)
 						anInt781 = -1;
-				} else if (j == 27){
+				} else if (opcode == 27){
 				aBoolean757 = true;
-				} else if (j == 28)
+				} else if (opcode == 28)
 					anInt775 = stream.readUnsignedByte();
-				else if (j == 29)
+				else if (opcode == 29)
 					aByte737 = stream.readSignedByte();
-				else if (j == 39)
+				else if (opcode == 39)
 					aByte742 = (byte) (stream.readSignedByte() * 25);
-				else if (j >= 30 && j < 35) {
+				else if (opcode >= 30 && opcode < 35) {
 					if (aStringArray786 == null)
 						aStringArray786 = new String[10];
-					aStringArray786[j - 30] = stream.readString();
-					if (aStringArray786[j - 30].equalsIgnoreCase("hidden"))
-						aStringArray786[j - 30] = null;
-				} else if (j == 40) {
+					aStringArray786[opcode - 30] = stream.readString();
+					if (aStringArray786[opcode - 30].equalsIgnoreCase("hidden"))
+						aStringArray786[opcode - 30] = null;
+				} else if (opcode == 40) {
 					int i1 = stream.readUnsignedByte();
 					anIntArray784 = new int[i1];
 					anIntArray747 = new int[i1];
@@ -388,7 +391,7 @@ public final class ObjectDefinition {
 						anIntArray784[i2] = stream.readUnsignedShort();
 						anIntArray747[i2] = stream.readUnsignedShort();
 					}
-			} else if (j == 41) {
+			} else if (opcode == 41) {
 				int count = stream.readUnsignedByte();
 				this.retex_d = new short[count];
 				this.retex_s = new short[count];
@@ -396,41 +399,41 @@ public final class ObjectDefinition {
 					this.retex_s[len] = (short) stream.readUnsignedShort();
 					this.retex_d[len] = (short) stream.readUnsignedShort();
 				}
-			} else if (j == 42) {
+			} else if (opcode == 42) {
 				int count = stream.readUnsignedByte();
 				this.recol_p = new byte[count];
 				for (int len = 0; len < count; len++) {
 					this.recol_p[len] = stream.readSignedByte();
 				}
-				} else if (j == 60)
+				} else if (opcode == 60)
 					anInt746 = stream.readUnsignedShort();
-				else if (j == 62)
+				else if (opcode == 62)
 					aBoolean751 = true;
-				else if (j == 64)
+				else if (opcode == 64)
 					aBoolean779 = false;
-				else if (j == 65)
+				else if (opcode == 65)
 					anInt748 = stream.readUnsignedShort();
-				else if (j == 66)
+				else if (opcode == 66)
 					anInt772 = stream.readUnsignedShort();
-				else if (j == 67)
+				else if (opcode == 67)
 					anInt740 = stream.readUnsignedShort();
-		 		else if (j == 68)
+		 		else if (opcode == 68)
 					this.anInt758 = stream.readUnsignedShort();
-				else if (j == 69)
+				else if (opcode == 69)
 					anInt768 = stream.readUnsignedByte();
-				else if (j == 70)
+				else if (opcode == 70)
 					anInt738 = stream.readUnsignedShort();
-				else if (j == 71)
+				else if (opcode == 71)
 					anInt745 = stream.readUnsignedShort();
-				else if (j == 72)
+				else if (opcode == 72)
 					anInt783 = stream.readUnsignedShort();
-				else if (j == 73)
+				else if (opcode == 73)
 					aBoolean736 = true;
-				else if (j == 74) {
+				else if (opcode == 74) {
 					aBoolean766 = true;
-				} else if (j == 75) {
+				} else if (opcode == 75) {
 					anInt760 = stream.readUnsignedByte();
-				} else if (j == 77 || j == 92) {
+				} else if (opcode == 77 || opcode == 92) {
 					anInt774 = stream.readUnsignedShort();
 					if (anInt774 == 65535)
 						anInt774 = -1;
@@ -439,7 +442,7 @@ public final class ObjectDefinition {
 						anInt749 = -1;
 
 					int var3 = -1;
-					if (j == 92) {
+					if (opcode == 92) {
 						var3 = stream.readUnsignedShort();
 
 						if (var3 == 65535)
@@ -454,10 +457,10 @@ public final class ObjectDefinition {
 							childrenIDs[j2] = -1;
 					}
 					childrenIDs[j1 + 1] = var3;
-			} else if (j == 78) {
+			} else if (opcode == 78) {
 				this.bgsound = stream.readUnsignedShort();
 				this.bgsoundrange = stream.readUnsignedByte();
-			} else if (j == 79) {
+			} else if (opcode == 79) {
 				this.bgsoundmin = stream.readUnsignedShort(); // interval
 				this.bgsoundmax = stream.readUnsignedShort(); // interval
 				this.bgsoundrange = stream.readUnsignedByte();
@@ -467,47 +470,47 @@ public final class ObjectDefinition {
 				for (int len = 0; len < count; len++) {
 					this.bgsounds[len] = stream.readUnsignedShort();
 				}
-			} else if (j == 81) {
+			} else if (opcode == 81) {
 				this.hillskewType = 2;
 				this.hillskewAmount = (short) (stream.readUnsignedByte() * 256);
-			} else if (j == 82) {
+			} else if (opcode == 82) {
 				this.render = true;
-			} else if (j == 88) {
+			} else if (opcode == 88) {
 				this.castshadow = false;
-			} else if (j == 89) {
+			} else if (opcode == 89) {
 				this.allowrandomizedanimation = false;
-			} else if (j == 90) {
+			} else if (opcode == 90) {
 				this.aBoolean211 = true;
-			} else if (j == 91) {
+			} else if (opcode == 91) {
 				this.members = true;
-			} else if (j == 93) {
+			} else if (opcode == 93) {
 				this.hillskewType = 3;
 				this.hillskewAmount = (short) stream.readUnsignedShort();
-			} else if (j == 94) {
+			} else if (opcode == 94) {
 				this.hillskewType = 4;
-			} else if (j == 95) {
+			} else if (opcode == 95) {
 				this.hillskewType = 5;
-			} else if (j == 96) {
+			} else if (opcode == 96) {
 				this.hasanimation = true;
-			} else if (j == 97) {
+			} else if (opcode == 97) {
 				this.mapSceneRotated = true;
-			} else if (j == 98) {
+			} else if (opcode == 98) {
 				this.aBoolean214 = true;
-			} else if (j == 99) {
+			} else if (opcode == 99) {
 				this.cursor1Op = stream.readUnsignedByte();
 				this.cursor1 = stream.readUnsignedShort();
-			} else if (j == 100) {
+			} else if (opcode == 100) {
 				stream.readUnsignedByte();
 				 stream.readUnsignedShort();
-			} else if (j == 101) {
+			} else if (opcode == 101) {
 				stream.readUnsignedByte();
-			} else if (j == 102) {
+			} else if (opcode == 102) {
 				 stream.readUnsignedShort();
 				}
 
 		}
 		if (aString739 != null && !aString739.equals("null")) {
-			hasactions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
+			hasactions = objectModelIDs != null && (objectModelTypes == null || objectModelTypes[0] == 10);
 			if (aStringArray786 != null)
 				hasactions = true;
 		}
@@ -530,7 +533,7 @@ public final class ObjectDefinition {
 	public int anInt740;
 	public static final Model[] A_MODEL_ARRAY_741 = new Model[4];
 	public byte aByte742;
-	public int anInt744;
+	public int sizeX;
 	public int anInt745;
 	public int anInt746;
 	public int[] anIntArray747;
@@ -545,7 +548,7 @@ public final class ObjectDefinition {
 	public int anInt758;
 	public int childrenIDs[];
 	public int anInt760;
-	public int anInt761;
+	public int sizeY;
 	public boolean aBoolean762;
 	public boolean aBoolean764;
 	public static client clientInstance;
@@ -555,11 +558,11 @@ public final class ObjectDefinition {
 	public boolean aBoolean769;
 	public static int anInt771;
 	public int anInt772;
-	public int[] anIntArray773;
+	public int[] objectModelIDs;
 	public int anInt774;
 	public int anInt775;
 	public int dummy;
-	public int[] anIntArray776;
+	public int[] objectModelTypes;
 	public byte aByteArray777[];
 	public boolean hasactions;
 	public boolean aBoolean779;

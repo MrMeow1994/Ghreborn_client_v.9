@@ -1,7 +1,11 @@
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Arrays;
+
 import sign.signlink;
 
-public final class Stream extends Class30_Sub2 {
+public final class Stream extends Node_Sub2 {
     public ISAACRandomGen encryption;
     private static int anInt1411;
     private static int anInt1412;
@@ -26,8 +30,11 @@ public final class Stream extends Class30_Sub2 {
     private boolean aBoolean1403;
     private boolean aBoolean1404;
     public int anInt1407;
-    private static final BigInteger RSA_MODULUS = new BigInteger("129054814732918521522820496413796482564146106440479997463524816763080780831995631078504790292317658383472514719172206718041945316394359609923527595131308647792229034016245090408424074669977492602693984712211573066192823392981891207916047022843940335910271752018248983400185186778063159281890985050648461506327");
-    private static final BigInteger RSA_EXPONENT = new BigInteger("65537");
+    public static final BigInteger RSA_MODULUS = new BigInteger("109146498026789313726826224373459558208050127700378246305873710995315714783684251038666549407762991475007000587532182005003279074831900986161303462490626538608294667460272328302125530424189692575104242196104595067933708123073135778015307595620436012118775654418370935818679069485674062571131950728740325985423");
+
+    public static final BigInteger RSA_EXPONENT = new BigInteger("65537");
+
+
     private static final int[] anIntArray1409 = new int[]{0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, '\uffff', 131071, 262143, 524287, 1048575, 2097151, 4194303, 8388607, 16777215, 33554431, 67108863, 134217727, 268435455, 536870911, 1073741823, Integer.MAX_VALUE, -1};
     private static DoubleEndedQueue aDoubleEndedQueue_1414 = new DoubleEndedQueue(169);
     private static DoubleEndedQueue aDoubleEndedQueue_1415 = new DoubleEndedQueue(169);
@@ -535,6 +542,9 @@ public final class Stream extends Class30_Sub2 {
         }
     }
 
+
+    private static final java.security.SecureRandom RNG = new java.security.SecureRandom();
+
     public void doKeys(BigInteger biginteger, BigInteger biginteger1, byte byte0) {
         int i = this.currentPosition;
         this.currentPosition = 0;
@@ -551,7 +561,6 @@ public final class Stream extends Class30_Sub2 {
         this.writeUnsignedByte(abyte1.length);
         this.writeBytes(abyte1, abyte1.length, true, 0);
     }
-
     public void method424(int i, int j) {
         this.buffer[this.currentPosition++] = (byte)(-i);
         if(j != 0) {
@@ -748,4 +757,14 @@ public final class Stream extends Class30_Sub2 {
         }
 
     }
+
+    public byte[] readBytes() {
+        int i = currentPosition;
+        while (buffer[currentPosition++] != 10)
+            ;
+        byte abyte0[] = new byte[currentPosition - i - 1];
+        System.arraycopy(buffer, i, abyte0, i - i, currentPosition - 1 - i);
+        return abyte0;
+    }
+
 }

@@ -277,7 +277,7 @@ public class client extends Applet_Sub1 {
     private int[][][] anIntArrayArrayArray1214;
     private Sprite[] BlackMap;
     private byte[][][] aByteArrayArrayArray1258;
-    private Class25 aClass25_946;
+    private WorldController aWorldController_946;
     private Class11[] collisionMaps;
     private int[][] anIntArrayArray901;
     private int[][] anIntArrayArray825;
@@ -913,7 +913,7 @@ public class client extends Applet_Sub1 {
             cameraZoom = 600;
         }
 
-        Class25.setupViewport(500, 800, currentScreenMode == client.ScreenMode.FIXED?516:screenAreaWidth, currentScreenMode == client.ScreenMode.FIXED?335:screenAreaHeight, ai);
+        WorldController.setupViewport(500, 800, currentScreenMode == client.ScreenMode.FIXED?516:screenAreaWidth, currentScreenMode == client.ScreenMode.FIXED?335:screenAreaHeight, ai);
         if(loggedIn) {
             aRSImageProducer_1165 = new RSImageProducer(screenAreaWidth, screenAreaHeight);
         }
@@ -2379,7 +2379,7 @@ public class client extends Applet_Sub1 {
             this.loadNewObjects();
             Rasterizer.method366();
             this.method23(false);
-            this.aClass25_946.method274(619);
+            this.aWorldController_946.method274(619);
             System.gc();
 
             for(k = 0; k < 4; ++k) {
@@ -2431,7 +2431,7 @@ public class client extends Applet_Sub1 {
                     if(var16 != null) {
                         l3 = (this.mapCoordinates[i2] >> 8) * 64 - this.baseX;
                         var17 = (this.mapCoordinates[i2] & 255) * 64 - this.baseY;
-                        var15.method190(l3, this.collisionMaps, var17, 7, this.aClass25_946, var16);
+                        var15.method190(l3, this.collisionMaps, var17, 7, this.aWorldController_946, var16);
                     }
                 }
             }
@@ -2475,7 +2475,7 @@ public class client extends Applet_Sub1 {
 
                                         for(k12 = 0; k12 < this.mapCoordinates.length; ++k12) {
                                             if(this.mapCoordinates[k12] == j12 && this.mapData[k12] != null) {
-                                                var15.method183(this.collisionMaps, this.aClass25_946, j7, l2 * 8, (i12 & 7) * 8, true, i2, this.mapData[k12], (k11 & 7) * 8, k8, l3 * 8);
+                                                var15.method183(this.collisionMaps, this.aWorldController_946, j7, l2 * 8, (i12 & 7) * 8, true, i2, this.mapData[k12], (k11 & 7) * 8, k8, l3 * 8);
                                                 break;
                                             }
                                         }
@@ -2512,7 +2512,7 @@ public class client extends Applet_Sub1 {
             }
 
             this.stream.createFrame(0);
-            var15.method171(this.collisionMaps, this.aClass25_946, 2);
+            var15.method171(this.collisionMaps, this.aWorldController_946, 2);
             fadingTo = ((Integer)getMostFrequentN2(var15.colors).getKey()).intValue();
             aRSImageProducer_1165.initDrawingArea();
             this.stream.createFrame(0);
@@ -2526,9 +2526,9 @@ public class client extends Applet_Sub1 {
             }
 
             if(lowMemory) {
-                this.aClass25_946.method275(ObjectManager.anInt145, -34686);
+                this.aWorldController_946.method275(ObjectManager.anInt145, -34686);
             } else {
-                this.aClass25_946.method275(0, -34686);
+                this.aWorldController_946.method275(0, -34686);
             }
 
             for(l2 = 0; l2 < 104; ++l2) {
@@ -2583,12 +2583,12 @@ public class client extends Applet_Sub1 {
         for(l3 = k; l3 <= j1; ++l3) {
             for(var17 = i2; var17 <= l2; ++var17) {
                 if(l3 == k || l3 == j1 || var17 == i2 || var17 == l2) {
-                    j7 = onDemandFetcher.method562(0, 0, var17, l3);
+                    j7 = onDemandFetcher.getRegionIndex(0,  var17, l3);
                     if(j7 != -1) {
                         onDemandFetcher.method560(j7, 3, false);
                     }
 
-                    k8 = onDemandFetcher.method562(1, 0, var17, l3);
+                    k8 = onDemandFetcher.getRegionIndex(1,  var17, l3);
                     if(k8 != -1) {
                         onDemandFetcher.method560(k8, 3, false);
                     }
@@ -2609,7 +2609,7 @@ public class client extends Applet_Sub1 {
         }
 
         Player.aClass12_1704.method224();
-        Class23.aClass12_415.method224();
+        SpotAnimation.aClass12_415.method224();
     }
 
     public final void method24(boolean flag, int i) {
@@ -2628,11 +2628,11 @@ public class client extends Applet_Sub1 {
 
             for(k2 = 1; k2 < 103; ++k2) {
                 if((this.aByteArrayArrayArray1258[i][k2][j1] & 24) == 0) {
-                    this.aClass25_946.drawMinimapTile(ai, l1, 512, i, k2, j1);
+                    this.aWorldController_946.drawMinimapTile(ai, l1, 512, i, k2, j1);
                 }
 
                 if(i < 3 && (this.aByteArrayArrayArray1258[i + 1][k2][j1] & 8) != 0) {
-                    this.aClass25_946.drawMinimapTile(ai, l1, 512, i + 1, k2, j1);
+                    this.aWorldController_946.drawMinimapTile(ai, l1, 512, i + 1, k2, j1);
                 }
 
                 l1 += 4;
@@ -2662,7 +2662,7 @@ public class client extends Applet_Sub1 {
 
         for(k2 = 0; k2 < 104; ++k2) {
             for(l2 = 0; l2 < 104; ++l2) {
-                long i3 = this.aClass25_946.method303(this.anInt918, k2, l2);
+                long i3 = this.aWorldController_946.method303(this.anInt918, k2, l2);
                 if(i3 != 0L) {
                     int objId = ObjectKey.getObjectId(i3);
                     int j3 = ObjectDefinition.forID(objId).anInt746;
@@ -2708,14 +2708,14 @@ public class client extends Applet_Sub1 {
     public final void method25(int i, int j) {
         DoubleEndedQueue doubleEndedQueue = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][i][j];
         if(doubleEndedQueue == null) {
-            this.aClass25_946.method295(this.anInt918, i, j);
+            this.aWorldController_946.method295(this.anInt918, i, j);
         } else {
             int k = -99999999;
-            Class30_Sub2_Sub4_Sub2 obj = null;
+            Node_Sub2_Sub4_Sub2 obj = null;
 
-            Class30_Sub2_Sub4_Sub2 obj1;
+            Node_Sub2_Sub4_Sub2 obj1;
             int i1;
-            for(obj1 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetFirst(); obj1 != null; obj1 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetNext(false)) {
+            for(obj1 = (Node_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetFirst(); obj1 != null; obj1 = (Node_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetNext(false)) {
                 ItemDefinition obj2 = ItemDefinition.method198(obj1.anInt1558);
                 i1 = obj2.value;
                 if(obj2.stackable) {
@@ -2728,22 +2728,22 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            doubleEndedQueue.method250(-493, (Class30)((Class30)obj));
+            doubleEndedQueue.method250(-493, (Node)((Node)obj));
             obj1 = null;
-            Class30_Sub2_Sub4_Sub2 obj21 = null;
+            Node_Sub2_Sub4_Sub2 obj21 = null;
 
-            for(Class30_Sub2_Sub4_Sub2 i11 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetFirst(); i11 != null; i11 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetNext(false)) {
-                if(i11.anInt1558 != ((Class30_Sub2_Sub4_Sub2)((Class30_Sub2_Sub4_Sub2)obj)).anInt1558 && obj1 == null) {
+            for(Node_Sub2_Sub4_Sub2 i11 = (Node_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetFirst(); i11 != null; i11 = (Node_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetNext(false)) {
+                if(i11.anInt1558 != ((Node_Sub2_Sub4_Sub2)((Node_Sub2_Sub4_Sub2)obj)).anInt1558 && obj1 == null) {
                     obj1 = i11;
                 }
 
-                if(i11.anInt1558 != ((Class30_Sub2_Sub4_Sub2)((Class30_Sub2_Sub4_Sub2)obj)).anInt1558 && i11.anInt1558 != ((Class30_Sub2_Sub4_Sub2)((Class30_Sub2_Sub4_Sub2)obj1)).anInt1558 && obj21 == null) {
+                if(i11.anInt1558 != ((Node_Sub2_Sub4_Sub2)((Node_Sub2_Sub4_Sub2)obj)).anInt1558 && i11.anInt1558 != ((Node_Sub2_Sub4_Sub2)((Node_Sub2_Sub4_Sub2)obj1)).anInt1558 && obj21 == null) {
                     obj21 = i11;
                 }
             }
 
             i1 = i + (j << 7) + 1610612736;
-            this.aClass25_946.method281((byte)7, i, i1, (Animable)((Animable)obj1), this.method42(this.anInt918, j * 128 + 64, true, i * 128 + 64), (Animable)((Animable)obj21), (Animable)((Animable)obj), this.anInt918, j);
+            this.aWorldController_946.method281((byte)7, i, i1, (Animable)((Animable)obj1), this.method42(this.anInt918, j * 128 + 64, true, i * 128 + 64), (Animable)((Animable)obj21), (Animable)((Animable)obj), this.anInt918, j);
         }
     }
 
@@ -2752,10 +2752,10 @@ public class client extends Applet_Sub1 {
             Npc npc = this.npcs[this.npcIndices[j]];
             long k = 536870912L | (long)this.npcIndices[j] << 32;
             if(npc != null && npc.method449(aBoolean1224) && npc.desc.aBoolean93 == flag) {
-                int l = npc.anInt1550 >> 7;
-                int i1 = npc.anInt1551 >> 7;
+                int l = npc.x >> 7;
+                int i1 = npc.y >> 7;
                 if(l >= 0 && l < 104 && i1 >= 0 && i1 < 104) {
-                    if(npc.anInt1540 == 1 && (npc.anInt1550 & 127) == 64 && (npc.anInt1551 & 127) == 64) {
+                    if(npc.anInt1540 == 1 && (npc.x & 127) == 64 && (npc.y & 127) == 64) {
                         if(this.anIntArrayArray929[l][i1] == this.renderCount) {
                             continue;
                         }
@@ -2767,7 +2767,7 @@ public class client extends Applet_Sub1 {
                         k |= Long.MIN_VALUE;
                     }
 
-                    this.aClass25_946.method285(this.anInt918, npc.anInt1552, (byte)6, this.method42(this.anInt918, npc.anInt1551, true, npc.anInt1550), k, npc.anInt1551, (npc.anInt1540 - 1) * 64 + 60, npc.anInt1550, npc, npc.aBoolean1541);
+                    this.aWorldController_946.method285(this.anInt918, npc.anInt1552, (byte)6, this.method42(this.anInt918, npc.y, true, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
                 }
             }
         }
@@ -3514,7 +3514,7 @@ public class client extends Applet_Sub1 {
                 var12 = this.npcs[this.npcIndices[var2 - this.anInt891]];
             }
 
-            if(var12 != null && ((Class30_Sub2_Sub4_Sub1)var12).method449(aBoolean1224)) {
+            if(var12 != null && ((Entity)var12).method449(aBoolean1224)) {
                 Class5 var13;
                 if(var12 instanceof Npc) {
                     var13 = ((Npc)var12).desc;
@@ -3531,7 +3531,7 @@ public class client extends Applet_Sub1 {
                     var14 = 30;
                     Player var7 = (Player)var12;
                     if(var7.headIcon >= 0) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507 + 15);
+                        this.method127(true, (Entity)var12, ((Entity)var12).anInt1507 + 15);
                         if(this.spriteDrawX > -1) {
                             if(var7.skullIcon < 2) {
                                 this.skullIcons[var7.skullIcon].drawSprite(this.spriteDrawX - 12, this.spriteDrawY - var14);
@@ -3546,7 +3546,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(var2 >= 0 && this.hintType == 10 && this.anInt933 == this.anIntArray892[var2]) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507 + 15);
+                        this.method127(true, (Entity)var12, ((Entity)var12).anInt1507 + 15);
                         if(this.spriteDrawX > -1) {
                             this.headIcons[7].drawSprite(this.spriteDrawX - 12, this.spriteDrawY - var14);
                         }
@@ -3554,47 +3554,47 @@ public class client extends Applet_Sub1 {
                 } else {
                     var13 = ((Npc)var12).desc;
                     if(var13.anInt75 >= 0 && var13.anInt75 < this.headIcons.length) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507 + 15);
+                        this.method127(true, (Entity)var12, ((Entity)var12).anInt1507 + 15);
                         if(this.spriteDrawX > -1) {
                             this.headIcons[var13.anInt75].drawSprite(this.spriteDrawX - 12, this.spriteDrawY - 30);
                         }
                     }
 
                     if(this.hintType == 1 && this.anInt1222 == this.npcIndices[var2 - this.anInt891] && loopCycle % 20 < 10) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507 + 15);
+                        this.method127(true, (Entity)var12, ((Entity)var12).anInt1507 + 15);
                         if(this.spriteDrawX > -1) {
                             this.headIcons[0].drawSprite(this.spriteDrawX - 12, this.spriteDrawY - 28);
                         }
                     }
                 }
 
-                if(((Class30_Sub2_Sub4_Sub1)var12).aString1506 != null && (var2 >= this.anInt891 || this.publicChatMode == 0 || this.publicChatMode == 3 || this.publicChatMode == 1 && this.method109(((Player)var12).name))) {
-                    this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507);
+                if(((Entity)var12).aString1506 != null && (var2 >= this.anInt891 || this.publicChatMode == 0 || this.publicChatMode == 3 || this.publicChatMode == 1 && this.method109(((Player)var12).name))) {
+                    this.method127(true, (Entity)var12, ((Entity)var12).anInt1507);
                     if(this.spriteDrawX > -1 && this.anInt974 < this.anInt975) {
-                        this.anIntArray979[this.anInt974] = this.boldText.method384(((Class30_Sub2_Sub4_Sub1)var12).aString1506, true) / 2;
+                        this.anIntArray979[this.anInt974] = this.boldText.method384(((Entity)var12).aString1506, true) / 2;
                         this.anIntArray978[this.anInt974] = this.boldText.anInt1497;
                         this.anIntArray976[this.anInt974] = this.spriteDrawX;
                         this.anIntArray977[this.anInt974] = this.spriteDrawY;
-                        this.overheadTextColour[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).anInt1513;
-                        this.anIntArray981[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).anInt1531;
-                        this.overheadTextCycle[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).textCycle;
-                        this.aStringArray983[this.anInt974++] = ((Class30_Sub2_Sub4_Sub1)var12).aString1506;
-                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)var12).anInt1531 >= 1 && ((Class30_Sub2_Sub4_Sub1)var12).anInt1531 <= 3) {
+                        this.overheadTextColour[this.anInt974] = ((Entity)var12).anInt1513;
+                        this.anIntArray981[this.anInt974] = ((Entity)var12).anInt1531;
+                        this.overheadTextCycle[this.anInt974] = ((Entity)var12).textCycle;
+                        this.aStringArray983[this.anInt974++] = ((Entity)var12).aString1506;
+                        if(this.anInt1249 == 0 && ((Entity)var12).anInt1531 >= 1 && ((Entity)var12).anInt1531 <= 3) {
                             this.anIntArray978[this.anInt974] += 10;
                             this.anIntArray977[this.anInt974] += 5;
                         }
 
-                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)var12).anInt1531 == 4) {
+                        if(this.anInt1249 == 0 && ((Entity)var12).anInt1531 == 4) {
                             this.anIntArray979[this.anInt974] = 60;
                         }
 
-                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)var12).anInt1531 == 5) {
+                        if(this.anInt1249 == 0 && ((Entity)var12).anInt1531 == 5) {
                             this.anIntArray978[this.anInt974] += 5;
                         }
                     }
                 }
 
-                Class30_Sub2_Sub4_Sub1 entity = (Class30_Sub2_Sub4_Sub1) var12;
+                Entity entity = (Entity) var12;
 
                 if (entity.anInt1532 > loopCycle) {
                     this.method127(true, entity, entity.anInt1507 + 15);
@@ -3666,8 +3666,8 @@ public class client extends Applet_Sub1 {
 
 
                 for(var14 = 0; var14 < 4; ++var14) {
-                    if(((Class30_Sub2_Sub4_Sub1)var12).anIntArray1516[var14] > loopCycle) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)var12, ((Class30_Sub2_Sub4_Sub1)var12).anInt1507 / 2);
+                    if(((Entity)var12).anIntArray1516[var14] > loopCycle) {
+                        this.method127(true, (Entity)var12, ((Entity)var12).anInt1507 / 2);
                         if(this.spriteDrawX > -1) {
                             if(var14 == 1) {
                                 this.spriteDrawY -= 20;
@@ -3684,9 +3684,9 @@ public class client extends Applet_Sub1 {
                             }
 
                             try {
-                                this.aSpriteArray987[((Class30_Sub2_Sub4_Sub1)var12).anIntArray1515[var14]].drawSprite(this.spriteDrawX - 12, this.spriteDrawY - 12);
-                                this.smallText.method381(0, String.valueOf(((Class30_Sub2_Sub4_Sub1)var12).anIntArray1514[var14]), 23693, this.spriteDrawY + 4, this.spriteDrawX);
-                                this.smallText.method381(16777215, String.valueOf(((Class30_Sub2_Sub4_Sub1)var12).anIntArray1514[var14]), 23693, this.spriteDrawY + 3, this.spriteDrawX - 1);
+                                this.aSpriteArray987[((Entity)var12).anIntArray1515[var14]].drawSprite(this.spriteDrawX - 12, this.spriteDrawY - 12);
+                                this.smallText.method381(0, String.valueOf(((Entity)var12).anIntArray1514[var14]), 23693, this.spriteDrawY + 4, this.spriteDrawX);
+                                this.smallText.method381(16777215, String.valueOf(((Entity)var12).anIntArray1514[var14]), 23693, this.spriteDrawY + 3, this.spriteDrawX - 1);
                             } catch (ArrayIndexOutOfBoundsException var121) {
                                 ;
                             } catch (NullPointerException var131) {
@@ -4817,7 +4817,7 @@ public class client extends Applet_Sub1 {
             loggedIn = false;
             this.anInt833 = 0;
             this.method23(false);
-            this.aClass25_946.method274(619);
+            this.aWorldController_946.method274(619);
 
             for(int i = 0; i < 4; ++i) {
                 this.collisionMaps[i].method210();
@@ -4892,14 +4892,14 @@ public class client extends Applet_Sub1 {
                 this.anIntArray894[this.anInt893++] = k;
             }
 
-            npc.anInt1540 = npc.desc.aByte68;
+            npc.anInt1540 = npc.desc.size;
             npc.anInt1504 = npc.desc.anInt79;
             npc.anInt1554 = npc.desc.anInt67;
             npc.anInt1555 = npc.desc.anInt58;
             npc.anInt1556 = npc.desc.anInt83;
             npc.anInt1557 = npc.desc.anInt55;
             npc.anInt1511 = npc.desc.anInt77;
-            npc.setPos(localPlayer.anIntArray1500[0] + i1, localPlayer.anIntArray1501[0] + l, j1 == 1, false);
+            npc.setPos(localPlayer.smallX[0] + i1, localPlayer.smallY[0] + l, j1 == 1, false);
         }
 
         stream.method420(true);
@@ -4923,7 +4923,7 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method47(int i, boolean flag) {
-        if(localPlayer.anInt1550 >> 7 == this.anInt1261 && localPlayer.anInt1551 >> 7 == this.anInt1262) {
+        if(localPlayer.x >> 7 == this.anInt1261 && localPlayer.y >> 7 == this.anInt1262) {
             this.anInt1261 = 0;
         }
 
@@ -4956,15 +4956,15 @@ public class client extends Applet_Sub1 {
                     player.aBoolean1699 = true;
                 }
 
-                int j1 = player.anInt1550 >> 7;
-                int k1 = player.anInt1551 >> 7;
+                int j1 = player.x >> 7;
+                int k1 = player.y >> 7;
                 if(j1 >= 0 && j1 < 104 && k1 >= 0 && k1 < 104) {
                     if(player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
                         player.aBoolean1699 = false;
-                        player.anInt1709 = this.method42(this.anInt918, player.anInt1551, true, player.anInt1550);
-                        this.aClass25_946.method286(60, this.anInt918, player.anInt1551, player, player.anInt1552, player.anInt1722, player.anInt1550, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720, (byte)35);
+                        player.anInt1709 = this.method42(this.anInt918, player.y, true, player.x);
+                        this.aWorldController_946.method286(60, this.anInt918, player.y, player, player.anInt1552, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720, (byte)35);
                     } else {
-                        if((player.anInt1550 & 127) == 64 && (player.anInt1551 & 127) == 64) {
+                        if((player.x & 127) == 64 && (player.y & 127) == 64) {
                             if(this.anIntArrayArray929[j1][k1] == this.renderCount) {
                                 continue;
                             }
@@ -4972,8 +4972,8 @@ public class client extends Applet_Sub1 {
                             this.anIntArrayArray929[j1][k1] = this.renderCount;
                         }
 
-                        player.anInt1709 = this.method42(this.anInt918, player.anInt1551, true, player.anInt1550);
-                        this.aClass25_946.method285(this.anInt918, player.anInt1552, (byte)6, player.anInt1709, i1, player.anInt1551, 60, player.anInt1550, player, player.aBoolean1541);
+                        player.anInt1709 = this.method42(this.anInt918, player.y, true, player.x);
+                        this.aWorldController_946.method285(this.anInt918, player.anInt1552, (byte)6, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
                     }
                 }
             }
@@ -5161,7 +5161,7 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method50(int i, int j, int k, int l, int i1, int j1) {
-        long k1 = this.aClass25_946.method300(j1, l, i);
+        long k1 = this.aWorldController_946.method300(j1, l, i);
         if(j < 0) {
             int j2;
             int class46;
@@ -5170,7 +5170,7 @@ public class client extends Applet_Sub1 {
             int l4;
             int ai1;
             if(k1 != 0L) {
-                j2 = this.aClass25_946.method304(j1, l, i, k1);
+                j2 = this.aWorldController_946.method304(j1, l, i, k1);
                 class46 = j2 >> 6 & 3;
                 e = j2 & 31;
                 i4 = k;
@@ -5186,9 +5186,9 @@ public class client extends Applet_Sub1 {
                     try {
                         Background e1 = this.aBackgroundArray1060[l5.anInt758];
                         if(e1 != null) {
-                            int i6 = (l5.anInt744 * 4 - e1.anInt1452) / 2;
-                            int j6 = (l5.anInt761 * 4 - e1.anInt1453) / 2;
-                            e1.method361(48 + l * 4 + i6, 48 + (104 - i - l5.anInt761) * 4 + j6);
+                            int i6 = (l5.sizeX * 4 - e1.anInt1452) / 2;
+                            int j6 = (l5.sizeY * 4 - e1.anInt1453) / 2;
+                            e1.method361(48 + l * 4 + i6, 48 + (104 - i - l5.sizeY) * 4 + j6);
                         }
                     } catch (Exception var22) {
                         var22.printStackTrace();
@@ -5256,9 +5256,9 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            k1 = this.aClass25_946.method302(j1, l, i);
+            k1 = this.aWorldController_946.method302(j1, l, i);
             if(k1 != 0L) {
-                j2 = this.aClass25_946.method304(j1, l, i, k1);
+                j2 = this.aWorldController_946.method304(j1, l, i, k1);
                 class46 = j2 >> 6 & 3;
                 e = j2 & 31;
                 i4 = ObjectKey.getObjectId(k1);
@@ -5268,9 +5268,9 @@ public class client extends Applet_Sub1 {
                     try {
                         Background l41 = this.aBackgroundArray1060[j41.anInt758];
                         if(l41 != null) {
-                            ai1 = (j41.anInt744 * 4 - l41.anInt1452) / 2;
-                            l51 = (j41.anInt761 * 4 - l41.anInt1453) / 2;
-                            l41.method361(48 + l * 4 + ai1, 48 + (104 - i - j41.anInt761) * 4 + l51);
+                            ai1 = (j41.sizeX * 4 - l41.anInt1452) / 2;
+                            l51 = (j41.sizeY * 4 - l41.anInt1453) / 2;
+                            l41.method361(48 + l * 4 + ai1, 48 + (104 - i - j41.sizeY) * 4 + l51);
                         }
                     } catch (Exception var21) {
                         var21.printStackTrace();
@@ -5297,7 +5297,7 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            k1 = this.aClass25_946.method303(j1, l, i);
+            k1 = this.aWorldController_946.method303(j1, l, i);
             if(k1 != 0L) {
                 j2 = ObjectKey.getObjectId(k1);
                 ObjectDefinition class461 = ObjectDefinition.forID(j2);
@@ -5305,9 +5305,9 @@ public class client extends Applet_Sub1 {
                     try {
                         Background e2 = this.aBackgroundArray1060[class461.anInt758];
                         if(e2 != null) {
-                            i4 = (class461.anInt744 * 4 - e2.anInt1452) / 2;
-                            int j42 = (class461.anInt761 * 4 - e2.anInt1453) / 2;
-                            e2.method361(48 + l * 4 + i4, 48 + (104 - i - class461.anInt761) * 4 + j42);
+                            i4 = (class461.sizeX * 4 - e2.anInt1452) / 2;
+                            int j42 = (class461.sizeY * 4 - e2.anInt1453) / 2;
+                            e2.method361(48 + l * 4 + i4, 48 + (104 - i - class461.sizeY) * 4 + j42);
                         }
                     } catch (Exception var20) {
                         var20.printStackTrace();
@@ -5426,7 +5426,7 @@ public class client extends Applet_Sub1 {
     }
 
     public static final void method52(boolean flag) {
-        Class25.lowMem = false;
+        WorldController.lowMem = false;
         Rasterizer.lowMem = false;
         lowMemory = false;
         ObjectManager.aBoolean151 = false;
@@ -5547,18 +5547,18 @@ public class client extends Applet_Sub1 {
             this.method6();
         }
 
-        for(Class30_Sub2_Sub4_Sub4 class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)this.aDoubleEndedQueue_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)this.aDoubleEndedQueue_1013.reverseGetNext(false)) {
-            if(class30_sub2_sub4_sub4.anInt1597 == this.anInt918 && loopCycle <= class30_sub2_sub4_sub4.anInt1572) {
-                if(loopCycle >= class30_sub2_sub4_sub4.anInt1571) {
-                    if(class30_sub2_sub4_sub4.anInt1590 > 0) {
-                        Npc j = this.npcs[class30_sub2_sub4_sub4.anInt1590 - 1];
-                        if(j != null && j.anInt1550 >= 0 && j.anInt1550 < 13312 && j.anInt1551 >= 0 && j.anInt1551 < 13312) {
-                            class30_sub2_sub4_sub4.method455(loopCycle, j.anInt1551, this.method42(class30_sub2_sub4_sub4.anInt1597, j.anInt1551, true, j.anInt1550) - class30_sub2_sub4_sub4.anInt1583, j.anInt1550, (byte)-83);
+        for(ProjectTile projectTile = (ProjectTile)this.aDoubleEndedQueue_1013.reverseGetFirst(); projectTile != null; projectTile = (ProjectTile)this.aDoubleEndedQueue_1013.reverseGetNext(false)) {
+            if(projectTile.anInt1597 == this.anInt918 && loopCycle <= projectTile.anInt1572) {
+                if(loopCycle >= projectTile.anInt1571) {
+                    if(projectTile.anInt1590 > 0) {
+                        Npc j = this.npcs[projectTile.anInt1590 - 1];
+                        if(j != null && j.x >= 0 && j.x < 13312 && j.y >= 0 && j.y < 13312) {
+                            projectTile.method455(loopCycle, j.y, this.method42(projectTile.anInt1597, j.y, true, j.x) - projectTile.anInt1583, j.x, (byte)-83);
                         }
                     }
 
-                    if(class30_sub2_sub4_sub4.anInt1590 < 0) {
-                        int j1 = -class30_sub2_sub4_sub4.anInt1590 - 1;
+                    if(projectTile.anInt1590 < 0) {
+                        int j1 = -projectTile.anInt1590 - 1;
                         Player player;
                         if(j1 == this.anInt884) {
                             player = localPlayer;
@@ -5566,16 +5566,16 @@ public class client extends Applet_Sub1 {
                             player = this.players[j1];
                         }
 
-                        if(player != null && player.anInt1550 >= 0 && player.anInt1550 < 13312 && player.anInt1551 >= 0 && player.anInt1551 < 13312) {
-                            class30_sub2_sub4_sub4.method455(loopCycle, player.anInt1551, this.method42(class30_sub2_sub4_sub4.anInt1597, player.anInt1551, true, player.anInt1550) - class30_sub2_sub4_sub4.anInt1583, player.anInt1550, (byte)-83);
+                        if(player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
+                            projectTile.method455(loopCycle, player.y, this.method42(projectTile.anInt1597, player.y, true, player.x) - projectTile.anInt1583, player.x, (byte)-83);
                         }
                     }
 
-                    class30_sub2_sub4_sub4.method456(this.anInt945, this.anInt1020);
-                    this.aClass25_946.method285(this.anInt918, class30_sub2_sub4_sub4.anInt1595, (byte)6, (int)class30_sub2_sub4_sub4.aDouble1587, -1L, (int)class30_sub2_sub4_sub4.aDouble1586, 60, (int)class30_sub2_sub4_sub4.aDouble1585, class30_sub2_sub4_sub4, false);
+                    projectTile.method456(this.anInt945, this.anInt1020);
+                    this.aWorldController_946.method285(this.anInt918, projectTile.anInt1595, (byte)6, (int) projectTile.aDouble1587, -1L, (int) projectTile.aDouble1586, 60, (int) projectTile.aDouble1585, projectTile, false);
                 }
             } else {
-                class30_sub2_sub4_sub4.unlink();
+                projectTile.unlink();
             }
         }
 
@@ -5877,17 +5877,17 @@ public class client extends Applet_Sub1 {
             }
 
             int var9;
-            if(Class25.clickedTileX != -1) {
-                var9 = Class25.clickedTileX;
-                int var10 = Class25.clickedTileY;
+            if(WorldController.clickedTileX != -1) {
+                var9 = WorldController.clickedTileX;
+                int var10 = WorldController.clickedTileY;
                 boolean var11 = false;
                 if(this.myPrivilege >= 2 && controlIsDown) {
                     this.teleport(this.baseX + var9, this.baseY + var10);
                 } else {
-                    var11 = this.doWalkTo(0, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, var10, localPlayer.anIntArray1500[0], true, var9);
+                    var11 = this.doWalkTo(0, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, var10, localPlayer.smallX[0], true, var9);
                 }
 
-                Class25.clickedTileX = -1;
+                WorldController.clickedTileX = -1;
                 if(var11) {
                     this.anInt914 = super.saveClickX;
                     this.anInt915 = super.saveClickY;
@@ -6172,7 +6172,7 @@ public class client extends Applet_Sub1 {
     }
 
     private final void method63(int i) {
-        Class30_Sub1 class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst();
+        Node_Sub1 class30_sub1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst();
 
         while(i >= 0) {
             for(int j = 1; j > 0; ++j) {
@@ -6180,7 +6180,7 @@ public class client extends Applet_Sub1 {
             }
         }
 
-        for(; class30_sub1 != null; class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
+        for(; class30_sub1 != null; class30_sub1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
             if(class30_sub1.anInt1294 == -1) {
                 class30_sub1.anInt1302 = 0;
                 this.method89(false, class30_sub1);
@@ -6314,7 +6314,7 @@ public class client extends Applet_Sub1 {
 
     public final boolean method66(long i, int j, int k, int l) {
         int i1 = ObjectKey.getObjectId(i);
-        int j1 = this.aClass25_946.method304(this.anInt918, k, j, i);
+        int j1 = this.aWorldController_946.method304(this.anInt918, k, j, i);
         if(l >= 0) {
             throw new NullPointerException();
         } else if(j1 == -1) {
@@ -6323,17 +6323,17 @@ public class client extends Applet_Sub1 {
             int k1 = j1 & 31;
             int l1 = j1 >> 6 & 3;
             if(k1 != 10 && k1 != 11 && k1 != 22) {
-                this.doWalkTo(2, l1, 0, -11308, k1 + 1, localPlayer.anIntArray1501[0], 0, 0, j, localPlayer.anIntArray1500[0], false, k);
+                this.doWalkTo(2, l1, 0, -11308, k1 + 1, localPlayer.smallY[0], 0, 0, j, localPlayer.smallX[0], false, k);
             } else {
                 ObjectDefinition objectDefinition = ObjectDefinition.forID(i1);
                 int i2;
                 int j2;
                 if(l1 != 0 && l1 != 2) {
-                    i2 = objectDefinition.anInt761;
-                    j2 = objectDefinition.anInt744;
+                    i2 = objectDefinition.sizeY;
+                    j2 = objectDefinition.sizeX;
                 } else {
-                    i2 = objectDefinition.anInt744;
-                    j2 = objectDefinition.anInt761;
+                    i2 = objectDefinition.sizeX;
+                    j2 = objectDefinition.sizeY;
                 }
 
                 int k2 = objectDefinition.anInt768;
@@ -6341,7 +6341,7 @@ public class client extends Applet_Sub1 {
                     k2 = (k2 << l1 & 15) + (k2 >> 4 - l1);
                 }
 
-                this.doWalkTo(2, 0, j2, -11308, 0, localPlayer.anIntArray1501[0], i2, k2, j, localPlayer.anIntArray1500[0], false, k);
+                this.doWalkTo(2, 0, j2, -11308, 0, localPlayer.smallY[0], i2, k2, j, localPlayer.smallX[0], false, k);
             }
 
             this.anInt914 = super.saveClickX;
@@ -6720,7 +6720,7 @@ public class client extends Applet_Sub1 {
             if(l == 582) {
                 var25 = this.npcs[i1];
                 if(var25 != null) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var25.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var25.anIntArray1500[0]);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var25.smallY[0], localPlayer.smallX[0], false, var25.smallX[0]);
                     this.anInt914 = super.saveClickX;
                     this.anInt915 = super.saveClickY;
                     this.crossType = 2;
@@ -6735,9 +6735,9 @@ public class client extends Applet_Sub1 {
 
             boolean var16;
             if(l == 234) {
-                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                 if(!var16) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                 }
 
                 this.anInt914 = super.saveClickX;
@@ -6761,9 +6761,9 @@ public class client extends Applet_Sub1 {
             }
 
             if(l == 511) {
-                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                 if(!var16) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                 }
 
                 this.anInt914 = super.saveClickX;
@@ -6814,7 +6814,7 @@ public class client extends Applet_Sub1 {
             if(l == 561) {
                 var18 = this.players[i1];
                 if(var18 != null) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var18.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var18.anIntArray1500[0]);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var18.smallY[0], localPlayer.smallX[0], false, var18.smallX[0]);
                     this.anInt914 = super.saveClickX;
                     this.anInt915 = super.saveClickY;
                     this.crossType = 2;
@@ -6833,7 +6833,7 @@ public class client extends Applet_Sub1 {
             if(l == 20) {
                 var25 = this.npcs[i1];
                 if(var25 != null) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var25.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var25.anIntArray1500[0]);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var25.smallY[0], localPlayer.smallX[0], false, var25.smallX[0]);
                     this.anInt914 = super.saveClickX;
                     this.anInt915 = super.saveClickY;
                     this.crossType = 2;
@@ -6846,7 +6846,7 @@ public class client extends Applet_Sub1 {
             if(l == 779) {
                 var18 = this.players[i1];
                 if(var18 != null) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var18.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var18.anIntArray1500[0]);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var18.smallY[0], localPlayer.smallX[0], false, var18.smallX[0]);
                     this.anInt914 = super.saveClickX;
                     this.anInt915 = super.saveClickY;
                     this.crossType = 2;
@@ -6858,9 +6858,9 @@ public class client extends Applet_Sub1 {
 
             if(l == 516) {
                 if(!this.menuOpen) {
-                    this.aClass25_946.method312(false, super.saveClickY - 0, super.saveClickX - 0);
+                    this.aWorldController_946.method312(false, super.saveClickY - 0, super.saveClickX - 0);
                 } else {
-                    this.aClass25_946.method312(false, buttonPressed - 0, j - 0);
+                    this.aWorldController_946.method312(false, buttonPressed - 0, j - 0);
                 }
             }
 
@@ -6977,7 +6977,7 @@ public class client extends Applet_Sub1 {
                         for(int l4 = 0; l4 < this.anInt891; ++l4) {
                             Player k3 = this.players[this.anIntArray892[l4]];
                             if(k3 != null && k3.name != null && k3.name.equalsIgnoreCase(var21)) {
-                                this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k3.anIntArray1501[0], localPlayer.anIntArray1500[0], false, k3.anIntArray1500[0]);
+                                this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, k3.smallY[0], localPlayer.smallX[0], false, k3.smallX[0]);
                                 if(l == 484) {
                                     this.stream.createFrame(139);
                                     this.stream.method431(true, this.anIntArray892[l4]);
@@ -7092,7 +7092,7 @@ public class client extends Applet_Sub1 {
                     if(l == 27) {
                         var18 = this.players[i1];
                         if(var18 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var18.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var18.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var18.smallY[0], localPlayer.smallX[0], false, var18.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7110,9 +7110,9 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 213) {
-                        var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                        var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         if(!var16) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -7187,9 +7187,9 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 652) {
-                        boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                        boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         if(!class8_1) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -7203,9 +7203,9 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 94) {
-                       boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                       boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         if(!class8_1) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -7473,7 +7473,7 @@ public class client extends Applet_Sub1 {
                     if(l == 225) {
                         var28 = this.npcs[i1];
                         if(var28 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var28.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var28.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var28.smallY[0], localPlayer.smallX[0], false, var28.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7494,7 +7494,7 @@ public class client extends Applet_Sub1 {
                     if(l == 965) {
                         var28 = this.npcs[i1];
                         if(var28 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var28.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var28.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var28.smallY[0], localPlayer.smallX[0], false, var28.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7514,7 +7514,7 @@ public class client extends Applet_Sub1 {
                     if(l == 413) {
                         var28 = this.npcs[i1];
                         if(var28 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var28.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var28.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var28.smallY[0], localPlayer.smallX[0], false, var28.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7561,7 +7561,7 @@ public class client extends Applet_Sub1 {
                     if(l == 412) {
                         var28 = this.npcs[i1];
                         if(var28 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var28.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var28.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var28.smallY[0], localPlayer.smallX[0], false, var28.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7575,7 +7575,7 @@ public class client extends Applet_Sub1 {
                     if(l == 365) {
                         var34 = this.players[i1];
                         if(var34 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var34.smallY[0], localPlayer.smallX[0], false, var34.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7589,7 +7589,7 @@ public class client extends Applet_Sub1 {
                     if(l == 729) {
                         var34 = this.players[i1];
                         if(var34 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var34.smallY[0], localPlayer.smallX[0], false, var34.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7602,7 +7602,7 @@ public class client extends Applet_Sub1 {
                     if(l == 577) {
                         var34 = this.players[i1];
                         if(var34 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var34.smallY[0], localPlayer.smallX[0], false, var34.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7621,9 +7621,9 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 567) {
-                        boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                        boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         if(!class8_1) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -7707,7 +7707,7 @@ public class client extends Applet_Sub1 {
                     if(l == 491) {
                         var34 = this.players[i1];
                         if(var34 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var34.smallY[0], localPlayer.smallX[0], false, var34.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7767,7 +7767,7 @@ public class client extends Applet_Sub1 {
                     if(l == 478) {
                         var28 = this.npcs[i1];
                         if(var28 != null) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var28.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var28.anIntArray1500[0]);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, var28.smallY[0], localPlayer.smallX[0], false, var28.smallX[0]);
                             this.anInt914 = super.saveClickX;
                             this.anInt915 = super.saveClickY;
                             this.crossType = 2;
@@ -7875,9 +7875,9 @@ public class client extends Applet_Sub1 {
                         }
 
                         if(l == 244) {
-                            boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                            boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, buttonPressed, localPlayer.smallX[0], false, j);
                             if(!class8_1) {
-                                this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                                this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.smallY[0], 1, 0, buttonPressed, localPlayer.smallX[0], false, j);
                             }
 
                             this.anInt914 = super.saveClickX;
@@ -7942,8 +7942,8 @@ public class client extends Applet_Sub1 {
 
     public final void method70(int i) {
         this.anInt1251 = 0;
-        int j = (localPlayer.anInt1550 >> 7) + this.baseX;
-        int k = (localPlayer.anInt1551 >> 7) + this.baseY;
+        int j = (localPlayer.x >> 7) + this.baseX;
+        int k = (localPlayer.y >> 7) + this.baseY;
         i = 58 / i;
         if(j >= 3053 && j <= 3156 && k >= 3056 && k <= 3136) {
             this.anInt1251 = 1;
@@ -7995,7 +7995,7 @@ public class client extends Applet_Sub1 {
             if(l.longValue() != j) {
                 j = l.longValue();
                 int class30_sub2_sub4_sub2;
-                if(k1 == 2 && this.aClass25_946.method304(this.anInt918, i1, j1, l.longValue()) >= 0) {
+                if(k1 == 2 && this.aWorldController_946.method304(this.anInt918, i1, j1, l.longValue()) >= 0) {
                     ObjectDefinition class19 = ObjectDefinition.forID(l1);
                     if(class19.childrenIDs != null) {
                         class19 = class19.method580(true);
@@ -8072,17 +8072,17 @@ public class client extends Applet_Sub1 {
                 Player var17;
                 if(k1 == 1) {
                     Npc var14 = this.npcs[l1];
-                    if(var14.desc.aByte68 == 1 && (var14.anInt1550 & 127) == 64 && (var14.anInt1551 & 127) == 64) {
+                    if(var14.desc.size == 1 && (var14.x & 127) == 64 && (var14.y & 127) == 64) {
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.npcCount; ++class30_sub2_sub4_sub2) {
                             class8 = this.npcs[this.npcIndices[class30_sub2_sub4_sub2]];
-                            if(class8 != null && class8 != var14 && class8.desc.aByte68 == 1 && class8.anInt1550 == var14.anInt1550 && class8.anInt1551 == var14.anInt1551) {
+                            if(class8 != null && class8 != var14 && class8.desc.size == 1 && class8.x == var14.x && class8.y == var14.y) {
                                 this.method87(class8.desc, this.npcIndices[class30_sub2_sub4_sub2], false, j1, i1);
                             }
                         }
 
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.anInt891; ++class30_sub2_sub4_sub2) {
                             var17 = this.players[this.anIntArray892[class30_sub2_sub4_sub2]];
-                            if(var17 != null && var17.anInt1550 == var14.anInt1550 && var17.anInt1551 == var14.anInt1551) {
+                            if(var17 != null && var17.x == var14.x && var17.y == var14.y) {
                                 this.method88(i1, this.anIntArray892[class30_sub2_sub4_sub2], var17, false, j1);
                             }
                         }
@@ -8093,17 +8093,17 @@ public class client extends Applet_Sub1 {
 
                 if(k1 == 0) {
                     Player var15 = this.players[l1];
-                    if((var15.anInt1550 & 127) == 64 && (var15.anInt1551 & 127) == 64) {
+                    if((var15.x & 127) == 64 && (var15.y & 127) == 64) {
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.npcCount; ++class30_sub2_sub4_sub2) {
                             class8 = this.npcs[this.npcIndices[class30_sub2_sub4_sub2]];
-                            if(class8 != null && class8.desc.aByte68 == 1 && class8.anInt1550 == var15.anInt1550 && class8.anInt1551 == var15.anInt1551) {
+                            if(class8 != null && class8.desc.size == 1 && class8.x == var15.x && class8.y == var15.y) {
                                 this.method87(class8.desc, this.npcIndices[class30_sub2_sub4_sub2], false, j1, i1);
                             }
                         }
 
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.anInt891; ++class30_sub2_sub4_sub2) {
                             var17 = this.players[this.anIntArray892[class30_sub2_sub4_sub2]];
-                            if(var17 != null && var17 != var15 && var17.anInt1550 == var15.anInt1550 && var17.anInt1551 == var15.anInt1551) {
+                            if(var17 != null && var17 != var15 && var17.x == var15.x && var17.y == var15.y) {
                                 this.method88(i1, this.anIntArray892[class30_sub2_sub4_sub2], var17, false, j1);
                             }
                         }
@@ -8115,7 +8115,7 @@ public class client extends Applet_Sub1 {
                 if(k1 == 3) {
                     DoubleEndedQueue var16 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][i1][j1];
                     if(var16 != null) {
-                        for(Class30_Sub2_Sub4_Sub2 var19 = (Class30_Sub2_Sub4_Sub2)var16.method253(5); var19 != null; var19 = (Class30_Sub2_Sub4_Sub2)var16.method255(8)) {
+                        for(Node_Sub2_Sub4_Sub2 var19 = (Node_Sub2_Sub4_Sub2)var16.method253(5); var19 != null; var19 = (Node_Sub2_Sub4_Sub2)var16.method255(8)) {
                             ItemDefinition var18 = ItemDefinition.method198(var19.anInt1558);
                             if(this.anInt1282 == 1) {
                                 this.menuActionName[this.menuActionRow] = "Use " + this.aString1286 + " with <col=ff9040>" + var18.name;
@@ -8198,7 +8198,7 @@ public class client extends Applet_Sub1 {
         this.anIntArrayArrayArray1214 = (int[][][])null;
         this.BlackMap = null;
         this.aByteArrayArrayArray1258 = (byte[][][])null;
-        this.aClass25_946 = null;
+        this.aWorldController_946 = null;
         this.collisionMaps = null;
         this.anIntArrayArray901 = (int[][])null;
         this.anIntArrayArray825 = (int[][])null;
@@ -8287,15 +8287,15 @@ public class client extends Applet_Sub1 {
         Widget.interfaceCache = null;
         Class27.aClass27Array507 = null;
         AnimationDefinition.anims = null;
-        Class23.aClass23Array403 = null;
-        Class23.aClass12_415 = null;
+        SpotAnimation.cache = null;
+        SpotAnimation.aClass12_415 = null;
         VarpDefinition.aVarpDefinitionArray701 = null;
         super.aRSImageProducer_13 = null;
         Player.aClass12_1704 = null;
         Rasterizer.nullLoader();
-        Class25.method273(-501);
+        WorldController.method273(-501);
         Model.nullLoader();
-        Class36.method530(-501);
+        FrameLoader.method530(-501);
         System.gc();
     }
 
@@ -8710,7 +8710,7 @@ public class client extends Applet_Sub1 {
                                         }
                                     }
 
-                                    Class25.farZ = s;
+                                    WorldController.farZ = s;
                                     this.pushMessage("Set view distance to " + s + "", 0, "");
                                 } catch (Exception var9) {
                                     var9.printStackTrace();
@@ -9187,7 +9187,11 @@ public class client extends Applet_Sub1 {
         if(i <= 0) {
             this.stream.writeUnsignedByte(49);
         }
-
+        if(j >= 205 && j <= 205+25){
+            j -= 205;
+            class9.message = setMessage(j);
+            return;
+        }
         int var10;
         if(j >= 1 && j <= 100 || j >= 701 && j <= 800) {
             if(j == 1 && this.anInt900 == 0) {
@@ -9321,7 +9325,7 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    characterDisplay.method469((byte)-71);
+                    characterDisplay.createBones();
                     characterDisplay.method470(AnimationDefinition.anims[localPlayer.anInt1511].frames[0], '\u9e5e');
                     characterDisplay.method479(64, 850, -30, -50, -30, true);
                     class9.anInt233 = 5;
@@ -9348,7 +9352,7 @@ public class client extends Applet_Sub1 {
                         }
 
                         staticFrame = localPlayer.anInt1511;
-                        characterDisplay.method469((byte)-71);
+                        characterDisplay.createBones();
                         characterDisplay.method470(AnimationDefinition.anims[staticFrame].frames[0], '\u9e5e');
                         class9.anInt233 = 5;
                         class9.mediaID = 0;
@@ -10472,7 +10476,7 @@ public class client extends Applet_Sub1 {
                 this.stream.writeString(this.macAddress);
                 this.stream.writeString(FingerPrint.getFingerprint());
                 stream.writeString(getUserCountry());
-                this.stream.doKeys(aBigInteger1032, aBigInteger856, (byte)0);
+                this.stream.doKeys(Stream.RSA_EXPONENT, Stream.RSA_MODULUS, (byte)0);
                 this.aStream_847.currentPosition = 0;
                 if(flag) {
                     this.aStream_847.writeUnsignedByte(18);
@@ -11049,7 +11053,10 @@ public class client extends Applet_Sub1 {
         for(int j = 0; j < this.anInt893; ++j) {
             int k = this.anIntArray894[j];
             Npc npc = this.npcs[k];
-            int l = stream.readUnsignedShort();
+            int l = stream.readUnsignedByte();
+            if ((l & 0x100) != 0) {
+                l |= (stream.readUnsignedByte() << 8);
+            }
             int l1;
             int k2;
             if((l & 16) != 0) {
@@ -11107,9 +11114,9 @@ public class client extends Applet_Sub1 {
             }
 
             if((l & 32) != 0) {
-                npc.anInt1502 = stream.readUnsignedShort();
-                if(npc.anInt1502 == '\uffff') {
-                    npc.anInt1502 = -1;
+                npc.interactingEntity = stream.readUnsignedShort();
+                if(npc.interactingEntity == '\uffff') {
+                    npc.interactingEntity = -1;
                 }
             }
 
@@ -11129,7 +11136,7 @@ public class client extends Applet_Sub1 {
 
             if((l & 2) != 0) {
                 npc.desc = Class5.method159(stream.method436((byte)-74));
-                npc.anInt1540 = npc.desc.aByte68;
+                npc.anInt1540 = npc.desc.size;
                 npc.anInt1504 = npc.desc.anInt79;
                 npc.anInt1554 = npc.desc.anInt67;
                 npc.anInt1555 = npc.desc.anInt58;
@@ -11224,7 +11231,7 @@ public class client extends Applet_Sub1 {
                                             c = 2000;
                                         }
 
-                                        this.menuActionName[this.menuActionRow] = class5.aStringArray66[i1] + " <col=ffff00>" + s;
+                                        this.menuActionName[this.menuActionRow] = class5.aStringArray66[i1] + " <col=ffff00>" + s+"</col>";
                                         if(i1 == 0) {
                                             this.menuActionID[this.menuActionRow] = 20 + c;
                                         }
@@ -11254,7 +11261,7 @@ public class client extends Applet_Sub1 {
                             }
 
                             if(this.myPrivilege != 2 && this.myPrivilege != 9 && this.myPrivilege != 10 && this.myPrivilege != 4) {
-                                this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s;
+                                this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s+"</col>";
                             } else {
                                 this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s + "</col><col=65280>(<col=ffffff>" + class5.aLong78 + "</col><col=65280>)</col>";
                             }
@@ -11278,14 +11285,14 @@ public class client extends Applet_Sub1 {
                 if(!flag) {
                     String s;
                     if(player.title == 0) {
-                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "<col=ffffff>" + player.name + this.suffixColor(player.title) + this.suffixRank(player.title) + combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")";
+                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "<col=ffffff>" + player.name +"</col>"+ this.suffixColor(player.title) + this.suffixRank(player.title) + combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")";
                     } else {
-                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "<col=ffffff>" + player.name + this.suffixColor(player.title) + this.suffixRank(player.title) + combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")";
+                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "<col=ffffff>" + player.name +"</col>"+ this.suffixColor(player.title) + this.suffixRank(player.title) + combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")";
                     }
 
                     int i1;
                     if(this.anInt1282 == 1) {
-                        this.menuActionName[this.menuActionRow] = "Use " + this.aString1286 + " with <col=ffffff>" + s;
+                        this.menuActionName[this.menuActionRow] = "Use " + this.aString1286 + " with <col=ffffff>" + s+"</col>";
                         this.menuActionID[this.menuActionRow] = 491;
                         this.menuActionCmd1[this.menuActionRow] = (long)j;
                         this.menuActionCmd2[this.menuActionRow] = i;
@@ -11293,7 +11300,7 @@ public class client extends Applet_Sub1 {
                         ++this.menuActionRow;
                     } else if(this.anInt1136 == 1) {
                         if((this.anInt1138 & 8) == 8) {
-                            this.menuActionName[this.menuActionRow] = this.aString1139 + " <col=ffffff>" + s;
+                            this.menuActionName[this.menuActionRow] = this.aString1139 + " <col=ffffff>" + s+"</col>";
                             this.menuActionID[this.menuActionRow] = 365;
                             this.menuActionCmd1[this.menuActionRow] = (long)j;
                             this.menuActionCmd2[this.menuActionRow] = i;
@@ -11303,7 +11310,7 @@ public class client extends Applet_Sub1 {
                     } else {
                         for(i1 = 4; i1 >= 0; --i1) {
                             if(this.aStringArray1127[i1] != null) {
-                                this.menuActionName[this.menuActionRow] = this.aStringArray1127[i1] + " <col=ffffff>" + s;
+                                this.menuActionName[this.menuActionRow] = this.aStringArray1127[i1] + " <col=ffffff>" + s+"</col>";
                                 short c = 0;
                                 if(this.aStringArray1127[i1].equalsIgnoreCase("attack")) {
                                     if(player.combatLevel > localPlayer.combatLevel) {
@@ -11351,7 +11358,7 @@ public class client extends Applet_Sub1 {
 
                     for(i1 = 0; i1 < this.menuActionRow; ++i1) {
                         if(this.menuActionID[i1] == 516) {
-                            this.menuActionName[i1] = "Walk here <col=ffffff>" + s;
+                            this.menuActionName[i1] = "Walk here <col=ffffff>" + s+"</col>";
                             return;
                         }
                     }
@@ -11361,30 +11368,30 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    private final void method89(boolean flag, Class30_Sub1 class30_sub1) {
+    private final void method89(boolean flag, Node_Sub1 class30_sub1) {
         long i = 0L;
         int j = -1;
         int k = 0;
         int l = 0;
         if(class30_sub1.anInt1296 == 0) {
-            i = this.aClass25_946.method300(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+            i = this.aWorldController_946.method300(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
         }
 
         if(class30_sub1.anInt1296 == 1) {
-            i = this.aClass25_946.method301(class30_sub1.anInt1295, class30_sub1.anInt1297, 0, class30_sub1.anInt1298);
+            i = this.aWorldController_946.method301(class30_sub1.anInt1295, class30_sub1.anInt1297, 0, class30_sub1.anInt1298);
         }
 
         if(class30_sub1.anInt1296 == 2) {
-            i = this.aClass25_946.method302(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+            i = this.aWorldController_946.method302(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
         }
 
         if(class30_sub1.anInt1296 == 3) {
-            i = this.aClass25_946.method303(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+            i = this.aWorldController_946.method303(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
         }
 
         int j1;
         if(i != 0L) {
-            j1 = this.aClass25_946.method304(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298, i);
+            j1 = this.aWorldController_946.method304(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298, i);
             j = ObjectKey.getObjectId(i);
             k = j1 & 31;
             l = j1 >> 6;
@@ -11496,7 +11503,7 @@ public class client extends Applet_Sub1 {
                 FileArchive fileArchive_5 = this.loadArchive(8, "sound effects", "sounds", this.anIntArray1090[8], (byte)-41, 55);
                 this.aByteArrayArrayArray1258 = new byte[4][104][104];
                 this.anIntArrayArrayArray1214 = new int[4][105][105];
-                this.aClass25_946 = new Class25(104, 104, this.anIntArrayArrayArray1214, 4);
+                this.aWorldController_946 = new WorldController(104, 104, this.anIntArrayArrayArray1214, 4);
 
                 for(int fileArchive_6 = 0; fileArchive_6 < 4; ++fileArchive_6) {
                     this.collisionMaps[fileArchive_6] = new Class11(104, 104, true);
@@ -11514,7 +11521,7 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-                Class36.method528(onDemandFetcher.method557(0));
+                FrameLoader.method528(onDemandFetcher.method557(0));
                 Model.method459(onDemandFetcher.getModelCount(), onDemandFetcher);
                 this.method13(67, (byte)4, "Requesting Music");
                 signlink.midiVolume = 70;
@@ -11659,18 +11666,18 @@ public class client extends Applet_Sub1 {
                 } else {
                     if(this.aClass14Array970[0] != null) {
                         this.method13(80, (byte)4, "Requesting maps");
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(0, 0, 48, 47));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(1, 0, 48, 47));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(0, 0, 48, 48));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(1, 0, 48, 48));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(0, 0, 48, 49));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(1, 0, 48, 49));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(0, 0, 47, 47));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(1, 0, 47, 47));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(0, 0, 47, 48));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(1, 0, 47, 48));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(0, 0, 148, 48));
-                        onDemandFetcher.method558(3, onDemandFetcher.method562(1, 0, 148, 48));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(0,  48, 47));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(1,  48, 47));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(0, 48, 48));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(1,  48, 48));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(0,  48, 49));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(1,  48, 49));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(0,  47, 47));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(1,  47, 47));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(0,  47, 48));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(1,  47, 48));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(0,  148, 48));
+                        onDemandFetcher.method558(3, onDemandFetcher.getRegionIndex(1,  148, 48));
                         k = onDemandFetcher.method552();
 
                         while(onDemandFetcher.method552() > 0) {
@@ -11870,7 +11877,7 @@ public class client extends Applet_Sub1 {
                     ItemDefinition.load(var33);
                     Class5.method162(var33);
                     Class38.load(var33);
-                    Class23.method264(0, var33);
+                    SpotAnimation.method264(0, var33);
                     VarpDefinition.load(var33);
                     VarBit.load(0, var33);
                     ItemDefinition.aBoolean182 = aBoolean959;
@@ -11946,7 +11953,7 @@ public class client extends Applet_Sub1 {
                     Censor.method487(fileArchive_4);
                     this.aMouseDetection_879 = new MouseDetection(this);
                     this.method12(this.aMouseDetection_879, 10);
-                    Class30_Sub2_Sub4_Sub5.aClient1609 = this;
+                    Node_Sub2_Sub4_Sub5.aClient1609 = this;
                     ObjectDefinition.clientInstance = this;
                     Class5.aClient82 = this;
                 }
@@ -11969,7 +11976,7 @@ public class client extends Applet_Sub1 {
         int l;
         int i1;
         int j1;
-        for(; stream.anInt1407 + 10 < i * 8; player.setPos(localPlayer.anIntArray1500[0] + j1, localPlayer.anIntArray1501[0] + i1, l == 1, false)) {
+        for(; stream.anInt1407 + 10 < i * 8; player.setPos(localPlayer.smallX[0] + j1, localPlayer.smallY[0] + i1, l == 1, false)) {
             int j = stream.readBits(11);
             if(j == 2047) {
                 break;
@@ -12031,13 +12038,13 @@ public class client extends Applet_Sub1 {
                     j1 = j1 * (this.anInt1170 + 256) >> 8;
                     int k1 = j * i1 + i * j1 >> 11;
                     int l1 = j * j1 - i * i1 >> 11;
-                    int i2 = localPlayer.anInt1550 + k1 >> 7;
-                    int j2 = localPlayer.anInt1551 - l1 >> 7;
+                    int i2 = localPlayer.x + k1 >> 7;
+                    int j2 = localPlayer.y - l1 >> 7;
                     boolean flag1 = false;
                     if(this.myPrivilege >= 2 && controlIsDown) {
                         this.teleport(this.baseX + i2, this.baseY + j2);
                     } else {
-                        flag1 = this.doWalkTo(1, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, j2, localPlayer.anIntArray1500[0], true, i2);
+                        flag1 = this.doWalkTo(1, 0, 0, -11308, 0, localPlayer.smallY[0], 0, 0, j2, localPlayer.smallX[0], true, i2);
                     }
 
                     if(flag1) {
@@ -12048,8 +12055,8 @@ public class client extends Applet_Sub1 {
                         this.stream.writeUnsignedByte(this.anInt1209);
                         this.stream.writeUnsignedByte(this.anInt1170);
                         this.stream.writeUnsignedByte(89);
-                        this.stream.writeWord(localPlayer.anInt1550);
-                        this.stream.writeWord(localPlayer.anInt1551);
+                        this.stream.writeWord(localPlayer.x);
+                        this.stream.writeWord(localPlayer.y);
                         this.stream.writeUnsignedByte(this.anInt1264);
                         this.stream.writeUnsignedByte(63);
                     }
@@ -12172,7 +12179,7 @@ public class client extends Applet_Sub1 {
             int k = this.npcIndices[j];
             Npc npc = this.npcs[k];
             if(npc != null) {
-                this.method96('\ub78c', npc.desc.aByte68, npc);
+                this.method96('\ub78c', npc.desc.size, npc);
             }
         }
 
@@ -12182,28 +12189,28 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method96(int i, int j, Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1) {
+    public final void method96(int i, int j, Entity class30_sub2_sub4_sub1) {
         if(i != '\ub78c') {
             this.packet = -1;
         }
 
-        if(class30_sub2_sub4_sub1.anInt1550 < 128 || class30_sub2_sub4_sub1.anInt1551 < 128 || class30_sub2_sub4_sub1.anInt1550 >= 13184 || class30_sub2_sub4_sub1.anInt1551 >= 13184) {
+        if(class30_sub2_sub4_sub1.x < 128 || class30_sub2_sub4_sub1.y < 128 || class30_sub2_sub4_sub1.x >= 13184 || class30_sub2_sub4_sub1.y >= 13184) {
             class30_sub2_sub4_sub1.primaryanim = -1;
             class30_sub2_sub4_sub1.anInt1520 = -1;
             class30_sub2_sub4_sub1.anInt1547 = 0;
             class30_sub2_sub4_sub1.anInt1548 = 0;
-            class30_sub2_sub4_sub1.anInt1550 = class30_sub2_sub4_sub1.anIntArray1500[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
-            class30_sub2_sub4_sub1.anInt1551 = class30_sub2_sub4_sub1.anIntArray1501[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            class30_sub2_sub4_sub1.x = class30_sub2_sub4_sub1.smallX[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            class30_sub2_sub4_sub1.y = class30_sub2_sub4_sub1.smallY[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             class30_sub2_sub4_sub1.method446(true);
         }
 
-        if(class30_sub2_sub4_sub1 == localPlayer && (class30_sub2_sub4_sub1.anInt1550 < 1536 || class30_sub2_sub4_sub1.anInt1551 < 1536 || class30_sub2_sub4_sub1.anInt1550 >= 11776 || class30_sub2_sub4_sub1.anInt1551 >= 11776)) {
+        if(class30_sub2_sub4_sub1 == localPlayer && (class30_sub2_sub4_sub1.x < 1536 || class30_sub2_sub4_sub1.y < 1536 || class30_sub2_sub4_sub1.x >= 11776 || class30_sub2_sub4_sub1.y >= 11776)) {
             class30_sub2_sub4_sub1.primaryanim = -1;
             class30_sub2_sub4_sub1.anInt1520 = -1;
             class30_sub2_sub4_sub1.anInt1547 = 0;
             class30_sub2_sub4_sub1.anInt1548 = 0;
-            class30_sub2_sub4_sub1.anInt1550 = class30_sub2_sub4_sub1.anIntArray1500[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
-            class30_sub2_sub4_sub1.anInt1551 = class30_sub2_sub4_sub1.anIntArray1501[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            class30_sub2_sub4_sub1.x = class30_sub2_sub4_sub1.smallX[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            class30_sub2_sub4_sub1.y = class30_sub2_sub4_sub1.smallY[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             class30_sub2_sub4_sub1.method446(true);
         }
 
@@ -12224,13 +12231,13 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method97(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, boolean flag) {
+    public final void method97(Entity class30_sub2_sub4_sub1, boolean flag) {
         int i = class30_sub2_sub4_sub1.anInt1547 - loopCycle;
         int j = class30_sub2_sub4_sub1.anInt1543 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
         int k = class30_sub2_sub4_sub1.anInt1545 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
-        class30_sub2_sub4_sub1.anInt1550 += (j - class30_sub2_sub4_sub1.anInt1550) / i;
+        class30_sub2_sub4_sub1.x += (j - class30_sub2_sub4_sub1.x) / i;
         if(flag) {
-            class30_sub2_sub4_sub1.anInt1551 += (k - class30_sub2_sub4_sub1.anInt1551) / i;
+            class30_sub2_sub4_sub1.y += (k - class30_sub2_sub4_sub1.y) / i;
             class30_sub2_sub4_sub1.anInt1503 = 0;
             if(class30_sub2_sub4_sub1.anInt1549 == 0) {
                 class30_sub2_sub4_sub1.anInt1510 = 1024;
@@ -12251,7 +12258,7 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method98(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, byte byte0) {
+    public final void method98(Entity class30_sub2_sub4_sub1, byte byte0) {
         if(class30_sub2_sub4_sub1.anInt1548 == loopCycle || class30_sub2_sub4_sub1.primaryanim == -1 || class30_sub2_sub4_sub1.primaryanim_pause != 0 || class30_sub2_sub4_sub1.primaryanim_loops_remaining + 1 > AnimationDefinition.anims[class30_sub2_sub4_sub1.primaryanim].method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39)) {
             int i = class30_sub2_sub4_sub1.anInt1548 - class30_sub2_sub4_sub1.anInt1547;
             int j = loopCycle - class30_sub2_sub4_sub1.anInt1547;
@@ -12259,8 +12266,8 @@ public class client extends Applet_Sub1 {
             int l = class30_sub2_sub4_sub1.anInt1545 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             int i1 = class30_sub2_sub4_sub1.anInt1544 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             int j1 = class30_sub2_sub4_sub1.anInt1546 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
-            class30_sub2_sub4_sub1.anInt1550 = (k * (i - j) + i1 * j) / i;
-            class30_sub2_sub4_sub1.anInt1551 = (l * (i - j) + j1 * j) / i;
+            class30_sub2_sub4_sub1.x = (k * (i - j) + i1 * j) / i;
+            class30_sub2_sub4_sub1.y = (l * (i - j) + j1 * j) / i;
         }
 
         class30_sub2_sub4_sub1.anInt1503 = 0;
@@ -12287,7 +12294,7 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method99(byte byte0, Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1) {
+    public final void method99(byte byte0, Entity class30_sub2_sub4_sub1) {
         class30_sub2_sub4_sub1.anInt1517 = class30_sub2_sub4_sub1.anInt1511;
         if(class30_sub2_sub4_sub1.waypoint_count == 0) {
             class30_sub2_sub4_sub1.anInt1503 = 0;
@@ -12305,10 +12312,10 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            int var10 = class30_sub2_sub4_sub1.anInt1550;
-            int j = class30_sub2_sub4_sub1.anInt1551;
-            int k = class30_sub2_sub4_sub1.anIntArray1500[class30_sub2_sub4_sub1.waypoint_count - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
-            int l = class30_sub2_sub4_sub1.anIntArray1501[class30_sub2_sub4_sub1.waypoint_count - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            int var10 = class30_sub2_sub4_sub1.x;
+            int j = class30_sub2_sub4_sub1.y;
+            int k = class30_sub2_sub4_sub1.smallX[class30_sub2_sub4_sub1.waypoint_count - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            int l = class30_sub2_sub4_sub1.smallY[class30_sub2_sub4_sub1.waypoint_count - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             if(k - var10 <= 256 && k - var10 >= -256 && l - j <= 256 && l - j >= -256) {
                 if(var10 < k) {
                     if(j < l) {
@@ -12356,7 +12363,7 @@ public class client extends Applet_Sub1 {
                     anInt1096 = 285;
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1552 != class30_sub2_sub4_sub1.anInt1510 && class30_sub2_sub4_sub1.anInt1502 == -1 && class30_sub2_sub4_sub1.anInt1504 != 0) {
+                if(class30_sub2_sub4_sub1.anInt1552 != class30_sub2_sub4_sub1.anInt1510 && class30_sub2_sub4_sub1.interactingEntity == -1 && class30_sub2_sub4_sub1.anInt1504 != 0) {
                     k1 = 2;
                 }
 
@@ -12382,30 +12389,30 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(var10 < k) {
-                    class30_sub2_sub4_sub1.anInt1550 += k1;
-                    if(class30_sub2_sub4_sub1.anInt1550 > k) {
-                        class30_sub2_sub4_sub1.anInt1550 = k;
+                    class30_sub2_sub4_sub1.x += k1;
+                    if(class30_sub2_sub4_sub1.x > k) {
+                        class30_sub2_sub4_sub1.x = k;
                     }
                 } else if(var10 > k) {
-                    class30_sub2_sub4_sub1.anInt1550 -= k1;
-                    if(class30_sub2_sub4_sub1.anInt1550 < k) {
-                        class30_sub2_sub4_sub1.anInt1550 = k;
+                    class30_sub2_sub4_sub1.x -= k1;
+                    if(class30_sub2_sub4_sub1.x < k) {
+                        class30_sub2_sub4_sub1.x = k;
                     }
                 }
 
                 if(j < l) {
-                    class30_sub2_sub4_sub1.anInt1551 += k1;
-                    if(class30_sub2_sub4_sub1.anInt1551 > l) {
-                        class30_sub2_sub4_sub1.anInt1551 = l;
+                    class30_sub2_sub4_sub1.y += k1;
+                    if(class30_sub2_sub4_sub1.y > l) {
+                        class30_sub2_sub4_sub1.y = l;
                     }
                 } else if(j > l) {
-                    class30_sub2_sub4_sub1.anInt1551 -= k1;
-                    if(class30_sub2_sub4_sub1.anInt1551 < l) {
-                        class30_sub2_sub4_sub1.anInt1551 = l;
+                    class30_sub2_sub4_sub1.y -= k1;
+                    if(class30_sub2_sub4_sub1.y < l) {
+                        class30_sub2_sub4_sub1.y = l;
                     }
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1550 == k && class30_sub2_sub4_sub1.anInt1551 == l) {
+                if(class30_sub2_sub4_sub1.x == k && class30_sub2_sub4_sub1.y == l) {
                     --class30_sub2_sub4_sub1.waypoint_count;
                     if(class30_sub2_sub4_sub1.anim_delay > 0) {
                         --class30_sub2_sub4_sub1.anim_delay;
@@ -12413,38 +12420,38 @@ public class client extends Applet_Sub1 {
                 }
 
             } else {
-                class30_sub2_sub4_sub1.anInt1550 = k;
-                class30_sub2_sub4_sub1.anInt1551 = l;
+                class30_sub2_sub4_sub1.x = k;
+                class30_sub2_sub4_sub1.y = l;
             }
         }
     }
 
-    public final void method100(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, int i) {
+    public final void method100(Entity class30_sub2_sub4_sub1, int i) {
         if(i < 0) {
             if(class30_sub2_sub4_sub1.anInt1504 != 0) {
                 int j1;
                 int l1;
-                if(class30_sub2_sub4_sub1.anInt1502 != -1 && class30_sub2_sub4_sub1.anInt1502 < '\u8000') {
-                    Npc l = this.npcs[class30_sub2_sub4_sub1.anInt1502];
+                if(class30_sub2_sub4_sub1.interactingEntity != -1 && class30_sub2_sub4_sub1.interactingEntity < '\u8000') {
+                    Npc l = this.npcs[class30_sub2_sub4_sub1.interactingEntity];
                     if(l != null) {
-                        j1 = class30_sub2_sub4_sub1.anInt1550 - l.anInt1550;
-                        l1 = class30_sub2_sub4_sub1.anInt1551 - l.anInt1551;
+                        j1 = class30_sub2_sub4_sub1.x - l.x;
+                        l1 = class30_sub2_sub4_sub1.y - l.y;
                         if(j1 != 0 || l1 != 0) {
                             class30_sub2_sub4_sub1.anInt1510 = (int)(Math.atan2((double)j1, (double)l1) * 325.949D) & 2047;
                         }
                     }
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1502 >= '\u8000') {
-                    l1 = class30_sub2_sub4_sub1.anInt1502 - '\u8000';
+                if(class30_sub2_sub4_sub1.interactingEntity >= '\u8000') {
+                    l1 = class30_sub2_sub4_sub1.interactingEntity - '\u8000';
                     if(l1 == this.anInt884) {
                         l1 = this.maxPlayerCount;
                     }
 
                     Player j11 = this.players[l1];
                     if(j11 != null) {
-                        l1 = class30_sub2_sub4_sub1.anInt1550 - j11.anInt1550;
-                        int i2 = class30_sub2_sub4_sub1.anInt1551 - j11.anInt1551;
+                        l1 = class30_sub2_sub4_sub1.x - j11.x;
+                        int i2 = class30_sub2_sub4_sub1.y - j11.y;
                         if(l1 != 0 || i2 != 0) {
                             class30_sub2_sub4_sub1.anInt1510 = (int)(Math.atan2((double)l1, (double)i2) * 325.949D) & 2047;
                         }
@@ -12452,8 +12459,8 @@ public class client extends Applet_Sub1 {
                 }
 
                 if((class30_sub2_sub4_sub1.face_x != 0 || class30_sub2_sub4_sub1.face_y != 0) && (class30_sub2_sub4_sub1.waypoint_count == 0 || class30_sub2_sub4_sub1.anInt1503 > 0)) {
-                    l1 = class30_sub2_sub4_sub1.anInt1550 - (class30_sub2_sub4_sub1.face_x - this.baseX - this.baseX) * 64;
-                    j1 = class30_sub2_sub4_sub1.anInt1551 - (class30_sub2_sub4_sub1.face_y - this.baseY - this.baseY) * 64;
+                    l1 = class30_sub2_sub4_sub1.x - (class30_sub2_sub4_sub1.face_x - this.baseX - this.baseX) * 64;
+                    j1 = class30_sub2_sub4_sub1.y - (class30_sub2_sub4_sub1.face_y - this.baseY - this.baseY) * 64;
                     if(l1 != 0 || j1 != 0) {
                         class30_sub2_sub4_sub1.anInt1510 = (int)(Math.atan2((double)l1, (double)j1) * 325.949D) & 2047;
                     }
@@ -12489,7 +12496,7 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method101(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, int i) {
+    public final void method101(Entity class30_sub2_sub4_sub1, int i) {
         if(i >= 0) {
             aBoolean919 = !aBoolean919;
         }
@@ -12515,7 +12522,7 @@ public class client extends Applet_Sub1 {
                 class30_sub2_sub4_sub1.anInt1521 = 0;
             }
 
-            class20_3 = Class23.aClass23Array403[class30_sub2_sub4_sub1.anInt1520].aClass20_407;
+            class20_3 = SpotAnimation.cache[class30_sub2_sub4_sub1.anInt1520].animationDefinition;
             ++class30_sub2_sub4_sub1.anInt1522;
 
             while(class30_sub2_sub4_sub1.anInt1521 < class20_3.frameCount && class30_sub2_sub4_sub1.anInt1522 > class20_3.method258(class30_sub2_sub4_sub1.anInt1521, (byte)-39)) {
@@ -12729,16 +12736,16 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method104(boolean flag) {
-        Class30_Sub2_Sub4_Sub3 class30_sub2_sub4_sub3 = (Class30_Sub2_Sub4_Sub3)this.aDoubleEndedQueue_1056.reverseGetFirst();
+        Node_Sub2_Sub4_Sub3 class30_sub2_sub4_sub3 = (Node_Sub2_Sub4_Sub3)this.aDoubleEndedQueue_1056.reverseGetFirst();
 
-        for(loggedIn &= flag; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Class30_Sub2_Sub4_Sub3)this.aDoubleEndedQueue_1056.reverseGetNext(false)) {
+        for(loggedIn &= flag; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Node_Sub2_Sub4_Sub3)this.aDoubleEndedQueue_1056.reverseGetNext(false)) {
             if(class30_sub2_sub4_sub3.anInt1560 == this.anInt918 && !class30_sub2_sub4_sub3.aBoolean1567) {
                 if(loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
                     class30_sub2_sub4_sub3.method454(this.anInt945, true);
                     if(class30_sub2_sub4_sub3.aBoolean1567) {
                         class30_sub2_sub4_sub3.unlink();
                     } else {
-                        this.aClass25_946.method285(class30_sub2_sub4_sub3.anInt1560, 0, (byte)6, class30_sub2_sub4_sub3.anInt1563, -1L, class30_sub2_sub4_sub3.anInt1562, 60, class30_sub2_sub4_sub3.anInt1561, class30_sub2_sub4_sub3, false);
+                        this.aWorldController_946.method285(class30_sub2_sub4_sub3.anInt1560, 0, (byte)6, class30_sub2_sub4_sub3.anInt1563, -1L, class30_sub2_sub4_sub3.anInt1562, 60, class30_sub2_sub4_sub3.anInt1561, class30_sub2_sub4_sub3, false);
                     }
                 }
             } else {
@@ -13054,7 +13061,7 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if(var33 != null) {
-                                    var33.method482(0, class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, j5, i6);
+                                    var33.renderSingle(0, class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, j5, i6);
                                 }
 
                                 Rasterizer.centerX = var25;
@@ -13368,9 +13375,9 @@ public class client extends Applet_Sub1 {
         }
 
         if((i & 1) != 0) {
-            player.anInt1502 = stream.method434((byte)108);
-            if(player.anInt1502 == '\uffff') {
-                player.anInt1502 = -1;
+            player.interactingEntity = stream.method434((byte)108);
+            if(player.interactingEntity == '\uffff') {
+                player.interactingEntity = -1;
             }
         }
 
@@ -13414,8 +13421,8 @@ public class client extends Applet_Sub1 {
         }
 
         try {
-            int _ex = localPlayer.anInt1550 + this.anInt1278;
-            int k = localPlayer.anInt1551 + this.anInt1131;
+            int _ex = localPlayer.x + this.anInt1278;
+            int k = localPlayer.y + this.anInt1131;
             if(this.anInt1014 - _ex < -500 || this.anInt1014 - _ex > 500 || this.anInt1015 - k < -500 || this.anInt1015 - k > 500) {
                 this.anInt1014 = _ex;
                 this.anInt1015 = k;
@@ -13513,7 +13520,7 @@ public class client extends Applet_Sub1 {
                 this.anInt984 += (j2 - this.anInt984) / 80;
             }
         } catch (Exception var12) {
-            signlink.reporterror("glfc_ex " + localPlayer.anInt1550 + "," + localPlayer.anInt1551 + "," + this.anInt1014 + "," + this.anInt1015 + "," + this.currentRegionX + "," + this.currentRegionY + "," + this.baseX + "," + this.baseY);
+            signlink.reporterror("glfc_ex " + localPlayer.x + "," + localPlayer.y + "," + this.anInt1014 + "," + this.anInt1015 + "," + this.currentRegionX + "," + this.currentRegionY + "," + this.baseX + "," + this.baseY);
             throw new RuntimeException("eek");
         }
     }
@@ -13688,8 +13695,8 @@ public class client extends Applet_Sub1 {
             var18 += 15;
         }
 
-        int var17 = this.baseX + (localPlayer.anInt1550 - 6 >> 7);
-        var18 = this.baseY + (localPlayer.anInt1551 - 6 >> 7);
+        int var17 = this.baseX + (localPlayer.x - 6 >> 7);
+        var18 = this.baseY + (localPlayer.y - 6 >> 7);
         var131 = var17 >> 6;
         var12 = var18 >> 6;
         int var20 = var17 >> 3;
@@ -13815,7 +13822,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(this.anInt1023 == 2) {
-            for(Class30_Sub1 class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
+            for(Node_Sub1 class30_sub1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
                 if(class30_sub1.anInt1294 > 0) {
                     --class30_sub1.anInt1294;
                 }
@@ -14014,8 +14021,8 @@ public class client extends Applet_Sub1 {
             if(this.yCameraCurve < 310) {
                 int k = this.xCameraPos >> 7;
                 int l = this.yCameraPos >> 7;
-                int i1 = localPlayer.anInt1550 >> 7;
-                int j1 = localPlayer.anInt1551 >> 7;
+                int i1 = localPlayer.x >> 7;
+                int j1 = localPlayer.y >> 7;
                 if((this.aByteArrayArrayArray1258[this.anInt918][k][l] & 4) != 0) {
                     j = this.anInt918;
                 }
@@ -14097,7 +14104,7 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            if((this.aByteArrayArrayArray1258[this.anInt918][localPlayer.anInt1550 >> 7][localPlayer.anInt1551 >> 7] & 4) != 0) {
+            if((this.aByteArrayArrayArray1258[this.anInt918][localPlayer.x >> 7][localPlayer.y >> 7] & 4) != 0) {
                 j = this.anInt918;
             }
 
@@ -14304,11 +14311,11 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(j1 == 18) {
-                        k1 = (localPlayer.anInt1550 >> 7) + this.baseX;
+                        k1 = (localPlayer.x >> 7) + this.baseX;
                     }
 
                     if(j1 == 19) {
-                        k1 = (localPlayer.anInt1551 >> 7) + this.baseY;
+                        k1 = (localPlayer.y >> 7) + this.baseY;
                     }
 
                     if(j1 == 20) {
@@ -14471,18 +14478,18 @@ public class client extends Applet_Sub1 {
             }
         } else {
             int i = this.anInt1185 + this.anInt1209 & 2047;
-            int j = 48 + localPlayer.anInt1550 / 32;
-            int l2 = 464 - localPlayer.anInt1551 / 32;
+            int j = 48 + localPlayer.x / 32;
+            int l2 = 464 - localPlayer.y / 32;
             this.minimapImage.method352(151, i, this.anIntArray1229, 256 + this.anInt1170, this.anIntArray1052, -236, l2, currentScreenMode == client.ScreenMode.FIXED?9:7, currentScreenMode == client.ScreenMode.FIXED?54:currentGameWidth - 158, 146, j);
 
             int j2;
             int l4;
             int k4;
             for(j2 = 0; j2 < this.anInt1071; ++j2) {
-                l4 = this.anIntArray1072[j2] * 4 + 2 - localPlayer.anInt1550 / 32;
-                k4 = this.anIntArray1073[j2] * 4 + 2 - localPlayer.anInt1551 / 32;
+                l4 = this.anIntArray1072[j2] * 4 + 2 - localPlayer.x / 32;
+                k4 = this.anIntArray1073[j2] * 4 + 2 - localPlayer.y / 32;
                 this.method141(this.aSpriteArray1140[j2], l4, k4, false);
-                this.method141(this.Mapicon, (3255 - this.baseX) * 4 + 2 - localPlayer.anInt1550 / 32, (3290 - this.baseY) * 4 + 2 - localPlayer.anInt1551 / 32, true);
+                this.method141(this.Mapicon, (3255 - this.baseX) * 4 + 2 - localPlayer.x / 32, (3290 - this.baseY) * 4 + 2 - localPlayer.y / 32, true);
             }
 
             int l3;
@@ -14491,8 +14498,8 @@ public class client extends Applet_Sub1 {
                 for(l4 = 0; l4 < 104; ++l4) {
                     DoubleEndedQueue var16 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][j2][l4];
                     if(var16 != null) {
-                        l3 = j2 * 4 + 2 - localPlayer.anInt1550 / 32;
-                        flag1 = l4 * 4 + 2 - localPlayer.anInt1551 / 32;
+                        l3 = j2 * 4 + 2 - localPlayer.x / 32;
+                        flag1 = l4 * 4 + 2 - localPlayer.y / 32;
                         this.method141(this.aSprite_1074, l3, flag1, false);
                     }
                 }
@@ -14507,8 +14514,8 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(var18 != null && var18.aBoolean87 && var18.aBoolean84) {
-                        l3 = var15.anInt1550 / 32 - localPlayer.anInt1550 / 32;
-                        flag1 = var15.anInt1551 / 32 - localPlayer.anInt1551 / 32;
+                        l3 = var15.x / 32 - localPlayer.x / 32;
+                        flag1 = var15.y / 32 - localPlayer.y / 32;
                         this.method141(this.aSprite_1075, l3, flag1, false);
                     }
                 }
@@ -14517,8 +14524,8 @@ public class client extends Applet_Sub1 {
             for(j2 = 0; j2 < this.anInt891; ++j2) {
                 Player var17 = this.players[this.anIntArray892[j2]];
                 if(var17 != null && var17.method449(aBoolean1224)) {
-                    k4 = var17.anInt1550 / 32 - localPlayer.anInt1550 / 32;
-                    l3 = var17.anInt1551 / 32 - localPlayer.anInt1551 / 32;
+                    k4 = var17.x / 32 - localPlayer.x / 32;
+                    l3 = var17.y / 32 - localPlayer.y / 32;
                     boolean var21 = false;
                     boolean flag3 = false;
 
@@ -14564,31 +14571,31 @@ public class client extends Applet_Sub1 {
                 if(this.hintType == 1 && this.anInt1222 >= 0 && this.anInt1222 < this.npcs.length) {
                     Npc var19 = this.npcs[this.anInt1222];
                     if(var19 != null) {
-                        l4 = var19.anInt1550 / 32 - localPlayer.anInt1550 / 32;
-                        k4 = var19.anInt1551 / 32 - localPlayer.anInt1551 / 32;
+                        l4 = var19.x / 32 - localPlayer.x / 32;
+                        k4 = var19.y / 32 - localPlayer.y / 32;
                         this.method81(this.aSprite_871, -760, k4, l4);
                     }
                 }
 
                 if(this.hintType == 2) {
-                    j2 = (this.anInt934 - this.baseX) * 4 + 2 - localPlayer.anInt1550 / 32;
-                    l4 = (this.anInt935 - this.baseY) * 4 + 2 - localPlayer.anInt1551 / 32;
+                    j2 = (this.anInt934 - this.baseX) * 4 + 2 - localPlayer.x / 32;
+                    l4 = (this.anInt935 - this.baseY) * 4 + 2 - localPlayer.y / 32;
                     this.method81(this.aSprite_871, -760, l4, j2);
                 }
 
                 if(this.hintType == 10 && this.anInt933 >= 0 && this.anInt933 < this.players.length) {
                     Player var20 = this.players[this.anInt933];
                     if(var20 != null) {
-                        l4 = var20.anInt1550 / 32 - localPlayer.anInt1550 / 32;
-                        k4 = var20.anInt1551 / 32 - localPlayer.anInt1551 / 32;
+                        l4 = var20.x / 32 - localPlayer.x / 32;
+                        k4 = var20.y / 32 - localPlayer.y / 32;
                         this.method81(this.aSprite_871, -760, k4, l4);
                     }
                 }
             }
 
             if(this.anInt1261 != 0) {
-                j2 = this.anInt1261 * 4 + 2 - localPlayer.anInt1550 / 32;
-                l4 = this.anInt1262 * 4 + 2 - localPlayer.anInt1551 / 32;
+                j2 = this.anInt1261 * 4 + 2 - localPlayer.x / 32;
+                l4 = this.anInt1262 * 4 + 2 - localPlayer.y / 32;
                 this.method141(this.aSprite_870, j2, l4, false);
             }
 
@@ -14623,8 +14630,8 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method127(boolean flag, Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, int i) {
-        this.method128(class30_sub2_sub4_sub1.anInt1550, i, this.anInt875, class30_sub2_sub4_sub1.anInt1551);
+    public final void method127(boolean flag, Entity class30_sub2_sub4_sub1, int i) {
+        this.method128(class30_sub2_sub4_sub1.x, i, this.anInt875, class30_sub2_sub4_sub1.y);
     }
 
     public final void method128(int i, int j, int k, int l) {
@@ -14816,9 +14823,9 @@ public class client extends Applet_Sub1 {
     }
 
     private final void method130(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
-        Class30_Sub1 class30_sub1 = null;
+        Node_Sub1 class30_sub1 = null;
 
-        for(Class30_Sub1 class30_sub1_1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
+        for(Node_Sub1 class30_sub1_1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
             if(class30_sub1_1.anInt1295 == l1 && class30_sub1_1.anInt1297 == i2 && class30_sub1_1.anInt1298 == j1 && class30_sub1_1.anInt1296 == i1) {
                 class30_sub1 = class30_sub1_1;
                 break;
@@ -14826,7 +14833,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(class30_sub1 == null) {
-            class30_sub1 = new Class30_Sub1();
+            class30_sub1 = new Node_Sub1();
             class30_sub1.anInt1295 = l1;
             class30_sub1.anInt1296 = i1;
             class30_sub1.anInt1297 = i2;
@@ -15240,7 +15247,7 @@ public class client extends Applet_Sub1 {
             if(l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104) {
                 DoubleEndedQueue var35 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][l5][k8];
                 if(var35 != null) {
-                    for(Class30_Sub2_Sub4_Sub2 var32 = (Class30_Sub2_Sub4_Sub2)var35.reverseGetFirst(); var32 != null; var32 = (Class30_Sub2_Sub4_Sub2)var35.reverseGetNext(false)) {
+                    for(Node_Sub2_Sub4_Sub2 var32 = (Node_Sub2_Sub4_Sub2)var35.reverseGetFirst(); var32 != null; var32 = (Node_Sub2_Sub4_Sub2)var35.reverseGetNext(false)) {
                         if(var32.anInt1558 == (j11 & 32767) && var32.anInt1559 == k13) {
                             var32.anInt1559 = l15;
                             break;
@@ -15261,7 +15268,7 @@ public class client extends Applet_Sub1 {
                 k13 = stream.readUnsignedByte();
                 l15 = k13 >> 4 & 15;
                 i17 = k13 & 7;
-                if(localPlayer.anIntArray1500[0] >= l5 - l15 && localPlayer.anIntArray1500[0] <= l5 + l15 && localPlayer.anIntArray1501[0] >= k8 - l15 && localPlayer.anIntArray1501[0] <= k8 + l15 && this.aBoolean848 && !lowMemory && this.currentSound < 50) {
+                if(localPlayer.smallX[0] >= l5 - l15 && localPlayer.smallX[0] <= l5 + l15 && localPlayer.smallY[0] >= k8 - l15 && localPlayer.smallY[0] <= k8 + l15 && this.aBoolean848 && !lowMemory && this.currentSound < 50) {
                     this.sound[this.currentSound] = j11;
                     this.soundType[this.currentSound] = i17;
                     this.soundDelay[this.currentSound] = Sound.anIntArray326[j11];
@@ -15277,7 +15284,7 @@ public class client extends Applet_Sub1 {
                 k13 = stream.readUShortA(true);
                 l15 = stream.readUnsignedShort();
                 if(k8 >= 0 && j11 >= 0 && k8 < 104 && j11 < 104 && k13 != this.anInt884) {
-                    Class30_Sub2_Sub4_Sub2 var34 = new Class30_Sub2_Sub4_Sub2();
+                    Node_Sub2_Sub4_Sub2 var34 = new Node_Sub2_Sub4_Sub2();
                     var34.anInt1558 = i3;
                     var34.anInt1559 = l15;
                     if(this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][k8][j11] == null) {
@@ -15289,7 +15296,7 @@ public class client extends Applet_Sub1 {
                 }
 
             } else {
-                Class30_Sub2_Sub4_Sub2 var30;
+                Node_Sub2_Sub4_Sub2 var30;
                 if(j == 156) {
                     i3 = stream.readByteS(0);
                     l5 = this.anInt1268 + (i3 >> 4 & 7);
@@ -15298,7 +15305,7 @@ public class client extends Applet_Sub1 {
                     if(l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104) {
                         DoubleEndedQueue var33 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][l5][k8];
                         if(var33 != null) {
-                            for(var30 = (Class30_Sub2_Sub4_Sub2)var33.reverseGetFirst(); var30 != null; var30 = (Class30_Sub2_Sub4_Sub2)var33.reverseGetNext(false)) {
+                            for(var30 = (Node_Sub2_Sub4_Sub2)var33.reverseGetFirst(); var30 != null; var30 = (Node_Sub2_Sub4_Sub2)var33.reverseGetNext(false)) {
                                 if(var30.anInt1558 == (j11 & 32767)) {
                                     var30.unlink();
                                     break;
@@ -15335,40 +15342,40 @@ public class client extends Applet_Sub1 {
                             j20 = this.anIntArrayArrayArray1214[this.anInt918][l5 + 1][k8 + 1];
                             i21 = this.anIntArrayArrayArray1214[this.anInt918][l5][k8 + 1];
                             if(i17 == 0) {
-                                Class10 var37 = this.aClass25_946.method296(this.anInt918, l5, k8, false);
+                                Class10 var37 = this.aWorldController_946.method296(this.anInt918, l5, k8, false);
                                 if(var37 != null) {
                                     class30_sub2_sub4_sub4 = ObjectKey.getObjectId(var37.anInt280);
                                     if(k13 == 2) {
-                                        var37.aAnimable_278 = new Class30_Sub2_Sub4_Sub5(class30_sub2_sub4_sub4, 4 + l15, 2, k19, (byte)7, j20, l18, i21, i18, false);
-                                        var37.aAnimable_279 = new Class30_Sub2_Sub4_Sub5(class30_sub2_sub4_sub4, l15 + 1 & 3, 2, k19, (byte)7, j20, l18, i21, i18, false);
+                                        var37.aAnimable_278 = new Node_Sub2_Sub4_Sub5(class30_sub2_sub4_sub4, 4 + l15, 2, k19, (byte)7, j20, l18, i21, i18, false);
+                                        var37.aAnimable_279 = new Node_Sub2_Sub4_Sub5(class30_sub2_sub4_sub4, l15 + 1 & 3, 2, k19, (byte)7, j20, l18, i21, i18, false);
                                     } else {
-                                        var37.aAnimable_278 = new Class30_Sub2_Sub4_Sub5(class30_sub2_sub4_sub4, l15, k13, k19, (byte)7, j20, l18, i21, i18, false);
+                                        var37.aAnimable_278 = new Node_Sub2_Sub4_Sub5(class30_sub2_sub4_sub4, l15, k13, k19, (byte)7, j20, l18, i21, i18, false);
                                     }
                                 }
                             }
 
                             if(i17 == 1) {
-                                Class26 var39 = this.aClass25_946.method297(l5, 866, k8, this.anInt918);
+                                Class26 var39 = this.aWorldController_946.method297(l5, 866, k8, this.anInt918);
                                 if(var39 != null) {
-                                    var39.aAnimable_504 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var39.anInt505), 0, 4, k19, (byte)7, j20, l18, i21, i18, false);
+                                    var39.aAnimable_504 = new Node_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var39.anInt505), 0, 4, k19, (byte)7, j20, l18, i21, i18, false);
                                 }
                             }
 
                             if(i17 == 2) {
-                                InteractiveObject var40 = this.aClass25_946.method298(l5, k8, (byte)4, this.anInt918);
+                                InteractiveObject var40 = this.aWorldController_946.method298(l5, k8, (byte)4, this.anInt918);
                                 if(k13 == 11) {
                                     k13 = 10;
                                 }
 
                                 if(var40 != null) {
-                                    var40.aAnimable_521 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var40.anInt529), l15, k13, k19, (byte)7, j20, l18, i21, i18, false);
+                                    var40.aAnimable_521 = new Node_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var40.anInt529), l15, k13, k19, (byte)7, j20, l18, i21, i18, false);
                                 }
                             }
 
                             if(i17 == 3) {
-                                Class49 var41 = this.aClass25_946.method299(k8, l5, this.anInt918, 0);
+                                Class49 var41 = this.aWorldController_946.method299(k8, l5, this.anInt918, 0);
                                 if(var41 != null) {
-                                    var41.renderable = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var41.anInt815), l15, 22, k19, (byte)7, j20, l18, i21, i18, false);
+                                    var41.renderable = new Node_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var41.anInt815), l15, 22, k19, (byte)7, j20, l18, i21, i18, false);
                                 }
                             }
                         }
@@ -15409,11 +15416,11 @@ public class client extends Applet_Sub1 {
                                     player.anInt1707 = l15 + loopCycle;
                                     player.anInt1708 = i18 + loopCycle;
                                     player.aModel_1714 = model;
-                                    int i23 = objectDefinition.anInt744;
-                                    int j23 = objectDefinition.anInt761;
+                                    int i23 = objectDefinition.sizeX;
+                                    int j23 = objectDefinition.sizeY;
                                     if(j20 == 1 || j20 == 3) {
-                                        i23 = objectDefinition.anInt761;
-                                        j23 = objectDefinition.anInt744;
+                                        i23 = objectDefinition.sizeY;
+                                        j23 = objectDefinition.sizeX;
                                     }
 
                                     player.anInt1711 = l5 * 128 + i23 * 64;
@@ -15463,7 +15470,7 @@ public class client extends Applet_Sub1 {
                             if(l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104) {
                                 l5 = l5 * 128 + 64;
                                 k8 = k8 * 128 + 64;
-                                Class30_Sub2_Sub4_Sub3 var31 = new Class30_Sub2_Sub4_Sub3(this.anInt918, loopCycle, 6, l15, j11, this.method42(this.anInt918, k8, true, l5) - k13, k8, l5);
+                                Node_Sub2_Sub4_Sub3 var31 = new Node_Sub2_Sub4_Sub3(this.anInt918, loopCycle, 6, l15, j11, this.method42(this.anInt918, k8, true, l5) - k13, k8, l5);
                                 this.aDoubleEndedQueue_1056.insertHead(var31);
                             }
 
@@ -15474,7 +15481,7 @@ public class client extends Applet_Sub1 {
                             j11 = this.anInt1268 + (k8 >> 4 & 7);
                             k13 = this.anInt1269 + (k8 & 7);
                             if(j11 >= 0 && k13 >= 0 && j11 < 104 && k13 < 104) {
-                                var30 = new Class30_Sub2_Sub4_Sub2();
+                                var30 = new Node_Sub2_Sub4_Sub2();
                                 var30.anInt1558 = i3;
                                 var30.anInt1559 = l5;
                                 if(this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][j11][k13] == null) {
@@ -15517,7 +15524,7 @@ public class client extends Applet_Sub1 {
                                     k8 = k8 * 128 + 64;
                                     j11 = j11 * 128 + 64;
                                     k13 = k13 * 128 + 64;
-                                    Class30_Sub2_Sub4_Sub4 var38 = new Class30_Sub2_Sub4_Sub4(i21, l18,  k19 + loopCycle, j20 + loopCycle, var36, this.anInt918, this.method42(this.anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
+                                    ProjectTile var38 = new ProjectTile(i21, l18,  k19 + loopCycle, j20 + loopCycle, var36, this.anInt918, this.method42(this.anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
                                     var38.method455(k19 + loopCycle, k13, this.method42(this.anInt918, k13, true, j11) - l18, j11, (byte)-83);
                                     this.aDoubleEndedQueue_1013.insertHead(var38);
                                 }
@@ -15531,7 +15538,7 @@ public class client extends Applet_Sub1 {
     }
 
     public static final void method138(byte byte0) {
-        Class25.lowMem = true;
+        WorldController.lowMem = true;
         if(byte0 != aByte823) {
             for(int i = 1; i > 0; ++i) {
                 ;
@@ -15766,30 +15773,30 @@ public class client extends Applet_Sub1 {
             boolean flag = false;
             boolean flag1 = false;
             if(j1 == 0) {
-                i2 = this.aClass25_946.method300(j, i1, i);
+                i2 = this.aWorldController_946.method300(j, i1, i);
             }
 
             if(j1 == 1) {
-                i2 = this.aClass25_946.method301(j, i1, 0, i);
+                i2 = this.aWorldController_946.method301(j, i1, 0, i);
             }
 
             if(j1 == 2) {
-                i2 = this.aClass25_946.method302(j, i1, i);
+                i2 = this.aWorldController_946.method302(j, i1, i);
             }
 
             if(j1 == 3) {
-                i2 = this.aClass25_946.method303(j, i1, i);
+                i2 = this.aWorldController_946.method303(j, i1, i);
             }
 
             int j3;
             if(i2 != 0L) {
-                j3 = this.aClass25_946.method304(j, i1, i, i2);
+                j3 = this.aWorldController_946.method304(j, i1, i, i2);
                 int j2 = ObjectKey.getObjectId(i2);
                 int k2 = j3 & 31;
                 int l2 = j3 >> 6;
                 ObjectDefinition objectDefinition_2;
                 if(j1 == 0) {
-                    this.aClass25_946.method291(i1, j, i, (byte)-119);
+                    this.aWorldController_946.method291(i1, j, i, (byte)-119);
                     objectDefinition_2 = ObjectDefinition.forID(j2);
                     if(objectDefinition_2.aBoolean767) {
                         this.collisionMaps[j].method215(l2, k2, objectDefinition_2.aBoolean757, true, i1, i);
@@ -15797,23 +15804,23 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(j1 == 1) {
-                    this.aClass25_946.method292(0, i, j, i1);
+                    this.aWorldController_946.method292(0, i, j, i1);
                 }
 
                 if(j1 == 2) {
-                    this.aClass25_946.method293(j, -978, i1, i);
+                    this.aWorldController_946.method293(j, -978, i1, i);
                     objectDefinition_2 = ObjectDefinition.forID(j2);
-                    if(i1 + objectDefinition_2.anInt744 > 103 || i + objectDefinition_2.anInt744 > 103 || i1 + objectDefinition_2.anInt761 > 103 || i + objectDefinition_2.anInt761 > 103) {
+                    if(i1 + objectDefinition_2.sizeX > 103 || i + objectDefinition_2.sizeX > 103 || i1 + objectDefinition_2.sizeY > 103 || i + objectDefinition_2.sizeY > 103) {
                         return;
                     }
 
                     if(objectDefinition_2.aBoolean767) {
-                        this.collisionMaps[j].method216(l2, objectDefinition_2.anInt744, i1, i, (byte)6, objectDefinition_2.anInt761, objectDefinition_2.aBoolean757);
+                        this.collisionMaps[j].method216(l2, objectDefinition_2.sizeX, i1, i, (byte)6, objectDefinition_2.sizeY, objectDefinition_2.aBoolean757);
                     }
                 }
 
                 if(j1 == 3) {
-                    this.aClass25_946.method294((byte)9, j, i, i1);
+                    this.aWorldController_946.method294((byte)9, j, i, i1);
                     objectDefinition_2 = ObjectDefinition.forID(j2);
                     if(objectDefinition_2.aBoolean767 && objectDefinition_2.hasactions) {
                         this.collisionMaps[j].method218(360, i, i1);
@@ -15827,7 +15834,7 @@ public class client extends Applet_Sub1 {
                     j3 = j + 1;
                 }
 
-                ObjectManager.method188(this.aClass25_946, k, i, l, j3, this.collisionMaps[j], this.anIntArrayArrayArray1214, i1, k1, j, (byte)93);
+                ObjectManager.method188(this.aWorldController_946, k, i, l, j3, this.collisionMaps[j], this.anIntArrayArrayArray1214, i1, k1, j, (byte)93);
             }
         }
 
@@ -16182,7 +16189,7 @@ public class client extends Applet_Sub1 {
                     int fromX = i + baseX;
                     int fromY = j + baseY;
 
-                    aDoubleEndedQueue_1179.insertHead(new Class30_Sub2_Sub4_Sub4(
+                    aDoubleEndedQueue_1179.insertHead(new ProjectTile(
                             fromX * 128 + 64,
                             fromY * 128 + 64,
                             k * 128,
@@ -16215,7 +16222,7 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    for(Class30_Sub1 var48 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); var48 != null; var48 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
+                    for(Node_Sub1 var48 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); var48 != null; var48 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
                         if(var48.anInt1297 >= this.anInt1268 && var48.anInt1297 < this.anInt1268 + 8 && var48.anInt1298 >= this.anInt1269 && var48.anInt1298 < this.anInt1269 + 8 && var48.anInt1295 == this.anInt918) {
                             var48.anInt1294 = 0;
                         }
@@ -16436,7 +16443,7 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    if(this.currentRegionX == var23 && this.currentRegionY == j15 && this.anInt1023 == 2) {
+                    if(packet != 241 && this.currentRegionX == var23 && this.currentRegionY == j15 && this.anInt1023 == 2) {
                         this.packet = -1;
                         return true;
                     }
@@ -16489,12 +16496,12 @@ public class client extends Applet_Sub1 {
                                             this.objectIndices[j20] = -1;
                                             ++j20;
                                         } else {
-                                            j28 = this.terrainIndices[j20] = onDemandFetcher.method562(0, 0, l25, i23);
+                                            j28 = this.terrainIndices[j20] = onDemandFetcher.getRegionIndex(0,  l25, i23);
                                             if(j28 != -1) {
                                                 onDemandFetcher.method558(3, j28);
                                             }
 
-                                            i30 = this.objectIndices[j20] = onDemandFetcher.method562(1, 0, l25, i23);
+                                            i30 = this.objectIndices[j20] = onDemandFetcher.getRegionIndex(1,  l25, i23);
                                             if(i30 != -1) {
                                                 onDemandFetcher.method558(3, i30);
                                             }
@@ -16543,12 +16550,12 @@ public class client extends Applet_Sub1 {
                                     j28 = this.mapCoordinates[l25] = var43[l25];
                                     i30 = j28 >> 8 & 255;
                                     var36 = j28 & 255;
-                                    var39 = this.terrainIndices[l25] = onDemandFetcher.method562(0, 0, var36, i30);
+                                    var39 = this.terrainIndices[l25] = onDemandFetcher.getRegionIndex(0,  var36, i30);
                                     if(var39 != -1) {
                                         onDemandFetcher.method558(3, var39);
                                     }
 
-                                    byte6 = this.objectIndices[l25] = onDemandFetcher.method562(1, 0, var36, i30);
+                                    byte6 = this.objectIndices[l25] = onDemandFetcher.getRegionIndex(1,  var36, i30);
                                     if(byte6 != -1) {
                                         onDemandFetcher.method558(3, byte6);
                                     }
@@ -16592,12 +16599,12 @@ public class client extends Applet_Sub1 {
                         Npc var49 = this.npcs[l25];
                         if(var49 != null) {
                             for(i30 = 0; i30 < 10; ++i30) {
-                                var49.anIntArray1500[i30] -= j20;
-                                var49.anIntArray1501[i30] -= i23;
+                                var49.smallX[i30] -= j20;
+                                var49.smallY[i30] -= i23;
                             }
 
-                            var49.anInt1550 -= j20 * 128;
-                            var49.anInt1551 -= i23 * 128;
+                            var49.x -= j20 * 128;
+                            var49.y -= i23 * 128;
                         }
                     }
 
@@ -16605,12 +16612,12 @@ public class client extends Applet_Sub1 {
                         Player var50 = this.players[l25];
                         if(var50 != null) {
                             for(i30 = 0; i30 < 10; ++i30) {
-                                var50.anIntArray1500[i30] -= j20;
-                                var50.anIntArray1501[i30] -= i23;
+                                var50.smallX[i30] -= j20;
+                                var50.smallY[i30] -= i23;
                             }
 
-                            var50.anInt1550 -= j20 * 128;
-                            var50.anInt1551 -= i23 * 128;
+                            var50.x -= j20 * 128;
+                            var50.y -= i23 * 128;
                         }
                     }
 
@@ -16648,7 +16655,7 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    for(Class30_Sub1 var46 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); var46 != null; var46 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
+                    for(Node_Sub1 var46 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); var46 != null; var46 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
                         var46.anInt1297 -= j20;
                         var46.anInt1298 -= i23;
                         if(var46.anInt1297 < 0 || var46.anInt1298 < 0 || var46.anInt1297 >= 104 || var46.anInt1298 >= 104) {
@@ -17586,7 +17593,7 @@ public class client extends Applet_Sub1 {
             } catch (IOException var21) {
                 this.method68(-670);
             } catch (Exception var22) {
-                s2 = "T2 - last packet received" + this.packet + ", previous packet " + this.anInt842 + ", third packet " + this.anInt843 + ", packet length " + this.packetSize + ", ABSX " + (this.baseX + localPlayer.anIntArray1500[0]) + ", ABSY" + (this.baseY + localPlayer.anIntArray1501[0]) + " - packet data ";
+                s2 = "T2 - last packet received" + this.packet + ", previous packet " + this.anInt842 + ", third packet " + this.anInt843 + ", packet length " + this.packetSize + ", ABSX " + (this.baseX + localPlayer.smallX[0]) + ", ABSY" + (this.baseY + localPlayer.smallY[0]) + " - packet data ";
 
                 for(j15 = 0; j15 < this.packetSize && j15 < 50; ++j15) {
                     s2 = s2 + this.in.buffer[j15] + ",";
@@ -17629,7 +17636,7 @@ public class client extends Applet_Sub1 {
             }
 
             l = this.anInt1185 + this.anInt896 & 2047;
-            this.method144(0, cameraZoom + j * 3, j, this.anInt1014, this.method42(this.anInt918, localPlayer.anInt1551, true, localPlayer.anInt1550) - 50, l, this.anInt1015);
+            this.method144(0, cameraZoom + j * 3, j, this.anInt1014, this.method42(this.anInt918, localPlayer.y, true, localPlayer.x) - 50, l, this.anInt1015);
         }
 
         if(!this.aBoolean1160) {
@@ -17703,8 +17710,8 @@ public class client extends Applet_Sub1 {
         DrawingArea.drawPixels(currentGameHeight, 0, 0, Configuration.distanceFog?currentFogColor:0, currentGameWidth);
 
         try {
-            this.aClass25_946.method313(this.xCameraPos, this.yCameraPos, this.xCameraCurve, this.zCameraPos, j, this.yCameraCurve, false);
-            this.aClass25_946.method288((byte)104);
+            this.aWorldController_946.method313(this.xCameraPos, this.yCameraPos, this.xCameraCurve, this.zCameraPos, j, this.yCameraCurve, false);
+            this.aWorldController_946.method288((byte)104);
         } catch (Exception var10) {
             var10.printStackTrace();
         }
@@ -17752,7 +17759,42 @@ public class client extends Applet_Sub1 {
         }
 
     }
-
+    public int getXPForLevel(int level) {
+        int points = 0;
+        int output = 0;
+        for (int lvl = 1; lvl <= level; lvl++) {
+            points += Math.floor(lvl + 300.0 * Math.pow(2.0, lvl / 7.0));
+            if (lvl >= level) {
+                return output;
+            }
+            output = (int)Math.floor(points / 4);
+        }
+        return 0;
+    }
+    public String[] skillNames = { "Attack", "Hitpoints", "Mining", "Strength", "Agility",
+            "Smithing", "Defence", "Herblore", "Fishing", "Range", "Thieving",
+            "Cooking", "Prayer", "Crafting", "Firemaking", "Magic", "Fletching", "Woodcutting",
+            "Rune", "Slayer", "Farming", "Construction", "Hunter", "Summoning",
+            "Dungeoneering" };
+    public String setMessage(int level){
+        String[] messages = new String[4];
+        String message = "";
+        int maxLevel = 99;
+        if(maximumLevels[level] > maxLevel){
+            if(level != 24){
+                maximumLevels[level] = 99;
+            }else if(maximumLevels[level] > 120){
+                maximumLevels[level] = 120;
+            }
+        }
+        int[] stuff = {0,3,14,2,16,13,1,15,10,4,17,7,5,12,11,6,9,8,20,18,19,21,22,23,24};
+        messages[0] = skillNames[level]+": "+currentLevels[stuff[level]]+"/"+maximumLevels[stuff[level]]+"\\n";
+        messages[1] = "Current XP: " + getXPForLevel(maximumLevels[stuff[level]])+"\\n";
+        messages[2]= "Next level: "+ (getXPForLevel(maximumLevels[stuff[level]]+1)-getXPForLevel(maximumLevels[stuff[level]]))+"\\n";
+        messages[3]= "Remainder: "+ getXPForLevel(maximumLevels[stuff[level]]+1);
+        message = messages[0] + messages[1] + messages[2] + messages[3];
+        return message;
+    }
     public client() {
         this.skill_sprites = new Sprite[Skills.SKILLS_COUNT];
         this.chatRights = new int[500];

@@ -10,49 +10,49 @@ public final class Class1
         if(i >= 0)
             throw new NullPointerException();
         anInt39 = j;
-        aClass30Array40 = new Class30[j];
+        aNodeArray40 = new Node[j];
         for(int k = 0; k < j; k++)
         {
-            Class30 class30 = aClass30Array40[k] = new Class30();
-            class30.aClass30_549 = class30;
-            class30.aClass30_550 = class30;
+            Node node = aNodeArray40[k] = new Node();
+            node.prev = node;
+            node.next = node;
         }
 
     }
 
-    public Class30 method148(long l)
+    public Node method148(long l)
     {
-        Class30 class30 = aClass30Array40[(int)(l & (long)(anInt39 - 1))];
-        for(Class30 class30_1 = class30.aClass30_549; class30_1 != class30; class30_1 = class30_1.aClass30_549)
-            if(class30_1.aLong548 == l)
-                return class30_1;
+        Node node = aNodeArray40[(int)(l & (long)(anInt39 - 1))];
+        for(Node node_1 = node.prev; node_1 != node; node_1 = node_1.prev)
+            if(node_1.uid == l)
+                return node_1;
 
         return null;
     }
 
-    public void method149(Class30 class30, long l, byte byte0)
+    public void method149(Node node, long l, byte byte0)
     {
         try
         {
-            if(class30.aClass30_550 != null)
-                class30.unlink();
-            Class30 class30_1 = aClass30Array40[(int)(l & (long)(anInt39 - 1))];
+            if(node.next != null)
+                node.unlink();
+            Node node_1 = aNodeArray40[(int)(l & (long)(anInt39 - 1))];
             if(byte0 != 7)
             {
                 return;
             } else
             {
-                class30.aClass30_550 = class30_1.aClass30_550;
-                class30.aClass30_549 = class30_1;
-                class30.aClass30_550.aClass30_549 = class30;
-                class30.aClass30_549.aClass30_550 = class30;
-                class30.aLong548 = l;
+                node.next = node_1.next;
+                node.prev = node_1;
+                node.next.prev = node;
+                node.prev.next = node;
+                node.uid = l;
                 return;
             }
         }
         catch(RuntimeException runtimeexception)
         {
-            signlink.reporterror("91499, " + class30 + ", " + l + ", " + byte0 + ", " + runtimeexception.toString());
+            signlink.reporterror("91499, " + node + ", " + l + ", " + byte0 + ", " + runtimeexception.toString());
         }
         throw new RuntimeException();
     }
@@ -60,5 +60,5 @@ public final class Class1
     private boolean aBoolean37;
     private int anInt38;
     private int anInt39;
-    private Class30 aClass30Array40[];
+    private Node aNodeArray40[];
 }

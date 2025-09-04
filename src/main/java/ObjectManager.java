@@ -76,7 +76,7 @@ final class ObjectManager {
 		return l >> 19 & 0xff;
 	}
 
-	public final void method171(Class11 aclass11[], Class25 class25, int i) {
+	public final void method171(Class11 aclass11[], WorldController worldController, int i) {
 		for(int j = 0; j < 4; j++) {
 			for(int k = 0; k < 104; k++) {
 				for(int i1 = 0; i1 < 104; i1++) {
@@ -244,7 +244,7 @@ final class ObjectManager {
 									i22 = Rasterizer.anIntArray1482[method187(k21, 96)];
 								}
 								if(i19 == 0) {
-									class25.method279(l, l6, k17, 0, 0, -1, 154, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0, false);
+									worldController.method279(l, l6, k17, 0, 0, -1, 154, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0, false);
 								} else {
 									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
@@ -326,7 +326,7 @@ final class ObjectManager {
 									colors.add(k23);
 									if (textureId == -1)
 										textureId = class22_2.int_16;
-									class25.method279(l, l6, k17, k22, byte4, textureId, class22_2.int_16, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23, textureId >= 0
+									worldController.method279(l, l6, k17, k22, byte4, textureId, class22_2.int_16, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23, textureId >= 0
 											&& textureId <= 50);
 								}
 							}
@@ -338,18 +338,18 @@ final class ObjectManager {
 
 			for(int j8 = 1; j8 < anInt147 - 1; j8++) {
 				for(int i10 = 1; i10 < anInt146 - 1; i10++) {
-					class25.method278(l, i10, j8, method182(j8, l, i10, 0));
+					worldController.method278(l, i10, j8, method182(j8, l, i10, 0));
 				}
 
 			}
 
 		}
 
-		class25.method305(-10, -50, -50);
+		worldController.method305(-10, -50, -50);
 		for(int j1 = 0; j1 < anInt146; j1++) {
 			for(int l1 = 0; l1 < anInt147; l1++) {
 				if((aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {
-					class25.method276(l1, j1, -438);
+					worldController.method276(l1, j1, -438);
 				}
 			}
 
@@ -399,7 +399,7 @@ final class ObjectManager {
 										char c1 = '\360';
 										int k14 = anIntArrayArrayArray129[k8][i4][k4] - c1;
 										int l15 = anIntArrayArrayArray129[i7][i4][k4];
-										Class25.createCullingCluster(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, anInt150, k4 * 128, 1);
+										WorldController.createCullingCluster(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, anInt150, k4 * 128, 1);
 										for(int l16 = i7; l16 <= k8; l16++) {
 											for(int l17 = k4; l17 <= l5; l17++) {
 												anIntArrayArrayArray135[l16][i4][l17] &= ~i2;
@@ -441,7 +441,7 @@ final class ObjectManager {
 										char c2 = '\360';
 										int l14 = anIntArrayArrayArray129[l8][l4][k3] - c2;
 										int i16 = anIntArrayArrayArray129[j7][l4][k3];
-										Class25.createCullingCluster(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, anInt150, k3 * 128, 2);
+										WorldController.createCullingCluster(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, anInt150, k3 * 128, 2);
 										for(int i17 = j7; i17 <= l8; i17++) {
 											for(int i18 = l4; i18 <= i6; i18++) {
 												anIntArrayArrayArray135[i17][i18][k3] &= ~j2;
@@ -480,7 +480,7 @@ final class ObjectManager {
 
 									if(((j6 - i5) + 1) * ((i9 - k7) + 1) >= 4) {
 										int j12 = anIntArrayArrayArray129[i3][i5][k7];
-										Class25.createCullingCluster(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, anInt150, k7 * 128, 4);
+										WorldController.createCullingCluster(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, anInt150, k7 * 128, 4);
 										for(int k13 = i5; k13 <= j6; k13++) {
 											for(int i15 = k7; i15 <= i9; i15++) {
 												anIntArrayArrayArray135[i3][k13][i15] &= ~k2;
@@ -567,8 +567,8 @@ final class ObjectManager {
 		}
 	}
 
-	private final void renderObject(int y, Class25 class25, Class11 class11, int type, int z, int x, int id,
-									boolean flag, int orientation) {
+	private final void renderObject(int y, WorldController worldController, Class11 class11, int type, int z, int x, int id,
+                                    boolean flag, int orientation) {
 		if(aBoolean151 && (aByteArrayArrayArray149[0][x][y] & 2) == 0) {
 			if((aByteArrayArrayArray149[z][x][y] & 0x10) != 0) {
 				return;
@@ -584,11 +584,11 @@ final class ObjectManager {
 		int size1;
 		int size2;
 		if (orientation == 1 || orientation == 3) {
-			size1 = objectDefinition.anInt761;//objectSizeY
-			size2 = objectDefinition.anInt744;//objectSizeX
+			size1 = objectDefinition.sizeY;//objectSizeY
+			size2 = objectDefinition.sizeX;//objectSizeX
 		} else {
-			size1 = objectDefinition.anInt744;
-			size2 = objectDefinition.anInt761;
+			size1 = objectDefinition.sizeX;
+			size2 = objectDefinition.sizeY;
 		}
 		int modX;
 		int modX1;
@@ -636,9 +636,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj = objectDefinition.method578(22, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj = new Node_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method280(z, k2, y, 68, ((Animable) (obj)), byte0, key, x);
+			worldController.method280(z, k2, y, 68, ((Animable) (obj)), byte0, key, x);
 			if(objectDefinition.aBoolean767 && objectDefinition.hasactions && class11 != null) {
 				class11.method213(y, 0, x);
 			}
@@ -649,7 +649,7 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj1 = objectDefinition.method578(10, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj1 = new Node_Sub2_Sub4_Sub5(id, orientation, 10, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			if(obj1 != null) {
 				int i5 = 0;
@@ -659,13 +659,13 @@ final class ObjectManager {
 				int j4;
 				int l4;
 				if(orientation == 1 || orientation == 3) {
-					j4 = objectDefinition.anInt761;
-					l4 = objectDefinition.anInt744;
+					j4 = objectDefinition.sizeY;
+					l4 = objectDefinition.sizeX;
 				} else {
-					j4 = objectDefinition.anInt744;
-					l4 = objectDefinition.anInt761;
+					j4 = objectDefinition.sizeX;
+					l4 = objectDefinition.sizeY;
 				}
-				if(class25.method284(key, byte0, k2, l4, ((Animable) (obj1)), j4, z, i5, (byte)110, y, x) && objectDefinition.aBoolean779) {
+				if(worldController.method284(key, byte0, k2, l4, ((Animable) (obj1)), j4, z, i5, (byte)110, y, x) && objectDefinition.aBoolean779) {
 					Model model;
 					if(obj1 instanceof Model) {
 						model = (Model)obj1;
@@ -690,7 +690,7 @@ final class ObjectManager {
 				}
 			}
 			if(objectDefinition.aBoolean767 && class11 != null) {
-				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
 		}
@@ -699,14 +699,14 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj2 = objectDefinition.method578(type, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj2 = new Node_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method284(key, byte0, k2, 1, ((Animable) (obj2)), 1, z, 0, (byte)110, y, x);
+			worldController.method284(key, byte0, k2, 1, ((Animable) (obj2)), 1, z, 0, (byte)110, y, x);
 			if(type >= 12 && type <= 17 && type != 13 && z > 0) {
 				anIntArrayArrayArray135[z][x][y] |= 0x924;
 			}
 			if(objectDefinition.aBoolean767 && class11 != null) {
-				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
 		}
@@ -715,9 +715,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj3 = objectDefinition.method578(0, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj3 = new Node_Sub2_Sub4_Sub5(id, orientation, 0, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte0, x, null, k2, 0, z);
+			worldController.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte0, x, null, k2, 0, z);
 			if(orientation == 0) {
 				if(objectDefinition.aBoolean779) {
 					aByteArrayArrayArray134[z][x][y] = 50;
@@ -758,7 +758,7 @@ final class ObjectManager {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			if(objectDefinition.anInt775 != 16) {
-				class25.method290(y, 441, objectDefinition.anInt775, x, z);
+				worldController.method290(y, 441, objectDefinition.anInt775, x, z);
 			}
 			return;
 		}
@@ -767,9 +767,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj4 = objectDefinition.method578(1, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj4 = new Node_Sub2_Sub4_Sub5(id, orientation, 1, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte0, x, null, k2, 0, z);
+			worldController.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte0, x, null, k2, 0, z);
 			if(objectDefinition.aBoolean779) {
 				if(orientation == 0) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
@@ -797,10 +797,10 @@ final class ObjectManager {
 				obj11 = objectDefinition.method578(2, 4 + orientation, k1, l1, i2, j2, -1);
 				obj12 = objectDefinition.method578(2, i3, k1, l1, i2, j2, -1);
 			} else {
-				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
-				obj12 = new Class30_Sub2_Sub4_Sub5(id, i3, 2, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj11 = new Node_Sub2_Sub4_Sub5(id, 4 + orientation, 2, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj12 = new Node_Sub2_Sub4_Sub5(id, i3, 2, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte0, x, ((Animable) (obj12)), k2, anIntArray152[i3], z);
+			worldController.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte0, x, ((Animable) (obj12)), k2, anIntArray152[i3], z);
 			if(objectDefinition.aBoolean764) {
 				if(orientation == 0) {
 					anIntArrayArrayArray135[z][x][y] |= 0x249;
@@ -823,7 +823,7 @@ final class ObjectManager {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			if(objectDefinition.anInt775 != 16) {
-				class25.method290(y, 441, objectDefinition.anInt775, x, z);
+				worldController.method290(y, 441, objectDefinition.anInt775, x, z);
 			}
 			return;
 		}
@@ -832,9 +832,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj5 = objectDefinition.method578(3, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj5 = new Node_Sub2_Sub4_Sub5(id, orientation, 3, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte0, x, null, k2, 0, z);
+			worldController.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte0, x, null, k2, 0, z);
 			if(objectDefinition.aBoolean779) {
 				if(orientation == 0) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
@@ -859,11 +859,11 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj6 = objectDefinition.method578(type, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj6 = new Node_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method284(key, byte0, k2, 1, ((Animable) (obj6)), 1, z, 0, (byte)110, y, x);
+			worldController.method284(key, byte0, k2, 1, ((Animable) (obj6)), 1, z, 0, (byte)110, y, x);
 			if(objectDefinition.aBoolean767 && class11 != null) {
-				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
 		}
@@ -896,14 +896,14 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj7 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj7 = new Node_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, z, 0, k2, ((Animable) (obj7)), x, byte0, 0, anIntArray152[orientation]);
+			worldController.method283(key, y, orientation * 512, -460, z, 0, k2, ((Animable) (obj7)), x, byte0, 0, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 5) {
 			int i4 = 16;
-			long k4 = class25.method300(z, x, y);
+			long k4 = worldController.method300(z, x, y);
 			if(k4 > 0) {
 				i4 = ObjectDefinition.forID(ObjectKey.getObjectId(k4)).anInt775;
 			}
@@ -911,9 +911,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj13 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj13 = new Node_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, z, anIntArray137[orientation] * i4, k2, ((Animable) (obj13)), x, byte0, anIntArray144[orientation] * i4, anIntArray152[orientation]);
+			worldController.method283(key, y, orientation * 512, -460, z, anIntArray137[orientation] * i4, k2, ((Animable) (obj13)), x, byte0, anIntArray144[orientation] * i4, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 6) {
@@ -921,9 +921,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj8 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj8 = new Node_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj8)), x, byte0, 0, 256);
+			worldController.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj8)), x, byte0, 0, 256);
 			return;
 		}
 		if(type == 7) {
@@ -931,9 +931,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj9 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj9 = new Node_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj9)), x, byte0, 0, 512);
+			worldController.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj9)), x, byte0, 0, 512);
 			return;
 		}
 		if(type == 8) {
@@ -941,9 +941,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj10 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj10 = new Node_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj10)), x, byte0, 0, 768);
+			worldController.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj10)), x, byte0, 0, 768);
 		}
 	}
 
@@ -1121,8 +1121,8 @@ final class ObjectManager {
 		}
 	}
 
-	public final void method183(Class11 aclass11[], Class25 class25, int i, int j, int k, boolean flag, int l,
-		byte abyte0[], int i1, int j1, int k1) {
+	public final void method183(Class11 aclass11[], WorldController worldController, int i, int j, int k, boolean flag, int l,
+                                byte abyte0[], int i1, int j1, int k1) {
 		label0:
 		{
 			Stream stream = new Stream(abyte0, 891);
@@ -1153,8 +1153,8 @@ final class ObjectManager {
 					int i4 = k3 & 3;
 					if(j3 == i && i3 >= i1 && i3 < i1 + 8 && l2 >= k && l2 < k + 8) {
 						ObjectDefinition objectDefinition = ObjectDefinition.forID(l1);
-						int j4 = j + Class4.method157(j1, objectDefinition.anInt761, i3 & 7, (byte)113, l2 & 7, objectDefinition.anInt744);
-						int k4 = k1 + Class4.method158(-433, l2 & 7, objectDefinition.anInt761, j1, objectDefinition.anInt744, i3 & 7);
+						int j4 = j + Class4.method157(j1, objectDefinition.sizeY, i3 & 7, (byte)113, l2 & 7, objectDefinition.sizeX);
+						int k4 = k1 + Class4.method158(-433, l2 & 7, objectDefinition.sizeY, j1, objectDefinition.sizeX, i3 & 7);
 						if(j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
 							int l4 = j3;
 							if((aByteArrayArrayArray149[1][j4][k4] & 2) == 2) {
@@ -1165,7 +1165,7 @@ final class ObjectManager {
 								class11 = aclass11[l4];
 							}
 							try {
-							renderObject(k4, class25, class11, l3, l, j4, l1, false, i4 + j1 & 3);
+							renderObject(k4, worldController, class11, l3, l, j4, l1, false, i4 + j1 & 3);
 						}catch(Exception e){
 								e.printStackTrace();
 							}
@@ -1226,8 +1226,8 @@ final class ObjectManager {
 		return (i & 0xff80) + j;
 	}
 
-	public static final void method188(Class25 class25, int orientation, int y, int type, int plane, Class11 class11, int tileHeights[][][], int x,
-		int id, int k1, byte byte0) {
+	public static final void method188(WorldController worldController, int orientation, int y, int type, int plane, Class11 class11, int tileHeights[][][], int x,
+                                       int id, int k1, byte byte0) {
 		int l1 = tileHeights[plane][x][y];
 		int i2 = tileHeights[plane][x + 1][y];
 		int j2 = tileHeights[plane][x + 1][y + 1];
@@ -1254,9 +1254,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj = objectDefinition.method578(22, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj = new Node_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method280(k1, l2, y, 68, ((Animable) (obj)), byte1, key, x);
+			worldController.method280(k1, l2, y, 68, ((Animable) (obj)), byte1, key, x);
 			if(objectDefinition.aBoolean767 && objectDefinition.hasactions) {
 				class11.method213(y, 0, x);
 			}
@@ -1267,7 +1267,7 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj1 = objectDefinition.method578(10, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj1 = new Node_Sub2_Sub4_Sub5(id, orientation, 10, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			if(obj1 != null) {
 				int j5 = 0;
@@ -1277,16 +1277,16 @@ final class ObjectManager {
 				int k4;
 				int i5;
 				if(orientation == 1 || orientation == 3) {
-					k4 = objectDefinition.anInt761;
-					i5 = objectDefinition.anInt744;
+					k4 = objectDefinition.sizeY;
+					i5 = objectDefinition.sizeX;
 				} else {
-					k4 = objectDefinition.anInt744;
-					i5 = objectDefinition.anInt761;
+					k4 = objectDefinition.sizeX;
+					i5 = objectDefinition.sizeY;
 				}
-				class25.method284(key, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, (byte)110, y, x);
+				worldController.method284(key, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, (byte)110, y, x);
 			}
 			if(objectDefinition.aBoolean767) {
-				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
 		}
@@ -1295,11 +1295,11 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj2 = objectDefinition.method578(type, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj2 = new Node_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method284(key, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, (byte)110, y, x);
+			worldController.method284(key, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, (byte)110, y, x);
 			if(objectDefinition.aBoolean767) {
-				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
 		}
@@ -1308,9 +1308,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj3 = objectDefinition.method578(0, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj3 = new Node_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte1, x, null, l2, 0, k1);
+			worldController.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte1, x, null, l2, 0, k1);
 			if(objectDefinition.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
@@ -1321,9 +1321,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj4 = objectDefinition.method578(1, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj4 = new Node_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte1, x, null, l2, 0, k1);
+			worldController.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte1, x, null, l2, 0, k1);
 			if(objectDefinition.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
@@ -1337,10 +1337,10 @@ final class ObjectManager {
 				obj11 = objectDefinition.method578(2, 4 + orientation, l1, i2, j2, k2, -1);
 				obj12 = objectDefinition.method578(2, j3, l1, i2, j2, k2, -1);
 			} else {
-				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
-				obj12 = new Class30_Sub2_Sub4_Sub5(id, j3, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj11 = new Node_Sub2_Sub4_Sub5(id, 4 + orientation, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj12 = new Node_Sub2_Sub4_Sub5(id, j3, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte1, x, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
+			worldController.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte1, x, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
 			if(objectDefinition.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
@@ -1351,9 +1351,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj5 = objectDefinition.method578(3, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj5 = new Node_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte1, x, null, l2, 0, k1);
+			worldController.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte1, x, null, l2, 0, k1);
 			if(objectDefinition.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
@@ -1364,11 +1364,11 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj6 = objectDefinition.method578(type, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj6 = new Node_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method284(key, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, (byte)110, y, x);
+			worldController.method284(key, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, (byte)110, y, x);
 			if(objectDefinition.aBoolean767) {
-				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
 		}
@@ -1401,14 +1401,14 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj7 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj7 = new Node_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, k1, 0, l2, ((Animable) (obj7)), x, byte1, 0, anIntArray152[orientation]);
+			worldController.method283(key, y, orientation * 512, -460, k1, 0, l2, ((Animable) (obj7)), x, byte1, 0, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 5) {
 			int j4 = 16;
-			long l4 = class25.method300(k1, x, y);
+			long l4 = worldController.method300(k1, x, y);
 			if(l4 > 0) {
 				j4 = ObjectDefinition.forID(ObjectKey.getObjectId(l4)).anInt775;
 			}
@@ -1416,9 +1416,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj13 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj13 = new Node_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, k1, anIntArray137[orientation] * j4, l2, ((Animable) (obj13)), x, byte1, anIntArray144[orientation] * j4, anIntArray152[orientation]);
+			worldController.method283(key, y, orientation * 512, -460, k1, anIntArray137[orientation] * j4, l2, ((Animable) (obj13)), x, byte1, anIntArray144[orientation] * j4, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 6) {
@@ -1426,9 +1426,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj8 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj8 = new Node_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj8)), x, byte1, 0, 256);
+			worldController.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj8)), x, byte1, 0, 256);
 			return;
 		}
 		if(type == 7) {
@@ -1436,9 +1436,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj9 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj9 = new Node_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj9)), x, byte1, 0, 512);
+			worldController.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj9)), x, byte1, 0, 512);
 			return;
 		}
 		if(type == 8) {
@@ -1446,9 +1446,9 @@ final class ObjectManager {
 			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
 				obj10 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj10 = new Node_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj10)), x, byte1, 0, 768);
+			worldController.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj10)), x, byte1, 0, 768);
 		}
 	}
 
@@ -1492,7 +1492,7 @@ final class ObjectManager {
 		return bool;
 	}
 
-	public final void method190(int i, Class11 aclass11[], int j, int k, Class25 class25, byte abyte0[]) {
+	public final void method190(int i, Class11 aclass11[], int j, int k, WorldController worldController, byte abyte0[]) {
 		label0:
 		{
 			Stream stream = new Stream(abyte0, 891);
@@ -1528,7 +1528,7 @@ final class ObjectManager {
 							class11 = aclass11[l3];
 						}
 						try {
-							renderObject(k3, class25, class11, l2, j2, j3, l, false, i3);
+							renderObject(k3, worldController, class11, l2, j2, j3, l, false, i3);
 						} catch(Exception e){
 							e.printStackTrace();
 						}

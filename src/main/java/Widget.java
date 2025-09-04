@@ -1,4 +1,5 @@
 import com.google.common.base.Preconditions;
+import sign.signlink;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -73,6 +74,7 @@ public class Widget {
     public boolean isInventoryInterface;
     public int textColor;
     public RSFont textDrawingAreas;
+    public static RSFont[] fonts;
     public boolean usableItemInterface;
     public int secondaryColor;
     public int anInt216;
@@ -120,6 +122,7 @@ public class Widget {
     }
 
     public static void unpack(FileArchive fileArchive, RSFont[] aclass30_sub2_sub1_sub4, byte byte0, FileArchive fileArchive_1) {
+        fonts = aclass30_sub2_sub1_sub4;
         aClass12_238 = new Class12(false, 50000);
         Stream stream = new Stream(fileArchive.method571("data"), 891);
         int i = -1;
@@ -368,6 +371,7 @@ public class Widget {
         slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
         slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
         shopWidget(aclass30_sub2_sub1_sub4);
+        skillTab602();
         SpawnContainer.get().load();
         aClass12_238 = null;
     }
@@ -990,7 +994,156 @@ public class Widget {
         list.width = 174;
         list.scrollMax = 1405;
     }
+    public static void addSkillText(int id, boolean max, int skill) {
+        Widget text = addInterface(id);
+        text.id = id;
+        text.parentID = id;
+        text.type = 4;
+        text.atActionType = 0;
+        text.width = 15;
+        text.height = 12;
+        text.textDrawingAreas = fonts[0];
+        text.textShadow = true;
+        text.centerText = true;
+        text.secondaryColor = 16776960;
+        if (!max) {
+            text.valueIndexArray = new int[1][];
+            text.valueIndexArray[0] = new int[3];
+            text.valueIndexArray[0][0] = 1;
+            text.valueIndexArray[0][1] = skill;
+            text.valueIndexArray[0][2] = 0;
+        } else {
+            text.valueIndexArray = new int[2][];
+            text.valueIndexArray[0] = new int[3];
+            text.valueIndexArray[0][0] = 1;
+            text.valueIndexArray[0][1] = skill;
+            text.valueIndexArray[0][2] = 0;
+            text.valueIndexArray[1] = new int[1];
+            text.valueIndexArray[1][0] = 0;
+        }
+        text.message = "%1";
+    }
+    public static void skillTab602() {
+        Widget skill = addInterface(3917);
+        String[] spriteNames = { "Attack", "HP", "Mine", "Strength", "Agility", "Smith", "Defence", "Herblore", "Fish", "Range", "Thief", "Cook", "Prayer", "Craft", "Fire", "Mage", "Fletch", "Wood", "Rune", "Slay", "Farm", "Construction", "Hunter", "Summon", "Dungeon" };
+        int[] buttons = { 8654, 8655, 8656, 8657, 8658, 8659, 8660, 8861, 8662, 8663, 8664, 8665, 8666, 8667, 8668, 8669, 8670, 8671, 8672, 12162, 13928, 18177, 18178, 18179, 18180 };
+        int[] hovers = { 4040, 4076, 4112, 4046, 4082, 4118, 4052, 4088, 4124, 4058, 4094, 4130, 4064, 4100, 4136, 4070, 4106, 4142, 4160, 2832, 13917, 18173, 18174, 18175, 18176 };
+        int[][] text = { { 4004, 4005 }, { 4016, 4017 }, { 4028, 4029 },
+                { 4006, 4007 }, { 4018, 4019 }, { 4030, 4031 }, { 4008, 4009 },
+                { 4020, 4021 }, { 4032, 4033 }, { 4010, 4011 }, { 4022, 4023 },
+                { 4034, 4035 }, { 4012, 4013 }, { 4024, 4025 }, { 4036, 4037 },
+                { 4014, 4015 }, { 4026, 4027 }, { 4038, 4039 }, { 4152, 4153 },
+                { 12166, 12167 }, { 13926, 13927 }, { 18165, 18169 },
+                { 18166, 18170 }, { 18167, 18171 }, { 18168, 18172 } };
 
+        int[] icons = { 3965, 3966, 3967, 3968, 3969, 3970, 3971, 3972, 3973,
+                3974, 3975, 3976, 3977, 3978, 3979, 3980, 3981, 3982, 4151,
+                12165, 13925, 18181, 18182, 18183, 18184 };
+
+        int[][] buttonCoords = { { 4, 4 }, { 66, 4 }, { 128, 4 }, { 4, 32 },
+                { 66, 32 }, { 128, 32 }, { 4, 60 }, { 66, 60 }, { 128, 60 },
+                { 4, 88 }, { 66, 88 }, { 128, 88 }, { 4, 116 }, { 66, 116 },
+                { 128, 116 }, { 4, 144 }, { 66, 144 }, { 128, 144 },
+                { 4, 172 }, { 66, 172 }, { 128, 172 }, { 4, 200 }, { 66, 200 },
+                { 128, 200 }, { 4, 229 } };
+        int[][] iconCoords = { { 6, 6 }, { 69, 7 }, { 131, 6 }, { 9, 34 },
+                { 68, 33 }, { 131, 36 }, { 9, 64 }, { 67, 63 }, { 131, 61 },
+                { 7, 91 }, { 68, 94 }, { 133, 90 }, { 6, 118 }, { 70, 120 },
+                { 130, 118 }, { 6, 147 }, { 69, 146 }, { 132, 146 },
+                { 6, 173 }, { 69, 173 }, { 130, 174 }, { 6, 202 }, { 69, 201 },
+                { 131, 202 }, { 6, 230 } };
+        int[][] textCoords = { { 31, 7, 44, 18 }, { 93, 7, 106, 18 },
+                { 155, 7, 168, 18 }, { 31, 35, 44, 46 }, { 93, 35, 106, 46 },
+                { 155, 35, 168, 46 }, { 31, 63, 44, 74 }, { 93, 63, 106, 74 },
+                { 155, 63, 168, 74 }, { 31, 91, 44, 102 },
+                { 93, 91, 106, 102 }, { 155, 91, 168, 102 },
+                { 31, 119, 44, 130 }, { 93, 119, 106, 130 },
+                { 155, 119, 168, 130 }, { 31, 149, 44, 158 },
+                { 93, 147, 106, 158 }, { 155, 147, 168, 158 },
+                { 31, 175, 44, 186 }, { 93, 175, 106, 186 },
+                { 155, 175, 168, 186 }, { 31, 203, 44, 214 },
+                { 93, 203, 106, 214 }, { 155, 203, 168, 214 },
+                { 31, 231, 44, 242 } };
+        int[][] newText = { { 18165, 18166, 18167, 18168 },
+                { 18169, 18170, 18171, 18172 } };
+        for (int i = 0; i < hovers.length; i++) {
+            createSkillHover(hovers[i], 205 + i);
+            addSkillButton(buttons[i]);
+            addImage(icons[i], spriteNames[i]);
+        }
+        for (int i = 0; i < 4; i++) {
+            addSkillText(newText[0][i], false, i + 21);
+            addSkillText(newText[1][i], true, i + 21);
+        }
+        skill.children(icons.length + (text.length * 2) + hovers.length + buttons.length + 1);
+        int frame = 0;
+        Widget totalLevel = interfaceCache[3984];
+        totalLevel.message = "Total level: %1";
+        totalLevel.textDrawingAreas = fonts[2];
+        skill.child(frame, 3984, 74, 237); frame++;
+        for (int i = 0; i < buttons.length; i++) {
+            skill.child(frame, buttons[i], buttonCoords[i][0], buttonCoords[i][1]); frame++;
+        }
+        for (int i = 0; i < icons.length; i++) {
+            skill.child(frame, icons[i], iconCoords[i][0], iconCoords[i][1]); frame++;
+        }
+        for (int i = 0; i < text.length; i++) {
+            skill.child(frame, text[i][0], textCoords[i][0], textCoords[i][1]); frame++;
+        }
+        for (int i = 0; i < text.length; i++) {
+            skill.child(frame, text[i][1], textCoords[i][2], textCoords[i][3]); frame++;
+        }
+        for (int i = 0; i < hovers.length; i++) {
+            skill.child(frame, hovers[i], buttonCoords[i][0], buttonCoords[i][1]); frame++;
+        }
+    }
+    public void children(int total) {
+        children = new int[total];
+        childX = new int[total];
+        childY = new int[total];
+    }
+    public static void addImage(int id, String s) {
+        Widget image = addInterface(id);
+        image.type = 5;
+        image.atActionType = 0;
+        image.contentType = 0;
+        image.width = 100;
+        image.height = 100;
+        image.disabledSprite = getSprite(s);
+    }
+    public boolean inventoryHover;
+    public static void addSkillButton(int id) {
+        Widget button = addInterface(id);
+        button.type = 5;
+        button.atActionType = 5;
+        button.contentType = 0;
+        button.width = 60;
+        button.height = 27;
+        button.disabledSprite = getSprite("Button");
+        button.tooltip = "View";
+    }
+    public static Sprite getSprite(String s) {
+        Sprite image;
+        try {
+            image = new Sprite("Interfaces/skill/"+s);
+            if (image != null) {
+                return image;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return image;
+    }
+    public static void createSkillHover(int id, int x) {
+        Widget hover = addInterface(id);
+        hover.type = 9;
+        hover.message = "TESTING!";
+        hover.contentType = x;
+        hover.width = 60;
+        hover.height = 28;
+        hover.inventoryHover = true;
+    }
     private Model method206(int i, int j) {
         Model model = (Model)aClass12_264.method222((long)((i << 16) + j));
         if(model != null) {
@@ -1064,12 +1217,12 @@ public class Widget {
 
         if(model == null) {
             return null;
-        } else if(k == -1 && j == -1 && model.anIntArray1640 == null) {
+        } else if(k == -1 && j == -1 && model.face_color == null) {
             return model;
         } else {
-            Model model_1 = new Model(9, true, Class36.method532(k, false) & Class36.method532(j, false), false, model);
+            Model model_1 = new Model(9, true, FrameLoader.method532(k, false) & FrameLoader.method532(j, false), false, model);
             if(k != -1 || j != -1) {
-                model_1.method469((byte)-71);
+                model_1.createBones();
             }
 
             if(k != -1) {

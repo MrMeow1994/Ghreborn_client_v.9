@@ -1,4 +1,4 @@
-final class Tile extends Class30
+final class Tile extends Node
 {
 
     public Tile(int i, int j, int k)

@@ -205,7 +205,11 @@ public final class Sprite extends DrawingArea {
          this.myPixels = new int[this.myWidth * this.myHeight];
          PixelGrabber pixelgrabber = new PixelGrabber(exception, 0, 0, this.myWidth, this.myHeight, this.myPixels, 0, this.myWidth);
          pixelgrabber.grabPixels();
-         this.setTransparency(255, 0, 255);
+         // Make both pure pink (255, 0, 255) and pure white (255, 255, 255) transparent
+         applyTransparency(new int[] {
+                 0xFFFF00FF, // pink
+                 0xFFFFFFFF  // white
+         });
          //applyPinkOverlay();
       } catch (Exception var5) {
          var5.printStackTrace();
@@ -257,6 +261,17 @@ public final class Sprite extends DrawingArea {
          }
       }
 
+   }
+   private void applyTransparency(int[] transparentColors) {
+      for (int i = 0; i < myPixels.length; i++) {
+         int pixel = myPixels[i];
+         for (int color : transparentColors) {
+            if (pixel == color) {
+               myPixels[i] = 0; // Fully transparent
+               break;
+            }
+         }
+      }
    }
 
    public Sprite(byte[] abyte0, Component component) {

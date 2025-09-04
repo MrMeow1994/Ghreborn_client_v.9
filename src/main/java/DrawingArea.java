@@ -1,4 +1,4 @@
-public class DrawingArea extends Class30_Sub2 {
+public class DrawingArea extends Node_Sub2 {
    private static boolean aBoolean1377;
    public static boolean aBoolean1388;
    public static float[] depthBuffer;

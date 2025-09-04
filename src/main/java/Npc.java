@@ -2,7 +2,7 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Npc extends Class30_Sub2_Sub4_Sub1
+final class Npc extends Entity
 {
 
     final Model method450(int i)
@@ -32,32 +32,32 @@ final class Npc extends Class30_Sub2_Sub4_Sub1
         Model model = method450(0);
         if(model == null)
             return null;
-        super.anInt1507 = ((Animable) (model)).anInt1426;
+        super.anInt1507 = ((Animable) (model)).modelHeight;
         if(i != 4016)
             anInt1693 = -403;
         if(super.anInt1520 != -1 && super.anInt1521 != -1)
         {
-            Class23 class23 = Class23.aClass23Array403[super.anInt1520];
-            Model model_1 = class23.method266();
+            SpotAnimation spotAnimation = SpotAnimation.cache[super.anInt1520];
+            Model model_1 = spotAnimation.method266();
             if(model_1 != null)
             {
-                int j = class23.aClass20_407.frames[super.anInt1521];
-                Model class30_sub2_sub4_sub6_2 = new Model(9, true, Class36.method532(j, false), false, model_1);
-                class30_sub2_sub4_sub6_2.method475(0, -super.anInt1524, 16384, 0);
-                class30_sub2_sub4_sub6_2.method469((byte)-71);
+                int j = spotAnimation.animationDefinition.frames[super.anInt1521];
+                Model class30_sub2_sub4_sub6_2 = new Model(9, true, FrameLoader.method532(j, false), false, model_1);
+                class30_sub2_sub4_sub6_2.translate(0, -super.anInt1524, 16384, 0);
+                class30_sub2_sub4_sub6_2.createBones();
                 class30_sub2_sub4_sub6_2.method470(j, 40542);
-                class30_sub2_sub4_sub6_2.anIntArrayArray1658 = null;
-                class30_sub2_sub4_sub6_2.anIntArrayArray1657 = null;
-                if(class23.anInt410 != 128 || class23.anInt411 != 128)
-                    class30_sub2_sub4_sub6_2.method478(class23.anInt410, class23.anInt410, anInt1695, class23.anInt411);
-                class30_sub2_sub4_sub6_2.method479(64 + class23.anInt413, 850 + class23.anInt414, -30, -50, -30, true);
+                class30_sub2_sub4_sub6_2.triangleSkin = null;
+                class30_sub2_sub4_sub6_2.vertexSkin = null;
+                if(spotAnimation.anInt410 != 128 || spotAnimation.anInt411 != 128)
+                    class30_sub2_sub4_sub6_2.scaleT(spotAnimation.anInt410, spotAnimation.anInt410, anInt1695, spotAnimation.anInt411);
+                class30_sub2_sub4_sub6_2.method479(64 + spotAnimation.anInt413, 850 + spotAnimation.anInt414, -30, -50, -30, true);
                 Model aclass30_sub2_sub4_sub6[] = {
                         model, class30_sub2_sub4_sub6_2
                 };
-                model = new Model(2, -819, true, aclass30_sub2_sub4_sub6);
+                model = new Model(aclass30_sub2_sub4_sub6);
             }
         }
-        if(desc.aByte68 == 1)
+        if(desc.size == 1)
             model.aBoolean1659 = true;
         return model;
     }

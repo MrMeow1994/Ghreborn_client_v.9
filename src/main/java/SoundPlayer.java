@@ -51,7 +51,7 @@ public class SoundPlayer implements Runnable {
                         SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
                         line.open(format);
 
-                        // 🔁 Flip user volume (0 = loud, 10 = mute)
+                        // Set gain BEFORE starting the line
                         float userMultiplier = (10 - getVolume()) / 10.0f;
                         float scaled = (soundLevel / 10.0f) * userMultiplier;
                         float dB = getDecibels(scaled);
@@ -62,14 +62,21 @@ public class SoundPlayer implements Runnable {
                                 gainControl.setValue(dB);
                         }
 
+                        // 🧼 Pre-fill the line with ~50ms of silence
+                        byte[] silence = new byte[1102]; // 22050Hz * 0.05s = 1102 bytes
+                        for (int i = 0; i < silence.length; i++) silence[i] = (byte) 0x80; // silence for unsigned PCM
+
                         line.start();
+                        line.write(silence, 0, silence.length);
+                        line.flush();
 
-                        if (delay > 0) {
-                                Thread.sleep(delay);
-                        }
+                        // 🔁 Micro delay to let audio driver settle
+                        Thread.sleep(10);
 
+                        // Now write actual data
                         byte[] buffer = new byte[1024];
                         int bytesRead;
+
                         while ((bytesRead = soundStream.read(buffer)) != -1) {
                                 line.write(buffer, 0, bytesRead);
                         }
@@ -85,6 +92,7 @@ public class SoundPlayer implements Runnable {
                         e.printStackTrace();
                 }
         }
+
 
         public static void setVolume(int level) {
                 volume = Math.max(0, Math.min(10, level)); // 0 = max, 10 = mute

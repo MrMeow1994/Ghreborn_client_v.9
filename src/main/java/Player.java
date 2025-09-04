@@ -1,4 +1,4 @@
-final class Player extends Class30_Sub2_Sub4_Sub1 {
+final class Player extends Entity {
     int anInt1707;
     int anInt1708;
     int anInt1709;
@@ -40,29 +40,29 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
             if(model == null) {
                 return null;
             } else {
-                super.anInt1507 = model.anInt1426;
+                super.anInt1507 = model.modelHeight;
                 model.aBoolean1659 = true;
                 if(this.aBoolean1699) {
                     return model;
                 } else {
                     if(super.anInt1520 != -1 && super.anInt1521 != -1) {
-                        Class23 model_1 = Class23.aClass23Array403[super.anInt1520];
+                        SpotAnimation model_1 = SpotAnimation.cache[super.anInt1520];
                         Model aclass30_sub2_sub4_sub6 = model_1.method266();
                         if(aclass30_sub2_sub4_sub6 != null) {
-                            Model model_3 = new Model(9, true, Class36.method532(super.anInt1521, false), false, aclass30_sub2_sub4_sub6);
-                            model_3.method475(0, -super.anInt1524, 16384, 0);
-                            model_3.method469((byte)-71);
-                            model_3.method478(132, 132, -1,132);
-                            model_3.method470(model_1.aClass20_407.frames[super.anInt1521], '\u9e5e');
-                            model_3.anIntArrayArray1658 = (int[][])null;
-                            model_3.anIntArrayArray1657 = (int[][])null;
+                            Model model_3 = new Model(9, true, FrameLoader.method532(super.anInt1521, false), false, aclass30_sub2_sub4_sub6);
+                            model_3.translate(0, -super.anInt1524, 16384, 0);
+                            model_3.createBones();
+                            model_3.scaleT(132, 132, -1,132);
+                            model_3.method470(model_1.animationDefinition.frames[super.anInt1521], '\u9e5e');
+                            model_3.triangleSkin = (int[][])null;
+                            model_3.vertexSkin = (int[][])null;
                             if(model_1.anInt410 != 128 || model_1.anInt411 != 128) {
-                                model_3.method478(model_1.anInt410, model_1.anInt410, this.anInt1715, model_1.anInt411);
+                                model_3.scaleT(model_1.anInt410, model_1.anInt410, this.anInt1715, model_1.anInt411);
                             }
 
                             model_3.method479(64 + model_1.anInt413, 850 + model_1.anInt414, -30, -50, -30, true);
                             Model[] aclass30_sub2_sub4_sub6_1 = new Model[]{model, model_3};
-                            model = new Model(2, -819, true, aclass30_sub2_sub4_sub6_1);
+                            model = new Model(aclass30_sub2_sub4_sub6_1);
                         }
                     }
 
@@ -73,7 +73,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
                         if(client.loopCycle >= this.anInt1707 && client.loopCycle < this.anInt1708) {
                             Model model_11 = this.aModel_1714;
-                            model_11.method475(this.anInt1711 - super.anInt1550, this.anInt1712 - this.anInt1709, 16384, this.anInt1713 - super.anInt1551);
+                            model_11.translate(this.anInt1711 - super.x, this.anInt1712 - this.anInt1709, 16384, this.anInt1713 - super.y);
                             if(super.anInt1510 == 512) {
                                 model_11.method473(360);
                                 model_11.method473(360);
@@ -86,7 +86,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                             }
 
                             Model[] aclass30_sub2_sub4_sub61 = new Model[]{model, model_11};
-                            model = new Model(2, -819, true, aclass30_sub2_sub4_sub61);
+                            model = new Model(aclass30_sub2_sub4_sub61);
                             if(super.anInt1510 == 512) {
                                 model_11.method473(360);
                             } else if(super.anInt1510 == 1024) {
@@ -98,7 +98,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                                 model_11.method473(360);
                             }
 
-                            model_11.method475(super.anInt1550 - this.anInt1711, this.anInt1709 - this.anInt1712, 16384, super.anInt1551 - this.anInt1713);
+                            model_11.translate(super.x - this.anInt1711, this.anInt1709 - this.anInt1712, 16384, super.y - this.anInt1713);
                         }
                     }
 
@@ -247,13 +247,15 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
 
                 if (animation.leftHandItem >= 0) {
-                    j1 = animation.leftHandItem - '\u8000';
-                    l += j1 - equipment[5] << 40;
+                    j1 = (animation.leftHandItem);
+                    l += (j1 - equipment[5]) << 40;
                 }
+
                 if (animation.rightHandItem >= 0) {
-                    k1 = animation.rightHandItem - '\u8000';
-                    l += k1 - equipment[3] << 48;
+                    k1 = (animation.rightHandItem  );
+                    l += (k1 - equipment[3]) << 48;
                 }
+
 
             } else if(super.anInt1517 >= 0) {
                 k = AnimationDefinition.anims[super.anInt1517].frames[super.anInt1518];
@@ -342,7 +344,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                     }
                 }
 
-                var15.method469((byte)-71);
+                var15.createBones();
                 var15.method479(64, 850, -30, -50, -30, true);
                 aClass12_1704.method223(var15, l, (byte)2);
                 this.aLong1697 = l;
@@ -352,16 +354,16 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 return var15;
             } else {
                 Model var18 = Model.aModel_1621;
-                var18.method464(7, var15, Class36.method532(k, false) & Class36.method532(i1, false));
+                var18.method464(7, var15, FrameLoader.method532(k, false) & FrameLoader.method532(i1, false));
                 if(k != -1 && i1 != -1) {
                     var18.method471(-20491, AnimationDefinition.anims[super.primaryanim].anIntArray357, i1, k);
                 } else if(k != -1) {
                     var18.method470(k, '\u9e5e');
                 }
 
-                var18.method466(false);
-                var18.anIntArrayArray1658 = (int[][])null;
-                var18.anIntArrayArray1657 = (int[][])null;
+                var18.calculateDiagonals(false);
+                var18.triangleSkin = (int[][])null;
+                var18.vertexSkin = (int[][])null;
                 return var18;
             }
         } else {
@@ -400,7 +402,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
             int k;
             for(int aclass30_sub2_sub4_sub6 = 0; aclass30_sub2_sub4_sub6 < 12; ++aclass30_sub2_sub4_sub6) {
                 k = this.equipment[aclass30_sub2_sub4_sub6];
-                if(k >= 256 && k < 32768  && !Class38.aClass38Array656[k - 256].method539(false)) {
+                if(k >= 256 && k < 512  && !Class38.aClass38Array656[k - 256].method539(false)) {
                     flag = true;
                 }
 

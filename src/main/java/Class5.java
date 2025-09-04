@@ -76,7 +76,7 @@ final class Class5
 						    class5.aByteArray89 = "It's a Ghreborn guide.".getBytes(); // NPC description, you must leave the .getBytes() at the end or it will not work.
 				}
 						if(i == 319) {
-						class5.aByte68 = 1;
+						class5.size = 1;
 						}
 return class5;
     }
@@ -272,13 +272,13 @@ return class5;
 	}
 }
 		public static void dumpNpccfg() {
-	for(int i = 8589; i < anInt62; i++) {
+	for(int i = 11256; i < anInt62; i++) {
 	Class5 class5 = method159(i);
 	BufferedWriter bw = null;
 	try {
 	bw = new BufferedWriter(new FileWriter("npc.cfg", true));
 	if(class5.name != null) {
-	bw.write("npc = "+i+"\t"+class5.name.replace(" ", "_")+"\t"+class5.anInt61+"\t0\t"+class5.aByte68+"");
+	bw.write("npc = "+i+"\t"+class5.name.replace(" ", "_")+"\t"+class5.anInt61+"\t0\t"+class5.size +"");
 	bw.newLine();
 	bw.flush();
 	bw.close();
@@ -336,23 +336,23 @@ return class5;
                     model.method476(anIntArray76[k1], anIntArray70[k1]);
 
             }
-            model.method469((byte)-71);
+            model.createBones();
             model.method479(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
             aClass12_95.method223(model, aLong78, (byte)2);
         }
         Model model_1 = Model.aModel_1621;
-        model_1.method464(7, model, Class36.method532(k, false) & Class36.method532(j, false));
+        model_1.method464(7, model, FrameLoader.method532(k, false) & FrameLoader.method532(j, false));
         if(k != -1 && j != -1)
             model_1.method471(-20491, ai, j, k);
         else
         if(k != -1)
             model_1.method470(k, 40542);
         if(anInt91 != 128 || anInt86 != 128)
-            model_1.method478(anInt91, anInt91, anInt63, anInt86);
-        model_1.method466(false);
-        model_1.anIntArrayArray1658 = null;
-        model_1.anIntArrayArray1657 = null;
-        if(aByte68 == 1)
+            model_1.scaleT(anInt91, anInt91, anInt63, anInt86);
+        model_1.calculateDiagonals(false);
+        model_1.triangleSkin = null;
+        model_1.vertexSkin = null;
+        if(size == 1)
             model_1.aBoolean1659 = true;
         return model_1;
     }
@@ -372,15 +372,15 @@ return class5;
 					break;
 
 				case 2:
-					name = stream.readString();
+					name = stream.readNewString();
 					break;
 
 				case 3:
-					aByteArray89 = stream.method416((byte) 30);
+					aByteArray89 = stream.readNewString().getBytes();
 					break;
 
 				case 12:
-					aByte68 = stream.readSignedByte();
+					size = stream.readSignedByte();
 					break;
 
 				case 13:
@@ -410,7 +410,7 @@ return class5;
 				case 30: case 31: case 32: case 33: case 34:
 					if (aStringArray66 == null)
 						aStringArray66 = new String[5];
-					String action = stream.readString();
+					String action = stream.readNewString();
 					aStringArray66[opcode - 30] = action.equalsIgnoreCase("hidden") ? null : action;
 					break;
 
@@ -547,7 +547,7 @@ return class5;
         anInt63 = 9;
         anInt64 = 1834;
         anInt67 = -1;
-        aByte68 = 1;
+        size = 1;
         anInt69 = 9;
         anInt71 = -1;
         anInt75 = -1;
@@ -578,7 +578,7 @@ return class5;
     public String name;
     public String aStringArray66[];
     public int anInt67;
-    public byte aByte68;
+    public byte size;
     private int anInt69;
     private int anIntArray70[];
     public int anInt71;

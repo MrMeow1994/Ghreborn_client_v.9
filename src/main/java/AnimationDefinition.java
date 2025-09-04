@@ -1,7 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
 public class AnimationDefinition
@@ -59,7 +56,6 @@ public class AnimationDefinition
                 e.printStackTrace();
             }
         }
-
     }
     public static void dumpValues(int length) {
         System.out.println("Dumping Animations..");
@@ -111,9 +107,9 @@ public class AnimationDefinition
         }
         if(j == 0)
         {
-            Class36 class36 = Class36.method531(anInt348, frames[i]);
-            if(class36 != null)
-                j = frame_durations[i] = class36.anInt636;
+            FrameLoader frameLoader = FrameLoader.method531(anInt348, frames[i]);
+            if(frameLoader != null)
+                j = frame_durations[i] = frameLoader.anInt636;
         }
         if(j == 0)
             j = 1;
@@ -163,24 +159,6 @@ public class AnimationDefinition
 				anInt364 = stream.readUnsignedByte();
 			else if(i == 11) {
                 replayMode = stream.readUnsignedByte();
-            } else if (i == 12) {
-               int  var3 = stream.readUnsignedByte();
-                this.chatFrameIds = new int[var3];
-
-                for (int var4 = 0; var4 < var3; ++var4) {
-                    this.chatFrameIds[var4] = stream.readUnsignedShort();
-                }
-
-                for (int var4 = 0; var4 < var3; ++var4) {
-                    this.chatFrameIds[var4] += stream.readUnsignedShort() << 16;
-                }
-            } else if (i == 13) {
-                int var3 = stream.readUnsignedByte();
-                this.soundEffects = new int[var3];
-
-                for (int var4 = 0; var4 < var3; ++var4) {
-                    this.soundEffects[var4] = stream.readDWord();
-                }
             }
 
             else
@@ -211,6 +189,7 @@ public class AnimationDefinition
 			anInt364 = 0;
 		}
 	}
+
     public AnimationDefinition()
     {
         anInt348 = 9;

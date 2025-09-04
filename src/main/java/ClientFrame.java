@@ -94,7 +94,7 @@ public final class ClientFrame extends Frame implements ActionListener {
         playMusic.addActionListener(e -> {
             // Replace this with your actual file server track
             if (!mp3.isPlaying()) {
-                mp3.playFromURL("http://ghreborn.ddns.net:29435/pvpmix.mp3",true);
+                mp3.playFromURL("http://"+Configuration.SERVER_ADDRESS+":29435/pvpmix.mp3",true);
             }
         });
 
