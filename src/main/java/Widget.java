@@ -1087,8 +1087,8 @@ public class Widget {
                 "Fish",
                 "Range",
                 "Thief", "Cook", "Prayer", "Craft", "Fire", "Mage", "Fletch", "Wood", "Rune", "Slay", "Farm", "Construction", "Hunter", "Summon", "Dungeon" };
-        int[] buttons = { 8654, 8655, 8656, 8657, 8658, 8659, 8660, 8861, 8662, 8663, 8664, 8665, 8666, 8667, 8668, 8669, 8670, 8671, 8672, 12162, 13928, 18177, 18178, 18179, 18180 };
-        int[] hovers = { 4040, 4076, 4112, 4046, 4082, 4118, 4052, 4088, 4124, 4058, 4094, 4130, 4064, 4100, 4136, 4070, 4106, 4142, 4160, 2832, 13917, 18173, 18174, 18175, 18176 };
+        int[] buttons = { 8654, 8655, 8656, 8657, 8658, 8659, 8660, 8861, 8662, 8663, 8664, 8665, 8666, 8667, 8668, 8669, 8670, 8671, 8672, 12162, 13928, 28177, 28178, 36179, 36180 };
+        int[] hovers = { 4040, 4076, 4112, 4046, 4082, 4118, 4052, 4088, 4124, 4058, 4094, 4130, 4064, 4100, 4136, 4070, 4106, 4142, 4160, 2832, 13917, 36173, 36174, 36175, 36176 };
         addText(36001, "99", 0xFFFF00, false, true, -1, RSFont, 0);
         addText(36002, "99", 0xFFFF00, false, true, -1, RSFont, 0);
         addText(36003, "99", 0xFFFF00, false, true, -1, RSFont, 0);
@@ -1136,7 +1136,7 @@ public class Widget {
         int[][] newText = { { 18165, 18166, 18167, 18168 },
                 { 18169, 18170, 18171, 18172 } };
         for (int i = 0; i < hovers.length; i++) {
-            createSkillHover(hovers[i], 205 + i);
+            createSkillHover(hovers[i], 505 + i);
             addSkillButton(buttons[i]);
             addImage(icons[i], spriteNames[i]);
         }

@@ -2,15 +2,15 @@ public class Model extends Animable {
 
 	public static void nullLoader() {
 		aClass21Array1661 = null;
-		aBooleanArray1663 = null;
-		aBooleanArray1664 = null;
+		hasAnEdgeToRestrict = null;
+		outOfReach = null;
 		projected_vertex_y = null;
 		anIntArray1667 = null;
 		camera_vertex_y = null;
 		camera_vertex_x = null;
 		camera_vertex_z = null;
-		anIntArray1671 = null;
-		anIntArrayArray1672 = null;
+		depthListIndices = null;
+		faceLists = null;
 		anIntArray1673 = null;
 		anIntArrayArray1674 = null;
 		anIntArray1675 = null;
@@ -2212,7 +2212,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			}
 
 			try {
-				method483(false, false, 0, 20);
+				translateToScreen(false, false, 0, 20);
 				return;
 			} catch (Exception _ex) {
 				return;
@@ -2298,7 +2298,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				if (k2 - j5 <= 50)
 					flag = true;
 				boolean flag1 = false;
-				if (i2 > 0 && aBoolean1684) {
+				if (i2 > 0 && objectExists) {
 					int k5 = k2 - l2;
 					if (k5 <= 50)
 						k5 = 50;
@@ -2320,7 +2320,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					int k6 = anInt1686 - Rasterizer.centerY;
 					if (i6 > k3 && i6 < l3 && k6 > i5 && k6 < k4)
 						if (aBoolean1659)
-							anIntArray1688[anInt1687++] = i2;
+							objectsInCurrentRegion[objectsRendered++] = i2;
 						else
 							flag1 = true;
 				}
@@ -2338,45 +2338,45 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					int i8 = verticesZ[j7] << (scaledVertices ? 0 : 2);
 					if (i != 0) {
 						int j8 = i8 * l6 + k7 * i7 >> 16;
-				i8 = i8 * i7 - k7 * l6 >> 16;
+							i8 = i8 * i7 - k7 * l6 >> 16;
 							k7 = j8;
 					}
 					k7 += j1 << 2;
 					l7 += k1 << 2;
 					i8 += l1 << 2;
 					int k8 = i8 * l + k7 * i1 >> 16;
-				i8 = i8 * i1 - k7 * l >> 16;
-		k7 = k8;
-		k8 = l7 * k - i8 * j >> 16;
-		i8 = l7 * j + i8 * k >> 16;
-		l7 = k8;
-		anIntArray1667[j7] = (i8 >> 2) - k2;
-		if (i8 >= 50) {
-			projected_vertex_x[j7] = l5 + (k7 << client.log_view_dist) / i8;
-			projected_vertex_y[j7] = j6 + (l7 << client.log_view_dist) / i8;
-			projected_vertex_z[j7] = (i8 >> 2);
-		} else {
-			projected_vertex_x[j7] = -5000;
-			flag = true;
-		}
-		if (flag || numberOfTexturesFaces > 0) {
-			camera_vertex_y[j7] = k7 >> 2;
-			camera_vertex_x[j7] = l7 >> 2;
-			camera_vertex_z[j7] = i8 >> 2;
-		}
+					i8 = i8 * i1 - k7 * l >> 16;
+					k7 = k8;
+					k8 = l7 * k - i8 * j >> 16;
+					i8 = l7 * j + i8 * k >> 16;
+					l7 = k8;
+					anIntArray1667[j7] = (i8 >> 2) - k2;
+			if (i8 >= 50) {
+					projected_vertex_x[j7] = l5 + (k7 << client.log_view_dist) / i8;
+					projected_vertex_y[j7] = j6 + (l7 << client.log_view_dist) / i8;
+					projected_vertex_z[j7] = (i8 >> 2);
+				} else {
+					projected_vertex_x[j7] = -5000;
+					flag = true;
+			}
+					if (flag || numberOfTexturesFaces > 0) {
+						camera_vertex_y[j7] = k7 >> 2;
+						camera_vertex_x[j7] = l7 >> 2;
+						camera_vertex_z[j7] = i8 >> 2;
+					}
 				}
 
 				try {
-					method483(flag, flag1, i2, bufferOffset);
+					translateToScreen(flag, flag1, i2, bufferOffset);
 					return;
 				} catch (Exception _ex) {
 					return;
 				}
 	}
 
-	private final void method483(boolean flag, boolean flag1, long i,  int bufferOffset) {
+	private final void translateToScreen(boolean flag, boolean flag1, long i, int bufferOffset) {
 		for (int j = 0; j < anInt1652; j++)
-			anIntArray1671[j] = 0;
+			depthListIndices[j] = 0;
 
 		for (int k = 0; k < triangleCount; k++)
 			if (face_render_type == null || face_render_type[k] != -1) {
@@ -2387,41 +2387,41 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				int l3 = projected_vertex_x[k1];
 				int k4 = projected_vertex_x[j2];
 				if (flag && (i3 == -5000 || l3 == -5000 || k4 == -5000)) {
-					aBooleanArray1664[k] = true;
+					outOfReach[k] = true;
 					int j5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2])
 					/ 3 + anInt1653;
-					anIntArrayArray1672[j5][anIntArray1671[j5]++] = k;
+					faceLists[j5][depthListIndices[j5]++] = k;
 				} else {
 					if (flag1
 							&& method486(anInt1685, anInt1686,
 									projected_vertex_y[l], projected_vertex_y[k1],
 									projected_vertex_y[j2], i3, l3, k4)) {
-						anIntArray1688[anInt1687++] = i;
+						objectsInCurrentRegion[objectsRendered++] = i;
 						flag1 = false;
 					}
 					if ((i3 - l3) * (projected_vertex_y[j2] - projected_vertex_y[k1])
 							- (projected_vertex_y[l] - projected_vertex_y[k1])
 							* (k4 - l3) > 0) {
-						aBooleanArray1664[k] = false;
+						outOfReach[k] = false;
 						if (i3 < 0 || l3 < 0 || k4 < 0
 								|| i3 > DrawingArea.viewportRX
 								|| l3 > DrawingArea.viewportRX
 								|| k4 > DrawingArea.viewportRX)
-							aBooleanArray1663[k] = true;
+							hasAnEdgeToRestrict[k] = true;
 						else
-							aBooleanArray1663[k] = false;
+							hasAnEdgeToRestrict[k] = false;
 						int k5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2])
 						/ 3 + anInt1653;
-						anIntArrayArray1672[k5][anIntArray1671[k5]++] = k;
+						faceLists[k5][depthListIndices[k5]++] = k;
 					}
 				}
 			}
 
 		if (face_render_priorities == null) {
 			for (int i1 = anInt1652 - 1; i1 >= 0; i1--) {
-				int l1 = anIntArray1671[i1];
+				int l1 = depthListIndices[i1];
 				if (l1 > 0) {
-					int ai[] = anIntArrayArray1672[i1];
+					int ai[] = faceLists[i1];
 					for (int j3 = 0; j3 < l1; j3++)
 						rasterise(ai[j3], bufferOffset);
 
@@ -2436,9 +2436,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		}
 
 		for (int i2 = anInt1652 - 1; i2 >= 0; i2--) {
-			int k2 = anIntArray1671[i2];
+			int k2 = depthListIndices[i2];
 			if (k2 > 0) {
-				int ai1[] = anIntArrayArray1672[i2];
+				int ai1[] = faceLists[i2];
 				for (int i4 = 0; i4 < k2; i4++) {
 					int l4 = ai1[i4];
 					int l5 = face_render_priorities[l4];
@@ -2574,14 +2574,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	}
 
 	private final void rasterise(int i, int bufferOffset) {
-		if (aBooleanArray1664[i]) {
+		if (outOfReach[i]) {
 			reduce(i, bufferOffset);
 			return;
 		}
 		int j = face_a[i];
 		int k = face_b[i];
 		int l = face_c[i];
-		Rasterizer.aBoolean1462 = aBooleanArray1663[i];
+		Rasterizer.aBoolean1462 = hasAnEdgeToRestrict[i];
 		if (face_alpha == null)
 			Rasterizer.anInt1465 = 0;
 		else
@@ -2902,8 +2902,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	private int lastRenderedRotation = 0;
 	static Class21 aClass21Array1661[];
 	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
-	static boolean aBooleanArray1663[] = new boolean[16000];
-	static boolean aBooleanArray1664[] = new boolean[16000];
+	static boolean hasAnEdgeToRestrict[] = new boolean[16000];
+	static boolean outOfReach[] = new boolean[16000];
 	static int projected_vertex_x[] = new int[16000];
 	static int projected_vertex_y[] = new int[16000];
 	static int projected_vertex_z[] = new int[16000];
@@ -2911,8 +2911,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	static int camera_vertex_y[] = new int[16000];
 	static int camera_vertex_x[] = new int[16000];
 	static int camera_vertex_z[] = new int[16000];
-	static int anIntArray1671[] = new int[16000];
-	static int anIntArrayArray1672[][] = new int[16000][512];
+	static int depthListIndices[] = new int[16000];
+	static int faceLists[][] = new int[16000][512];
 	static int anIntArray1673[] = new int[12];
 	static int anIntArrayArray1674[][] = new int[12][2000];
 	static int anIntArray1675[] = new int[2000];
@@ -2924,11 +2924,11 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	static int anInt1681;
 	static int anInt1682;
 	static int anInt1683;
-	public static boolean aBoolean1684;
+	public static boolean objectExists;
 	public static int anInt1685;
 	public static int anInt1686;
-	public static int anInt1687;
-	public static long anIntArray1688[] = new long[1000];
+	public static int objectsRendered;
+	public static long objectsInCurrentRegion[] = new long[1000];
 	public static int SINE[];
 	public static int COSINE[];
 	static int hsl2rgb[];

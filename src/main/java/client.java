@@ -2813,9 +2813,6 @@ public class client extends Applet_Sub1 {
         if(class9.type == 0 && class9.children != null && !class9.isMouseoverTriggered) {
             if(k >= i && i1 >= l && k <= i + class9.width && i1 <= l + class9.height) {
                 int k1 = class9.children.length;
-                if(j != 13037) {
-                    this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
-                }
 
                 for(int l1 = 0; l1 < k1; ++l1) {
                     int i2 = class9.childX[l1] + i;
@@ -8113,8 +8110,8 @@ public class client extends Applet_Sub1 {
 
         long j = -1L;
 
-        for(int k = 0; k < Model.anInt1687; ++k) {
-            Long l = Long.valueOf(Model.anIntArray1688[k]);
+        for(int k = 0; k < Model.objectsRendered; ++k) {
+            Long l = Long.valueOf(Model.objectsInCurrentRegion[k]);
             int i1 = ObjectKey.getObjectX(l.longValue());
             int j1 = ObjectKey.getObjectY(l.longValue());
             int k1 = ObjectKey.getObjectOpcode(l.longValue());
@@ -9314,8 +9311,8 @@ public class client extends Applet_Sub1 {
         if(i <= 0) {
             this.stream.writeUnsignedByte(49);
         }
-        if ((j >= 205) && (j <= (205 + 25))) {
-            j -= 205;
+        if ((j >= 505) && (j <= (505 + 25))) {
+            j -= 505;
             class9.message = setMessage(j);
             return;
         }
@@ -13230,176 +13227,18 @@ public class client extends Applet_Sub1 {
                                         ++k4;
                                     }
                                 }
-                            } else if (class9_1.type == 8
-                                    && (anInt1500 == class9_1.id || anInt1044 == class9_1.id || anInt1129 == class9_1.id)
-                                    && anInt1501 == 50 && !menuOpen) {
-                                if (class9_1.parentID == 3917) {
-                                    return;
-                                }
-                                int boxWidth = 0;
-                                int boxHeight = 0;
 
-                                /**
-                                 * Skill tab hovers Remove "next level at" and "remaining" for xp if we're level
-                                 * 99.
-                                 */
-
-                                TextDrawingArea textDrawingArea_2 = regularText;
-                                for (String s1 = class9_1.message; s1.length() > 0;) {
-                                    if (s1.indexOf("%") != -1) {
-                                        do {
-                                            int k7 = s1.indexOf("%1");
-                                            if (k7 == -1)
-                                                break;
-                                            s1 = s1.substring(0, k7) + this.method93(369, this.method124(341, class9_1, 0))
-                                                    + s1.substring(k7 + 2);
-                                        } while (true);
-                                        do {
-                                            int l7 = s1.indexOf("%2");
-                                            if (l7 == -1)
-                                                break;
-                                            s1 = s1.substring(0, l7) + this.method93(369, this.method124(341, class9_1, 1))
-                                                    + s1.substring(l7 + 2);
-                                        } while (true);
-                                        do {
-                                            int i8 = s1.indexOf("%3");
-                                            if (i8 == -1)
-                                                break;
-                                            s1 = s1.substring(0, i8) + this.method93(369, this.method124(341, class9_1, 2))
-                                                    + s1.substring(i8 + 2);
-                                        } while (true);
-                                        do {
-                                            int j8 = s1.indexOf("%4");
-                                            if (j8 == -1)
-                                                break;
-                                            s1 = s1.substring(0, j8) + this.method93(369, this.method124(341, class9_1, 3))
-                                                    + s1.substring(j8 + 2);
-                                        } while (true);
-                                        do {
-                                            int k8 = s1.indexOf("%5");
-                                            if (k8 == -1)
-                                                break;
-                                            s1 = s1.substring(0, k8) + this.method93(369, this.method124(341, class9_1, 4))
-                                                    + s1.substring(k8 + 2);
-                                        } while (true);
-                                    }
-                                    int l7 = s1.indexOf("\\n");
-
-                                    String s4;
-                                    if (l7 != -1) {
-                                        s4 = s1.substring(0, l7);
-                                        s1 = s1.substring(l7 + 2);
-                                    } else {
-                                        s4 = s1;
-                                        s1 = "";
-                                    }
-                                    int j10 = textDrawingArea_2.getTextWidth(s4);
-                                    if (j10 > boxWidth) {
-                                        boxWidth = j10;
-                                    }
-                                    boxHeight += textDrawingArea_2.anInt1497 + 1;
+                            } else if (class9_1.type == 8) {
+                                // if (interfaceIsSelected(child)) {
+                                // } else
+                                try {
+                                    drawHoverBox(_x, _y, class9_1.message);
+                                } catch (Exception e) {
                                 }
-
-                                if (tabInterfaceIDs[tabID] == 17200) {
-                                    return;
-                                }
-                                boxWidth += 6;
-                                boxHeight += 7;
-                                int xPos = (_x + class9_1.width) - 5 - boxWidth;
-                                int yPos = _y + class9_1.height + 5;
-                                if (xPos < _x + 5)
-                                    xPos = _x + 5;
-                                if (xPos + boxWidth > xPosition + class9.width)
-                                    xPos = (xPosition + class9.width) - boxWidth;
-                                if (yPos + boxHeight > yPosition + class9.height)
-                                    yPos = (_y - boxHeight);
-                                switch (class9_1.id) {
-                                    case 27389:
-                                    case 27392:
-                                    case 27395:
-                                    case 27398:
-                                    case 27401:
-                                    case 27408:
-                                    case 27411:
-                                        xPos -= 80;
-                                        break;
-                                }
-                                if (class9_1.inventoryhover) {
-
-                                    //System.out.println(canvasWidth - 648);
-                                    if (xPos + boxWidth > currentGameWidth - 8 - boxWidth + 100) {
-                                        xPos = currentGameWidth - 8 - boxWidth;
-                                    }
-                                    if (yPos + boxHeight > currentGameHeight - 118 - boxHeight + 100
-                                            && yPos + boxHeight < currentGameHeight - 118 - boxHeight + 120) {
-                                        yPos = currentGameHeight - 148 - boxHeight;
-                                    } else if (yPos + boxHeight > currentGameHeight - 118 - boxHeight + 100) {
-                                        yPos = currentGameHeight - 118 - boxHeight;
-                                    }
-                                }
-                                DrawingArea.drawPixels(boxHeight, yPos, xPos, 0xFFFFA0, boxWidth);
-                                DrawingArea.fillPixels(xPos, boxWidth, boxHeight, 0, yPos, true);
-                                String s2 = class9_1.message;
-                                for (int j11 = yPos + textDrawingArea_2.anInt1497 + 2; s2
-                                        .length() > 0; j11 += textDrawingArea_2.anInt1497 + 1) {// anInt1497
-                                    if (s2.indexOf("%") != -1) {
-                                        do {
-                                            int k7 = s2.indexOf("%1");
-                                            if (k7 == -1)
-                                                break;
-                                            s2 = s2.substring(0, k7) + this.method93(369, this.method124(341, class9_1, 0))
-                                                    + s2.substring(k7 + 2);
-                                        } while (true);
-                                        do {
-                                            int l7 = s2.indexOf("%2");
-                                            if (l7 == -1)
-                                                break;
-                                            s2 = s2.substring(0, l7) + this.method93(369, this.method124(341, class9_1, 1))
-                                                    + s2.substring(l7 + 2);
-                                        } while (true);
-                                        do {
-                                            int i8 = s2.indexOf("%3");
-                                            if (i8 == -1)
-                                                break;
-                                            s2 = s2.substring(0, i8) + this.method93(369, this.method124(341, class9_1, 2))
-                                                    + s2.substring(i8 + 2);
-                                        } while (true);
-                                        do {
-                                            int j8 = s2.indexOf("%4");
-                                            if (j8 == -1)
-                                                break;
-                                            s2 = s2.substring(0, j8) + this.method93(369, this.method124(341, class9_1, 3))
-                                                    + s2.substring(j8 + 2);
-                                        } while (true);
-                                        do {
-                                            int k8 = s2.indexOf("%5");
-                                            if (k8 == -1)
-                                                break;
-                                            s2 = s2.substring(0, k8) + this.method93(369, this.method124(341, class9_1, 4))
-                                                    + s2.substring(k8 + 2);
-                                        } while (true);
-                                    }
-                                    int l11 = s2.indexOf("\\n");
-                                    String s5;
-                                    if (l11 != -1) {
-                                        s5 = s2.substring(0, l11);
-                                        s2 = s2.substring(l11 + 2);
-                                    } else {
-                                        s5 = s2;
-                                        s2 = "";
-                                    }
-                                    if (class9_1.centerText) {
-                                        textDrawingArea_2.method382(yPos, xPos + class9_1.width / 2,  s5, j11, false);
-                                    } else {
-                                        if (s5.contains("\\r")) {
-                                            String text = s5.substring(0, s5.indexOf("\\r"));
-                                            String text2 = s5.substring(s5.indexOf("\\r") + 2);
-                                            textDrawingArea_2.method389(false, true, xPos + 3, 0, text, j11);
-                                            int rightX = boxWidth + xPos - textDrawingArea_2.getTextWidth(text2) - 2;
-                                            textDrawingArea_2.method389(false, true, rightX, 0, text2, j11);
-                                        } else
-                                            textDrawingArea_2.method389(false, true,xPos + 3, 0, s5, j11);
-                                    }
+                            } else if (class9_1.type == 12) {
+                                try {
+                                    drawHoverBox(_x, _y, class9_1.message);
+                                } catch (Exception e) {
                                 }
                             } else if (class9_1.type == 16) {
                                 drawInputField(class9_1, _x, _y, class9_1.width, class9_1.height);
@@ -13489,7 +13328,67 @@ public class client extends Applet_Sub1 {
         }
 
     }
+    public void drawHoverBox(int xPos, int yPos, String text) {
+        String[] results = text.split("\n");
+        int height = (results.length * 16) + 6;
+        int width;
+        width = boldText.getTextWidth(results[0]) - 3;
+        for (int i = 1; i < results.length; i++) {
+            if (width <= boldText.getTextWidth(results[i]) + 6) {
+                width = boldText.getTextWidth(results[i]) + 2;
+            }
+        }
+        DrawingArea.drawPixels(height, yPos, xPos, 0xFFFFA0, width);
+        DrawingArea.fillPixels(xPos, width, height, 0, yPos, true);
+        yPos += 14;
+        for (int i = 0; i < results.length; i++) {
+            boldText.method389(false, true,  xPos + 3, 0, results[i], yPos + 1);
+            yPos += 16;
+        }
+    }
+    public void drawHoverBox(int xPos, int yPos, int color, int color2, String text) {
+        String[] results = text.split("\n");
+        int height = (results.length * 16) + 6;
+        int width;
+        width = boldText.getTextWidth(results[0]) + 6;
+        for (int i = 1; i < results.length; i++) {
+            if (width <= boldText.getTextWidth(results[i]) + 6) {
+                width = boldText.getTextWidth(results[i]) + 6;
+            }
+        }
+        if (xPos + width > currentGameWidth) {
+            xPos -= width + 10;
+        }
+        if (yPos + height > currentGameHeight) {
+            yPos -= height + 10;
+        }
+        DrawingArea.drawPixels(height, yPos, xPos, color, width);
+        DrawingArea.fillPixels(xPos, width, height, color2, yPos, true);
+        yPos += 14;
+        for (int i = 0; i < results.length; i++) {
+            boldText.method389(false, true, xPos + 5, color2, results[i], yPos + 1);
+            yPos += 16;
+        }
 
+    }
+    public void drawHoverBox2(int xPos, int yPos, String text) {
+        String[] results = text.split("\n");
+        int height = (results.length * 16) + 6;
+        int width;
+        width = boldText.getTextWidth(results[0]) + 6;
+        for (int i = 1; i < results.length; i++) {
+            if (width <= boldText.getTextWidth(results[i]) + 6) {
+                width = boldText.getTextWidth(results[i]) + 6;
+            }
+        }
+        DrawingArea.drawPixels(height + 2, yPos - 1, xPos - 1, 0xFFFFFF, width + 2);
+        DrawingArea.drawPixels(height, yPos, xPos, 0x1E1F1F, width);
+        yPos += 14;
+        for (int i = 0; i < results.length; i++) {
+            boldText.method389(false, true,xPos + 15, 0xFFFFFF, results[i], yPos + 1);
+            yPos += 16;
+        }
+    }
     private final void method107(int i, int j, Stream stream, byte byte0, Player player) {
         if(byte0 != 25) {
             this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
@@ -17997,8 +17896,8 @@ public class client extends Applet_Sub1 {
         }
 
         k2 = Rasterizer.anInt1481;
-        Model.aBoolean1684 = true;
-        Model.anInt1687 = 0;
+        Model.objectExists = true;
+        Model.objectsRendered = 0;
         Model.anInt1685 = super.mouseX - (currentScreenMode == client.ScreenMode.FIXED?0:0);
         Model.anInt1686 = super.mouseY - (currentScreenMode == client.ScreenMode.FIXED?0:0);
         DrawingArea.setAllPixelsToZero();
@@ -18099,29 +17998,12 @@ public class client extends Applet_Sub1 {
                 maximumLevels[level] = 120;
             }
         }
-        NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-        int[] getSkillId = { 0, 0, 2, 1, 4, 5, 6, 20, 22, 3, 16, 15, 17, 12, 9, 18, 21, 14, 14, 13, 10, 7, 11, 8, 19,
-                24 };
-        if (!Skills.SKILL_NAMES[level].equals("-1")) {
-            if (maximumLevels[getSkillId[level]] >= 99) {
-                messages[0] = Skills.SKILL_NAMES[level] + " XP: "
-                        + numberFormat.format(currentExp[getSkillId[level]]) + "\\n";
-                message = messages[0];
-            } else {
-                messages[0] = Skills.SKILL_NAMES[level] + " XP: " + "\\r"
-                        + numberFormat.format(currentExp[getSkillId[level]]) + "\\n";
-                messages[1] = "Next level: " + "\\r"
-                        + (numberFormat.format(getXPForLevel(maximumLevels[getSkillId[level]] + 1))) + "\\n";
-                messages[2] = "Remainder: " + "\\r" + numberFormat.format(
-                        getXPForLevel(maximumLevels[getSkillId[level]] + 1) - currentExp[getSkillId[level]])
-                        + "\\n";
-                messages[3] = "";
-
-                message = messages[0] + messages[1] + messages[2];
-            }
-        } else {
-            message = "Click here to logout";
-        }
+        int[] stuff = {0,3,14,2,16,13,1,15,10,4,17,7,5,12,11,6,9,8,20,18,19,21,22,23,24};
+        messages[0] = skillNames[level]+": "+currentLevels[stuff[level]]+"/"+maximumLevels[stuff[level]]+"\\n";
+        messages[1] = "Current XP: " + getXPForLevel(maximumLevels[stuff[level]])+"\\n";
+        messages[2]= "Next level: "+ (getXPForLevel(maximumLevels[stuff[level]]+1)-getXPForLevel(maximumLevels[stuff[level]]))+"\\n";
+        messages[3]= "Remainder: "+ getXPForLevel(maximumLevels[stuff[level]]+1);
+        message = messages[0] + messages[1] + messages[2] + messages[3];
         return message;
     }
     public client() {

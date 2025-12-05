@@ -1774,9 +1774,6 @@ label0:
                 Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, method317(i7, plainTile.anInt718),
                         method317(i7, plainTile.anInt719), method317(i7, plainTile.anInt717), (float) k3, (float) j3, (float) j2, 0);
             }
-            if (Configuration.distanceFog) {
-                Rasterizer.drawFogTriangle(y3, y4, y2, x3, x4, x2, k3, j3, j2);
-            }
         }
         if ((x1 - x2) * (y4 - y2) - (y1 - y2) * (x4 - x2) > 0) {
             Rasterizer.aBoolean1462 = x1 < 0 || x2 < 0 || x4 < 0 || x1 > DrawingArea.viewportRX || x2 > DrawingArea.viewportRX
@@ -1827,11 +1824,10 @@ label0:
                 ShapedTile.viewspaceX[l1] = i2;
                 ShapedTile.viewspaceY[l1] = k2;
                 ShapedTile.viewspaceZ[l1] = i3;
-            } else if (Configuration.distanceFog) {
-                ShapedTile.viewspaceZ[l1] = i3;
             }
             ShapedTile.screenX[l1] = Rasterizer.centerX + (i2 << client.log_view_dist) / i3;
             ShapedTile.screenY[l1] = Rasterizer.centerY + (k2 << client.log_view_dist) / i3;
+            ShapedTile.depthPoint[l1] = i3;
         }
 
         Rasterizer.anInt1465 = 0;
