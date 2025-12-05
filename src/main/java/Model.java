@@ -373,12 +373,6 @@ public class Model extends Animable {
 					face_render_priorities[j] = 10;
 			}
 	}
-		if (modelId == 48841 || modelId == 48825 || modelId == 48817 || modelId == 48802 || modelId == 48840
-				|| modelId == 45536 || modelId == 38284 || modelId == 45522 || modelId == 45517 || modelId == 45514
-				|| modelId == 45490 || modelId == 48790 || modelId == 59583) {
-			scaleT(32, 32, -1, 32);
-			translate(0, 6, -1, 0);
-		}
 
 		int[][] attachments = ParticleAttachment.getAttachments(modelId);
 		if (attachments != null) {
