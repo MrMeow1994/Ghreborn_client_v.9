@@ -6,7 +6,7 @@ import java.util.List;
 public class SpawnContainer extends Widget {
 
     private static final SpawnContainer INSTANCE = new SpawnContainer();
-    public static final int INTERFACE_ID = 34214;
+    public static final int INTERFACE_ID = 42214;
     private static final Sprite BG = new Sprite("spawner/bg");
 
     public static SpawnContainer get() {

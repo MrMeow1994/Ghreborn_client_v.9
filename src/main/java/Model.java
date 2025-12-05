@@ -18,7 +18,7 @@ public class Model extends Animable {
 		anIntArray1677 = null;
 	       	SINE = null;
         	COSINE = null;
-        	anIntArray1691 = null;
+        	hsl2rgb = null;
         	anIntArray1692 = null;
 	}
 
@@ -136,6 +136,7 @@ public class Model extends Animable {
 		v = numVertices;
 		hb = numTriangles;
 		P = numTexTriangles;
+		verticesParticle = new int[numVertices];
 		int[] vertexX = new int[numVertices];
 		int[] vertexY = new int[numVertices];
 		int[] vertexZ = new int[numVertices];
@@ -351,9 +352,9 @@ public class Model extends Animable {
 		verticesX = vertexX;
 		verticesY = vertexY;
 		verticesZ = vertexZ;
-		triangleX = facePoint1;
-		triangleY = facePoint2;
-		triangleZ = facePoint3;
+		face_a = facePoint1;
+		face_b = facePoint2;
+		face_c = facePoint3;
 
 		convertTexturesTo317(D, texTrianglesPoint1, texTrianglesPoint2, texTrianglesPoint3, false, x);
 	}
@@ -377,6 +378,54 @@ public class Model extends Animable {
 				|| modelId == 45490 || modelId == 48790 || modelId == 59583) {
 			scaleT(32, 32, -1, 32);
 			translate(0, 6, -1, 0);
+		}
+
+		int[][] attachments = ParticleAttachment.getAttachments(modelId);
+		if (attachments != null) {
+			for (int n = 0;
+				 n < attachments.length;
+				 n++) {
+				int[] attach = attachments[n];
+				if (attach[0] == -1) {
+					for (int z = 0;
+						 z < face_a.length;
+						 ++z) {
+						verticesParticle[face_a[z]] = attach[1] + 1;
+					}
+				} else if (attach[0] == -2) {
+					for (int z = 0;
+						 z < face_b.length;
+						 ++z) {
+						verticesParticle[face_b[z]] = attach[1] + 1;
+					}
+				} else if (attach[0] == -3) {
+					for (int z = 0;
+						 z < face_c.length;
+						 ++z) {
+						verticesParticle[face_c[z]] = attach[1] + 1;
+					}
+				} else if (attach[0] == -4) {
+					for (int z = 0;
+						 z < face_a.length;
+						 ++z) {
+						verticesParticle[face_a[z]] = attach[1] + 1;
+					}
+
+					for (int z = 0;
+						 z < face_b.length;
+						 ++z) {
+						verticesParticle[face_b[z]] = attach[1] + 1;
+					}
+
+					for (int z = 0;
+						 z < face_c.length;
+						 ++z) {
+						verticesParticle[face_c[z]] = attach[1] + 1;
+					}
+				} else {
+					verticesParticle[attach[0]] = attach[1] + 1;
+				}
+			}
 		}
 }
 	public void forceRecolour(int i, int j) {
@@ -532,6 +581,7 @@ public class Model extends Animable {
 		v = numVertices;
 		hb = numTriangles;
 		P = numTexTriangles;
+		verticesParticle = new int[numVertices];
 		int[] vertexX = new int[numVertices];
 		int[] vertexY = new int[numVertices];
 		int[] vertexZ = new int[numVertices];
@@ -774,9 +824,11 @@ public class Model extends Animable {
 		verticesX = vertexX;
 		verticesY = vertexY;
 		verticesZ = vertexZ;
-		triangleX = facePoint1;
-		triangleY = facePoint2;
-		triangleZ = facePoint3;
+		face_a = facePoint1;
+		face_b = facePoint2;
+		face_c = facePoint3;
+
+		convertTexturesTo317(D, texTrianglesPoint1, texTrianglesPoint2, texTrianglesPoint3, false, x);
 
         if (!scaledVertices) {
             downscale();
@@ -804,18 +856,19 @@ public class Model extends Animable {
 		Class21 class21 = aClass21Array1661[i];
 		vertexCount = class21.anInt369;
 		triangleCount = class21.anInt370;
-		anInt1642 = class21.anInt371;
+		numberOfTexturesFaces = class21.anInt371;
+		verticesParticle = new int[vertexCount];
 		verticesX = new int[vertexCount];
 		verticesY = new int[vertexCount];
 		verticesZ = new int[vertexCount];
-		triangleX = new int[triangleCount];
-		triangleY = new int[triangleCount];
+		face_a = new int[triangleCount];
+		face_b = new int[triangleCount];
 		while (j >= 0)
 			aBoolean1618 = !aBoolean1618;
-		triangleZ = new int[triangleCount];
-		anIntArray1643 = new int[anInt1642];
-		anIntArray1644 = new int[anInt1642];
-		anIntArray1645 = new int[anInt1642];
+		face_c = new int[triangleCount];
+		textures_face_a = new int[numberOfTexturesFaces];
+		textures_face_b = new int[numberOfTexturesFaces];
+		textures_face_c = new int[numberOfTexturesFaces];
 		if (class21.anInt376 >= 0)
 			vertexVSkin = new int[vertexCount];
 		if (class21.anInt380 >= 0)
@@ -894,27 +947,27 @@ public class Model extends Animable {
 				k3 = l2;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				triangleX[l3] = j2;
-				triangleY[l3] = l2;
-				triangleZ[l3] = j3;
+				face_a[l3] = j2;
+				face_b[l3] = l2;
+				face_c[l3] = j3;
 			}
 			if (i4 == 2) {
 				j2 = j2;
 				l2 = j3;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				triangleX[l3] = j2;
-				triangleY[l3] = l2;
-				triangleZ[l3] = j3;
+				face_a[l3] = j2;
+				face_b[l3] = l2;
+				face_c[l3] = j3;
 			}
 			if (i4 == 3) {
 				j2 = j3;
 				l2 = l2;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				triangleX[l3] = j2;
-				triangleY[l3] = l2;
-				triangleZ[l3] = j3;
+				face_a[l3] = j2;
+				face_b[l3] = l2;
+				face_c[l3] = j3;
 			}
 			if (i4 == 4) {
 				int k4 = j2;
@@ -922,16 +975,16 @@ public class Model extends Animable {
 				l2 = k4;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				triangleX[l3] = j2;
-				triangleY[l3] = l2;
-				triangleZ[l3] = j3;
+				face_a[l3] = j2;
+				face_b[l3] = l2;
+				face_c[l3] = j3;
 			}
 		}
 		stream.currentPosition = class21.anInt384;
-		for (int j4 = 0; j4 < anInt1642; j4++) {
-			anIntArray1643[j4] = stream.readUnsignedShort();
-			anIntArray1644[j4] = stream.readUnsignedShort();
-			anIntArray1645[j4] = stream.readUnsignedShort();
+		for (int j4 = 0; j4 < numberOfTexturesFaces; j4++) {
+			textures_face_a[j4] = stream.readUnsignedShort();
+			textures_face_b[j4] = stream.readUnsignedShort();
+			textures_face_c[j4] = stream.readUnsignedShort();
 		}
 	}
 
@@ -1066,14 +1119,14 @@ public class Model extends Animable {
 		boolean flag3 = false;
 		vertexCount = 0;
 		triangleCount = 0;
-		anInt1642 = 0;
+		numberOfTexturesFaces = 0;
 		face_priority = -1;
 		for (int k = 0; k < i; k++) {
 			Model model = amodel[k];
 			if (model != null) {
 				vertexCount += model.vertexCount;
 				triangleCount += model.triangleCount;
-				anInt1642 += model.anInt1642;
+				numberOfTexturesFaces += model.numberOfTexturesFaces;
 				flag |= model.face_render_type != null;
 				if (model.face_render_priorities != null) {
 					flag1 = true;
@@ -1088,17 +1141,17 @@ public class Model extends Animable {
                 scaledVertices |= model.scaledVertices;
 			}
 		}
-
+		verticesParticle = new int[vertexCount];
 		verticesX = new int[vertexCount];
 		verticesY = new int[vertexCount];
 		verticesZ = new int[vertexCount];
 		vertexVSkin = new int[vertexCount];
-		triangleX = new int[triangleCount];
-		triangleY = new int[triangleCount];
-		triangleZ = new int[triangleCount];
-		anIntArray1643 = new int[anInt1642];
-		anIntArray1644 = new int[anInt1642];
-		anIntArray1645 = new int[anInt1642];
+		face_a = new int[triangleCount];
+		face_b = new int[triangleCount];
+		face_c = new int[triangleCount];
+		textures_face_a = new int[numberOfTexturesFaces];
+		textures_face_b = new int[numberOfTexturesFaces];
+		textures_face_c = new int[numberOfTexturesFaces];
 		if (flag)
 			face_render_type = new int[triangleCount];
 		if (flag1)
@@ -1110,7 +1163,7 @@ public class Model extends Animable {
 		face_color = new int[triangleCount];
 		vertexCount = 0;
 		triangleCount = 0;
-		anInt1642 = 0;
+		numberOfTexturesFaces = 0;
 		int l = 0;
 		for (int i1 = 0; i1 < i; i1++) {
 			Model model_1 = amodel[i1];
@@ -1139,26 +1192,26 @@ public class Model extends Animable {
 					if (flag3 && model_1.triangleTSkin != null)
 						triangleTSkin[triangleCount] = model_1.triangleTSkin[j1];
 					face_color[triangleCount] = model_1.face_color[j1];
-					triangleX[triangleCount] = method465(model_1,
-							model_1.triangleX[j1]);
-					triangleY[triangleCount] = method465(model_1,
-							model_1.triangleY[j1]);
-					triangleZ[triangleCount] = method465(model_1,
-							model_1.triangleZ[j1]);
+					face_a[triangleCount] = method465(model_1,
+							model_1.face_a[j1]);
+					face_b[triangleCount] = method465(model_1,
+							model_1.face_b[j1]);
+					face_c[triangleCount] = method465(model_1,
+							model_1.face_c[j1]);
 					triangleCount++;
 				}
 
-				for (int l1 = 0; l1 < model_1.anInt1642; l1++) {
-					anIntArray1643[anInt1642] = method465(model_1,
-							model_1.anIntArray1643[l1]);
-					anIntArray1644[anInt1642] = method465(model_1,
-							model_1.anIntArray1644[l1]);
-					anIntArray1645[anInt1642] = method465(model_1,
-							model_1.anIntArray1645[l1]);
-					anInt1642++;
+				for (int l1 = 0; l1 < model_1.numberOfTexturesFaces; l1++) {
+					textures_face_a[numberOfTexturesFaces] = method465(model_1,
+							model_1.textures_face_a[l1]);
+					textures_face_b[numberOfTexturesFaces] = method465(model_1,
+							model_1.textures_face_b[l1]);
+					textures_face_c[numberOfTexturesFaces] = method465(model_1,
+							model_1.textures_face_c[l1]);
+					numberOfTexturesFaces++;
 				}
 
-				l += model_1.anInt1642;
+				l += model_1.numberOfTexturesFaces;
 			}
 		}
 
@@ -1179,14 +1232,14 @@ public class Model extends Animable {
 		boolean flag4 = false;
 		vertexCount = 0;
 		triangleCount = 0;
-		anInt1642 = 0;
+		numberOfTexturesFaces = 0;
 		face_priority = -1;
 		for (int k = 0; k < i; k++) {
 			Model model = amodel[k];
 			if (model != null) {
 				vertexCount += model.vertexCount;
 				triangleCount += model.triangleCount;
-				anInt1642 += model.anInt1642;
+				numberOfTexturesFaces += model.numberOfTexturesFaces;
 				flag1 |= model.face_render_type != null;
 				if (model.face_render_priorities != null) {
 					flag2 = true;
@@ -1201,19 +1254,19 @@ public class Model extends Animable {
                 scaledVertices |= model.scaledVertices;
 			}
 		}
-
+		verticesParticle = new int[vertexCount];
 		verticesX = new int[vertexCount];
 		verticesY = new int[vertexCount];
 		verticesZ = new int[vertexCount];
-		triangleX = new int[triangleCount];
-		triangleY = new int[triangleCount];
-		triangleZ = new int[triangleCount];
-		anIntArray1634 = new int[triangleCount];
-		anIntArray1635 = new int[triangleCount];
-		anIntArray1636 = new int[triangleCount];
-		anIntArray1643 = new int[anInt1642];
-		anIntArray1644 = new int[anInt1642];
-		anIntArray1645 = new int[anInt1642];
+		face_a = new int[triangleCount];
+		face_b = new int[triangleCount];
+		face_c = new int[triangleCount];
+		face_shade_a = new int[triangleCount];
+		face_shade_b = new int[triangleCount];
+		face_shade_c = new int[triangleCount];
+		textures_face_a = new int[numberOfTexturesFaces];
+		textures_face_b = new int[numberOfTexturesFaces];
+		textures_face_c = new int[numberOfTexturesFaces];
 		if (flag1)
 			face_render_type = new int[triangleCount];
 		if (flag2)
@@ -1224,7 +1277,7 @@ public class Model extends Animable {
 			face_color = new int[triangleCount];
 		vertexCount = 0;
 		triangleCount = 0;
-		anInt1642 = 0;
+		numberOfTexturesFaces = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < i; j1++) {
 			Model model_1 = amodel[j1];
@@ -1234,6 +1287,7 @@ public class Model extends Animable {
                     int x = model_1.verticesX[l1];
                     int y = model_1.verticesY[l1];
                     int z = model_1.verticesZ[l1];
+					int p = model_1.verticesParticle[l1];
                     if (scaledVertices && !model_1.scaledVertices) {
                         x <<= 2;
                         y <<= 2;
@@ -1242,16 +1296,17 @@ public class Model extends Animable {
                     verticesX[vertexCount] = x;
 					verticesY[vertexCount] = y;
 					verticesZ[vertexCount] = z;
+					this.verticesParticle[this.vertexCount] = p;
 					vertexCount++;
 				}
 
 				for (int i2 = 0; i2 < model_1.triangleCount; i2++) {
-					triangleX[triangleCount] = model_1.triangleX[i2] + k1;
-					triangleY[triangleCount] = model_1.triangleY[i2] + k1;
-					triangleZ[triangleCount] = model_1.triangleZ[i2] + k1;
-					anIntArray1634[triangleCount] = model_1.anIntArray1634[i2];
-					anIntArray1635[triangleCount] = model_1.anIntArray1635[i2];
-					anIntArray1636[triangleCount] = model_1.anIntArray1636[i2];
+					face_a[triangleCount] = model_1.face_a[i2] + k1;
+					face_b[triangleCount] = model_1.face_b[i2] + k1;
+					face_c[triangleCount] = model_1.face_c[i2] + k1;
+					face_shade_a[triangleCount] = model_1.face_shade_a[i2];
+					face_shade_b[triangleCount] = model_1.face_shade_b[i2];
+					face_shade_c[triangleCount] = model_1.face_shade_c[i2];
 					if (flag1)
 						if (model_1.face_render_type == null) {
 							face_render_type[triangleCount] = 0;
@@ -1277,14 +1332,14 @@ public class Model extends Animable {
 					triangleCount++;
 				}
 
-				for (int k2 = 0; k2 < model_1.anInt1642; k2++) {
-					anIntArray1643[anInt1642] = model_1.anIntArray1643[k2] + k1;
-					anIntArray1644[anInt1642] = model_1.anIntArray1644[k2] + k1;
-					anIntArray1645[anInt1642] = model_1.anIntArray1645[k2] + k1;
-					anInt1642++;
+				for (int k2 = 0; k2 < model_1.numberOfTexturesFaces; k2++) {
+					textures_face_a[numberOfTexturesFaces] = model_1.textures_face_a[k2] + k1;
+					textures_face_b[numberOfTexturesFaces] = model_1.textures_face_b[k2] + k1;
+					textures_face_c[numberOfTexturesFaces] = model_1.textures_face_c[k2] + k1;
+					numberOfTexturesFaces++;
 				}
 
-				i1 += model_1.anInt1642;
+				i1 += model_1.numberOfTexturesFaces;
 			}
 		}
 
@@ -1301,12 +1356,14 @@ public class Model extends Animable {
 		anInt1620++;
 		vertexCount = model.vertexCount;
 		triangleCount = model.triangleCount;
-		anInt1642 = model.anInt1642;
+		numberOfTexturesFaces = model.numberOfTexturesFaces;
 		if (flag2) {
+			verticesParticle = model.verticesParticle;
 			verticesX = model.verticesX;
 			verticesY = model.verticesY;
 			verticesZ = model.verticesZ;
 		} else {
+			verticesParticle = new int[vertexCount];
 			verticesX = new int[vertexCount];
 			verticesY = new int[vertexCount];
 			verticesZ = new int[vertexCount];
@@ -1314,6 +1371,7 @@ public class Model extends Animable {
 				verticesX[j] = model.verticesX[j];
 				verticesY[j] = model.verticesY[j];
 				verticesZ[j] = model.verticesZ[j];
+				verticesParticle[j] = model.verticesParticle[j];
 			}
 
 		}
@@ -1342,14 +1400,14 @@ public class Model extends Animable {
 		vertexVSkin = model.vertexVSkin;
 		triangleTSkin = model.triangleTSkin;
 		face_render_type = model.face_render_type;
-		triangleX = model.triangleX;
-		triangleY = model.triangleY;
-		triangleZ = model.triangleZ;
+		face_a = model.face_a;
+		face_b = model.face_b;
+		face_c = model.face_c;
 		face_render_priorities = model.face_render_priorities;
 		face_priority = model.face_priority;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
+		textures_face_a = model.textures_face_a;
+		textures_face_b = model.textures_face_b;
+		textures_face_c = model.textures_face_c;
         scaledVertices = model.scaledVertices;
 	}
 
@@ -1363,7 +1421,7 @@ public class Model extends Animable {
 		anInt1620++;
 		vertexCount = model.vertexCount;
 		triangleCount = model.triangleCount;
-		anInt1642 = model.anInt1642;
+		numberOfTexturesFaces = model.numberOfTexturesFaces;
 		if (flag) {
 			verticesY = new int[vertexCount];
 			for (int j = 0; j < vertexCount; j++)
@@ -1373,13 +1431,13 @@ public class Model extends Animable {
 			verticesY = model.verticesY;
 		}
 		if (flag1) {
-			anIntArray1634 = new int[triangleCount];
-			anIntArray1635 = new int[triangleCount];
-			anIntArray1636 = new int[triangleCount];
+			face_shade_a = new int[triangleCount];
+			face_shade_b = new int[triangleCount];
+			face_shade_c = new int[triangleCount];
 			for (int k = 0; k < triangleCount; k++) {
-				anIntArray1634[k] = model.anIntArray1634[k];
-				anIntArray1635[k] = model.anIntArray1635[k];
-				anIntArray1636[k] = model.anIntArray1636[k];
+				face_shade_a[k] = model.face_shade_a[k];
+				face_shade_b[k] = model.face_shade_b[k];
+				face_shade_c[k] = model.face_shade_c[k];
 			}
 
 			face_render_type = new int[triangleCount];
@@ -1404,23 +1462,24 @@ public class Model extends Animable {
 
 			vertexNormalOffset = model.vertexNormalOffset;
 		} else {
-			anIntArray1634 = model.anIntArray1634;
-			anIntArray1635 = model.anIntArray1635;
-			anIntArray1636 = model.anIntArray1636;
+			face_shade_a = model.face_shade_a;
+			face_shade_b = model.face_shade_b;
+			face_shade_c = model.face_shade_c;
 			face_render_type = model.face_render_type;
 		}
+		verticesParticle = model.verticesParticle;
 		verticesX = model.verticesX;
 		verticesZ = model.verticesZ;
 		face_color = model.face_color;
 		face_alpha = model.face_alpha;
 		face_render_priorities = model.face_render_priorities;
 		face_priority = model.face_priority;
-		triangleX = model.triangleX;
-		triangleY = model.triangleY;
-		triangleZ = model.triangleZ;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
+		face_a = model.face_a;
+		face_b = model.face_b;
+		face_c = model.face_c;
+		textures_face_a = model.textures_face_a;
+		textures_face_b = model.textures_face_b;
+		textures_face_c = model.textures_face_c;
 		super.modelHeight = ((Animable) (model)).modelHeight;
 		anInt1650 = model.anInt1650;
 		anInt1653 = model.anInt1653;
@@ -1435,12 +1494,13 @@ public class Model extends Animable {
 	public void method464(int i, Model model, boolean flag) {
 		vertexCount = model.vertexCount;
 		triangleCount = model.triangleCount;
-		anInt1642 = model.anInt1642;
+		numberOfTexturesFaces = model.numberOfTexturesFaces;
 		if (anIntArray1622.length < vertexCount) {
 			anIntArray1622 = new int[vertexCount + 10000];
 			anIntArray1623 = new int[vertexCount + 10000];
 			anIntArray1624 = new int[vertexCount + 10000];
 		}
+		verticesParticle = new int[vertexCount];
 		verticesX = anIntArray1622;
 		verticesY = anIntArray1623;
 		verticesZ = anIntArray1624;
@@ -1448,6 +1508,7 @@ public class Model extends Animable {
 			verticesX[k] = model.verticesX[k];
 			verticesY[k] = model.verticesY[k];
 			verticesZ[k] = model.verticesZ[k];
+			verticesParticle[k] = model.verticesParticle[k];
 		}
 
 		if (flag) {
@@ -1472,15 +1533,15 @@ public class Model extends Animable {
 		face_priority = model.face_priority;
 		triangleSkin = model.triangleSkin;
 		vertexSkin = model.vertexSkin;
-		triangleX = model.triangleX;
-		triangleY = model.triangleY;
-		triangleZ = model.triangleZ;
-		anIntArray1634 = model.anIntArray1634;
-		anIntArray1635 = model.anIntArray1635;
-		anIntArray1636 = model.anIntArray1636;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
+		face_a = model.face_a;
+		face_b = model.face_b;
+		face_c = model.face_c;
+		face_shade_a = model.face_shade_a;
+		face_shade_b = model.face_shade_b;
+		face_shade_c = model.face_shade_c;
+		textures_face_a = model.textures_face_a;
+		textures_face_b = model.textures_face_b;
+		textures_face_c = model.textures_face_c;
         scaledVertices = model.scaledVertices;
 	}
 
@@ -1489,6 +1550,7 @@ public class Model extends Animable {
 		int k = model.verticesX[i];
 		int l = model.verticesY[i];
 		int i1 = model.verticesZ[i];
+		int p = model.verticesParticle[i];
         if (scaledVertices && !model.scaledVertices) {
             k <<= 2;
             l <<= 2;
@@ -1503,6 +1565,7 @@ public class Model extends Animable {
 		}
 
 		if (j == -1) {
+			verticesParticle[vertexCount] = p;
 			verticesX[vertexCount] = k;
 			verticesY[vertexCount] = l;
 			verticesZ[vertexCount] = i1;
@@ -1904,9 +1967,9 @@ public class Model extends Animable {
 		for (int j = 0; j < vertexCount; j++)
 			verticesZ[j] = -verticesZ[j];
 		for (int k = 0; k < triangleCount; k++) {
-			int l = triangleX[k];
-			triangleX[k] = triangleZ[k];
-			triangleZ[k] = l;
+			int l = face_a[k];
+			face_a[k] = face_c[k];
+			face_c[k] = l;
 		}
 	}
 
@@ -1922,10 +1985,10 @@ public class Model extends Animable {
 public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int j1 = (int) Math.sqrt(k * k + l * l + i1 * i1);
 		int k1 = j * j1 >> 8;
-		if (anIntArray1634 == null) {
-			anIntArray1634 = new int[triangleCount];
-			anIntArray1635 = new int[triangleCount];
-			anIntArray1636 = new int[triangleCount];
+		if (face_shade_a == null) {
+			face_shade_a = new int[triangleCount];
+			face_shade_b = new int[triangleCount];
+			face_shade_c = new int[triangleCount];
 		}
 		if (super.vertexNormals == null) {
 			super.vertexNormals = new VertexNormal[vertexCount];
@@ -1936,14 +1999,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		for (int i2 = 0; i2 < triangleCount; i2++) {
 			if (face_color != null) {
 				if (face_color[i2] == 65535) {
-					triangleX[i2] = 0;
-					triangleY[i2] = 0;
-					triangleZ[i2] = 0;
+					face_a[i2] = 0;
+					face_b[i2] = 0;
+					face_c[i2] = 0;
 				}
 			}
-			int j2 = triangleX[i2];
-			int l2 = triangleY[i2];
-			int i3 = triangleZ[i2];
+			int j2 = face_a[i2];
+			int l2 = face_b[i2];
+			int i3 = face_c[i2];
 			int j3 = verticesX[l2] - verticesX[j2] >> (scaledVertices ? 2 : 0);
 			int k3 = verticesY[l2] - verticesY[j2] >> (scaledVertices ? 2 : 0);
 			int l3 = verticesZ[l2] - verticesZ[j2] >> (scaledVertices ? 2 : 0);
@@ -1987,7 +2050,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			} else {
 
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
-				anIntArray1634[i2] = method481(face_color[i2], l5,
+				face_shade_a[i2] = method481(face_color[i2], l5,
 						face_render_type[i2]);
 
 			}
@@ -2024,26 +2087,26 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 
 	public final void method480(int i, int j, int k, int l, int i1) {
 		for (int j1 = 0; j1 < triangleCount; j1++) {
-			int k1 = triangleX[j1];
-			int i2 = triangleY[j1];
-			int j2 = triangleZ[j1];
+			int k1 = face_a[j1];
+			int i2 = face_b[j1];
+			int j2 = face_c[j1];
 			if (face_render_type == null) {
 				int i3 = face_color[j1];
 				VertexNormal class33 = super.vertexNormals[k1];
 				int k2 = i
 				+ (k * class33.x + l * class33.y + i1
 						* class33.z) / (j * class33.magnitude);
-				anIntArray1634[j1] = method481(i3, k2, 0);
+				face_shade_a[j1] = method481(i3, k2, 0);
 				class33 = super.vertexNormals[i2];
 				k2 = i
 				+ (k * class33.x + l * class33.y + i1
 						* class33.z) / (j * class33.magnitude);
-				anIntArray1635[j1] = method481(i3, k2, 0);
+				face_shade_b[j1] = method481(i3, k2, 0);
 				class33 = super.vertexNormals[j2];
 				k2 = i
 				+ (k * class33.x + l * class33.y + i1
 						* class33.z) / (j * class33.magnitude);
-				anIntArray1636[j1] = method481(i3, k2, 0);
+				face_shade_c[j1] = method481(i3, k2, 0);
 			} else if ((face_render_type[j1] & 1) == 0) {
 				int j3 = face_color[j1];
 				int k3 = face_render_type[j1];
@@ -2052,19 +2115,19 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (k * class33_1.x + l * class33_1.y + i1
 						* class33_1.z)
 						/ (j * class33_1.magnitude);
-				anIntArray1634[j1] = method481(j3, l2, k3);
+				face_shade_a[j1] = method481(j3, l2, k3);
 				class33_1 = super.vertexNormals[i2];
 				l2 = i
 				+ (k * class33_1.x + l * class33_1.y + i1
 						* class33_1.z)
 						/ (j * class33_1.magnitude);
-				anIntArray1635[j1] = method481(j3, l2, k3);
+				face_shade_b[j1] = method481(j3, l2, k3);
 				class33_1 = super.vertexNormals[j2];
 				l2 = i
 				+ (k * class33_1.x + l * class33_1.y + i1
 						* class33_1.z)
 						/ (j * class33_1.magnitude);
-				anIntArray1636[j1] = method481(j3, l2, k3);
+				face_shade_c[j1] = method481(j3, l2, k3);
 			}
 		}
 
@@ -2140,7 +2203,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			anIntArray1667[k4] = (baseVertexZ >> 2) - calculated_zoom;
 			projected_vertex_x[k4] = Rasterizer.centerX + (baseVertexX << 9) / baseVertexZ;
 			projected_vertex_y[k4] = Rasterizer.centerY + (baseVertexY << 9) / baseVertexZ;
-			if (anInt1642 > 0) {
+			projected_vertex_z[k4] = (baseVertexZ >> 2);
+			if (numberOfTexturesFaces > 0) {
 				camera_vertex_y[k4] = baseVertexX >> 2;
 				camera_vertex_x[k4] = baseVertexY >> 2;
 				camera_vertex_z[k4] = baseVertexZ >> 2;
@@ -2148,7 +2212,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			}
 
 			try {
-				method483(false, false, 0);
+				method483(false, false, 0, 20);
 				return;
 			} catch (Exception _ex) {
 				return;
@@ -2159,9 +2223,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int set2 = 0;
 		int max = 50;
 		if(textureIds != null) {
-			anIntArray1643 = new int[triangleCount];
-			anIntArray1644 = new int[triangleCount];
-			anIntArray1645 = new int[triangleCount];
+			textures_face_a = new int[triangleCount];
+			textures_face_b = new int[triangleCount];
+			textures_face_c = new int[triangleCount];
 
 
 			for(int i = 0; i < triangleCount; i++) {
@@ -2175,9 +2239,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				}
 				face_render_type[i] = 2+set2;
 				set2 += 4;
-				int a = triangleX[i];
-				int b = triangleY[i];
-				int c = triangleZ[i];
+				int a = face_a[i];
+				int b = face_b[i];
+				int c = face_c[i];
 				face_color[i] = textureIds[i];
 
 
@@ -2193,38 +2257,41 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					texture_type = -1;
 
 
-				anIntArray1643[set] = texture_type == -1 ? a : texa[texture_type];
-				anIntArray1644[set] = texture_type == -1 ? b : texb[texture_type];
-				anIntArray1645[set++] = texture_type == -1 ? c : texc[texture_type];
+				textures_face_a[set] = texture_type == -1 ? a : texa[texture_type];
+				textures_face_b[set] = texture_type == -1 ? b : texb[texture_type];
+				textures_face_c[set++] = texture_type == -1 ? c : texc[texture_type];
 
 
 			}
-			anInt1642 = set;
+			numberOfTexturesFaces = set;
 		}
 	}
 	public final void renderAtPoint(int i, int j, int k, int l, int i1, int j1,
-									int k1, int l1, long i2) {
+									int k1, int l1, long i2, int bufferOffset) {
+		offX = j1 + client.instance.xCameraPos;
+		offZ = l1 + client.instance.yCameraPos;
+		lastRenderedRotation = i;
 		int j2 = l1 * i1 - j1 * l >> 16;
 			int k2 = k1 * j + j2 * k >> 16;
 			int l2 = anInt1650 * k >> 16;
 							int i3 = k2 + l2;
-							if (i3 <= 50 || k2 >= 30000)
+							if (i3 <= 50 || k2 >=  (WorldController.farZ * 140))
 								return;
 							int j3 = l1 * l + j1 * i1 >> 16;
 				int k3 = j3 - anInt1650 << client.log_view_dist;
-				if (k3 / i3 >= DrawingArea.centerY)
+				if (k3 / i3 >= DrawingArea.viewport_centerX)
 					return;
 				int l3 = j3 + anInt1650 << client.log_view_dist;
-				if (l3 / i3 <= -DrawingArea.centerY)
+				if (l3 / i3 <= -DrawingArea.viewport_centerX)
 					return;
 				int i4 = k1 * k - j2 * j >> 16;
 				int j4 = anInt1650 * j >> 16;
 				int k4 = i4 + j4 << client.log_view_dist;
-				if (k4 / i3 <= -DrawingArea.anInt1387)
+				if (k4 / i3 <= -DrawingArea.viewport_centerY)
 					return;
 				int l4 = j4 + (super.modelHeight * k >> 16);
 				int i5 = i4 - l4 << client.log_view_dist;
-				if (i5 / i3 >= DrawingArea.anInt1387)
+				if (i5 / i3 >= DrawingArea.viewport_centerY)
 					return;
 				int j5 = l2 + (super.modelHeight * j >> 16);
 				boolean flag = false;
@@ -2287,14 +2354,12 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		if (i8 >= 50) {
 			projected_vertex_x[j7] = l5 + (k7 << client.log_view_dist) / i8;
 			projected_vertex_y[j7] = j6 + (l7 << client.log_view_dist) / i8;
-			if(Configuration.distanceFog) {
-				camera_vertex_z[j7] = (i8 >> 2);
-			}
+			projected_vertex_z[j7] = (i8 >> 2);
 		} else {
 			projected_vertex_x[j7] = -5000;
 			flag = true;
 		}
-		if (flag || anInt1642 > 0) {
+		if (flag || numberOfTexturesFaces > 0) {
 			camera_vertex_y[j7] = k7 >> 2;
 			camera_vertex_x[j7] = l7 >> 2;
 			camera_vertex_z[j7] = i8 >> 2;
@@ -2302,22 +2367,22 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				}
 
 				try {
-					method483(flag, flag1, i2);
+					method483(flag, flag1, i2, bufferOffset);
 					return;
 				} catch (Exception _ex) {
 					return;
 				}
 	}
 
-	private final void method483(boolean flag, boolean flag1, long i) {
+	private final void method483(boolean flag, boolean flag1, long i,  int bufferOffset) {
 		for (int j = 0; j < anInt1652; j++)
 			anIntArray1671[j] = 0;
 
 		for (int k = 0; k < triangleCount; k++)
 			if (face_render_type == null || face_render_type[k] != -1) {
-				int l = triangleX[k];
-				int k1 = triangleY[k];
-				int j2 = triangleZ[k];
+				int l = face_a[k];
+				int k1 = face_b[k];
+				int j2 = face_c[k];
 				int i3 = projected_vertex_x[l];
 				int l3 = projected_vertex_x[k1];
 				int k4 = projected_vertex_x[j2];
@@ -2339,9 +2404,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 							* (k4 - l3) > 0) {
 						aBooleanArray1664[k] = false;
 						if (i3 < 0 || l3 < 0 || k4 < 0
-								|| i3 > DrawingArea.centerX
-								|| l3 > DrawingArea.centerX
-								|| k4 > DrawingArea.centerX)
+								|| i3 > DrawingArea.viewportRX
+								|| l3 > DrawingArea.viewportRX
+								|| k4 > DrawingArea.viewportRX)
 							aBooleanArray1663[k] = true;
 						else
 							aBooleanArray1663[k] = false;
@@ -2358,7 +2423,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				if (l1 > 0) {
 					int ai[] = anIntArrayArray1672[i1];
 					for (int j3 = 0; j3 < l1; j3++)
-						method484(ai[j3]);
+						rasterise(ai[j3], bufferOffset);
 
 				}
 			}
@@ -2419,7 +2484,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			i5 = -1000;
 		for (int l6 = 0; l6 < 10; l6++) {
 			while (l6 == 0 && i5 > l2) {
-				method484(ai2[i6++]);
+				rasterise(ai2[i6++], bufferOffset);
 				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 					i6 = 0;
 					k6 = anIntArray1673[11];
@@ -2432,7 +2497,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					i5 = -1000;
 			}
 			while (l6 == 3 && i5 > k3) {
-				method484(ai2[i6++]);
+				rasterise(ai2[i6++], bufferOffset);
 				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 					i6 = 0;
 					k6 = anIntArray1673[11];
@@ -2445,7 +2510,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					i5 = -1000;
 			}
 			while (l6 == 5 && i5 > j4) {
-				method484(ai2[i6++]);
+				rasterise(ai2[i6++], bufferOffset);
 				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 					i6 = 0;
 					k6 = anIntArray1673[11];
@@ -2460,12 +2525,12 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			int i7 = anIntArray1673[l6];
 			int ai4[] = anIntArrayArray1674[l6];
 			for (int j7 = 0; j7 < i7; j7++)
-				method484(ai4[j7]);
+				rasterise(ai4[j7], bufferOffset);
 
 		}
 
 		while (i5 != -1000) {
-			method484(ai2[i6++]);
+			rasterise(ai2[i6++], bufferOffset);
 			if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 				i6 = 0;
 				ai2 = anIntArrayArray1674[11];
@@ -2477,16 +2542,45 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			else
 				i5 = -1000;
 		}
+		for (int m = 0;
+			 m < vertexCount;
+			 m++) {
+			int pid = verticesParticle[m] - 1;
+			if (pid < 0) {
+				continue;
+			}
+
+			final ParticleDefinition def = ParticleDefinition.cache.get(pid);
+			int pX = verticesX[m] >> (scaledVertices ? 2 : 0);
+			int pY = verticesY[m] >> (scaledVertices ? 2 : 0);
+			int pZ = verticesZ[m] >> (scaledVertices ? 2 : 0);
+			if (lastRenderedRotation != 0) {
+				int sine = Model.SINE[lastRenderedRotation];
+				int cosine = Model.COSINE[lastRenderedRotation];
+				int rotatedX = pZ * sine + pX * cosine >> 16;
+				pZ = pZ * cosine - pX * sine >> 16;
+				pX = rotatedX;
+			}
+			pX += offX;
+			pZ += offZ;
+			ParticleVector basePos = new ParticleVector(pX, -pY, pZ);
+			for (int p = 0;
+				 p < def.getSpawnRate();
+				 p++) {
+				Particle particle = new Particle(def, basePos);
+				client.instance.particles.add(particle);
+			}
+		}
 	}
 
-	private final void method484(int i) {
+	private final void rasterise(int i, int bufferOffset) {
 		if (aBooleanArray1664[i]) {
-			method485(i);
+			reduce(i, bufferOffset);
 			return;
 		}
-		int j = triangleX[i];
-		int k = triangleY[i];
-		int l = triangleZ[i];
+		int j = face_a[i];
+		int k = face_b[i];
+		int l = face_c[i];
 		Rasterizer.aBoolean1462 = aBooleanArray1663[i];
 		if (face_alpha == null)
 			Rasterizer.anInt1465 = 0;
@@ -2498,88 +2592,56 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		else
 			i1 = face_render_type[i] & 3;
 		if (i1 == 0) {
-			if(Configuration.distanceFog) {
-				Rasterizer.drawFogTriangle(projected_vertex_y[j], projected_vertex_y[k],
-						projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
-						projected_vertex_x[l], anIntArray1634[i], anIntArray1635[i],
-						anIntArray1636[i]);
-			}
-			Rasterizer.drawGouraudTriangle(projected_vertex_y[j], projected_vertex_y[k],
-					projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
-					projected_vertex_x[l], anIntArray1634[i], anIntArray1635[i],
-					anIntArray1636[i]);
+			Rasterizer.drawGouraudTriangle(projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
+					projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l], face_shade_a[i],
+					face_shade_b[i], face_shade_c[i], projected_vertex_z[j], projected_vertex_z[k],
+					projected_vertex_z[l], bufferOffset);
 			return;
 		}
 		if (i1 == 1) {
-			if(Configuration.distanceFog) {
-				Rasterizer.drawFogTriangle(projected_vertex_y[j], projected_vertex_y[k],
-						projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
-						projected_vertex_x[l], anIntArray1634[i], anIntArray1635[i],
-						anIntArray1636[i]);
-			}
-			Rasterizer.method376(projected_vertex_y[j], projected_vertex_y[k],
-					projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
-					projected_vertex_x[l], anIntArray1691[anIntArray1634[i]]);
+			Rasterizer.drawFlatTriangle(projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
+					projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l], hsl2rgb[face_shade_a[i]],
+					projected_vertex_z[j], projected_vertex_z[k], projected_vertex_z[l], bufferOffset);
 
 			return;
 		}
 		if (i1 == 2) {
 			int j1 = face_render_type[i] >> 2;
-			int l1 = anIntArray1643[j1];
-			int j2 = anIntArray1644[j1];
-			int l2 = anIntArray1645[j1];
-			if(Configuration.distanceFog) {
-				Rasterizer.drawTexturedFogTriangle(projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
-						projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l],
-						anIntArray1634[i], anIntArray1635[i], anIntArray1636[i],
-						camera_vertex_y[l2], camera_vertex_y[l1], camera_vertex_y[j2],
-						camera_vertex_x[l2], camera_vertex_x[l1], camera_vertex_x[j2],
-						camera_vertex_z[l2], camera_vertex_z[l1], camera_vertex_z[j2],
-						face_color[i]);
-			}
-			Rasterizer.method378(projected_vertex_y[j], projected_vertex_y[k],
-					projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
-					projected_vertex_x[l], anIntArray1634[i], anIntArray1635[i],
-					anIntArray1636[i], camera_vertex_y[l1], camera_vertex_y[j2],
-					camera_vertex_y[l2], camera_vertex_x[l1], camera_vertex_x[j2],
-					camera_vertex_x[l2], camera_vertex_z[l1], camera_vertex_z[j2],
-					camera_vertex_z[l2], face_color[i]);
+			int l1 = textures_face_a[j1];
+			int j2 = textures_face_b[j1];
+			int l2 = textures_face_c[j1];
+			Rasterizer.drawTexturedTriangle(projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
+					projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l], face_shade_a[i],
+					face_shade_b[i], face_shade_c[i], camera_vertex_y[l1], camera_vertex_y[j2], camera_vertex_y[l2],
+					camera_vertex_x[l1], camera_vertex_x[j2], camera_vertex_x[l2], camera_vertex_z[l1],
+					camera_vertex_z[j2], camera_vertex_z[l2], face_color[i], projected_vertex_z[j],
+					projected_vertex_z[k], projected_vertex_z[l], bufferOffset);
 			return;
 		}
 		if (i1 == 3) {
 			int k1 = face_render_type[i] >> 2;
-				int i2 = anIntArray1643[k1];
-				int k2 = anIntArray1644[k1];
-				int i3 = anIntArray1645[k1];
-			if(Configuration.distanceFog) {
-				Rasterizer.drawTexturedFogTriangle(projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
-						projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l],
-						anIntArray1634[i], anIntArray1635[i], anIntArray1636[i],
-						camera_vertex_y[i3], camera_vertex_y[i2], camera_vertex_y[k2],
-						camera_vertex_x[i3], camera_vertex_x[i2], camera_vertex_x[k2],
-						camera_vertex_z[i3], camera_vertex_z[i2], camera_vertex_z[k2],
-						face_color[i]);
-			}
-				Rasterizer.method378(projected_vertex_y[j], projected_vertex_y[k],
-						projected_vertex_y[l], projected_vertex_x[j], projected_vertex_x[k],
-						projected_vertex_x[l], anIntArray1634[i], anIntArray1634[i],
-						anIntArray1634[i], camera_vertex_y[i2], camera_vertex_y[k2],
-						camera_vertex_y[i3], camera_vertex_x[i2], camera_vertex_x[k2],
-						camera_vertex_x[i3], camera_vertex_z[i2], camera_vertex_z[k2],
-						camera_vertex_z[i3], face_color[i]);
+				int i2 = textures_face_a[k1];
+				int k2 = textures_face_b[k1];
+				int i3 = textures_face_c[k1];
+			Rasterizer.drawTexturedTriangle(projected_vertex_y[j], projected_vertex_y[k], projected_vertex_y[l],
+					projected_vertex_x[j], projected_vertex_x[k], projected_vertex_x[l], face_shade_a[i],
+					face_shade_a[i], face_shade_a[i], camera_vertex_y[i2], camera_vertex_y[k2], camera_vertex_y[i3],
+					camera_vertex_x[i2], camera_vertex_x[k2], camera_vertex_x[i3], camera_vertex_z[i2],
+					camera_vertex_z[k2], camera_vertex_z[i3], face_color[i], projected_vertex_z[j],
+					projected_vertex_z[k], projected_vertex_z[l], bufferOffset);
 		}
 	}
 
-	private final void method485(int i) {
+	private final void reduce(int i, int bufferOffset) {
 		if (face_color != null)
 			if (face_color[i] == 65535)
 				return;
 		int j = Rasterizer.centerX;
 		int k = Rasterizer.centerY;
 		int l = 0;
-		int i1 = triangleX[i];
-		int j1 = triangleY[i];
-		int k1 = triangleZ[i];
+		int i1 = face_a[i];
+		int j1 = face_b[i];
+		int k1 = face_c[i];
 		int l1 = camera_vertex_z[i1];
 		int i2 = camera_vertex_z[j1];
 		int j2 = camera_vertex_z[k1];
@@ -2587,16 +2649,16 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		if (l1 >= 50) {
 			anIntArray1678[l] = projected_vertex_x[i1];
 			anIntArray1679[l] = projected_vertex_y[i1];
-			anIntArray1680[l++] = anIntArray1634[i];
+			anIntArray1680[l++] = face_shade_a[i];
 		} else {
 			int k2 = camera_vertex_y[i1];
 			int k3 = camera_vertex_x[i1];
-			int k4 = anIntArray1634[i];
+			int k4 = face_shade_a[i];
 			if (j2 >= 50) {
 				int k5 = (50 - l1) * anIntArray1692[j2 - l1];
 				anIntArray1678[l] = j + (k2 + ((camera_vertex_y[k1] - k2) * k5 >> 16) << client.log_view_dist) / 50;
 				anIntArray1679[l] = k + (k3 + ((camera_vertex_x[k1] - k3) * k5 >> 16) << client.log_view_dist) / 50;
-				anIntArray1680[l++] = k4 + ((anIntArray1636[i] - k4) * k5 >> 16);
+				anIntArray1680[l++] = k4 + ((face_shade_c[i] - k4) * k5 >> 16);
 			}
 			if (i2 >= 50) {
 				int l5 = (50 - l1) * anIntArray1692[i2 - l1];
@@ -2607,17 +2669,17 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (k3 + ((camera_vertex_x[j1] - k3) * l5 >> 16) << client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = k4
-				+ ((anIntArray1635[i] - k4) * l5 >> 16);
+				+ ((face_shade_b[i] - k4) * l5 >> 16);
 			}
 		}
 		if (i2 >= 50) {
 			anIntArray1678[l] = projected_vertex_x[j1];
 			anIntArray1679[l] = projected_vertex_y[j1];
-			anIntArray1680[l++] = anIntArray1635[i];
+			anIntArray1680[l++] = face_shade_b[i];
 		} else {
 			int l2 = camera_vertex_y[j1];
 			int l3 = camera_vertex_x[j1];
-			int l4 = anIntArray1635[i];
+			int l4 = face_shade_b[i];
 			if (l1 >= 50) {
 				int i6 = (50 - i2) * anIntArray1692[l1 - i2];
 				anIntArray1678[l] = j
@@ -2627,7 +2689,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (l3 + ((camera_vertex_x[i1] - l3) * i6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = l4
-				+ ((anIntArray1634[i] - l4) * i6 >> 16);
+				+ ((face_shade_a[i] - l4) * i6 >> 16);
 			}
 			if (j2 >= 50) {
 				int j6 = (50 - i2) * anIntArray1692[j2 - i2];
@@ -2638,17 +2700,17 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (l3 + ((camera_vertex_x[k1] - l3) * j6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = l4
-				+ ((anIntArray1636[i] - l4) * j6 >> 16);
+				+ ((face_shade_c[i] - l4) * j6 >> 16);
 			}
 		}
 		if (j2 >= 50) {
 			anIntArray1678[l] = projected_vertex_x[k1];
 			anIntArray1679[l] = projected_vertex_y[k1];
-			anIntArray1680[l++] = anIntArray1636[i];
+			anIntArray1680[l++] = face_shade_c[i];
 		} else {
 			int i3 = camera_vertex_y[k1];
 			int i4 = camera_vertex_x[k1];
-			int i5 = anIntArray1636[i];
+			int i5 = face_shade_c[i];
 			if (i2 >= 50) {
 				int k6 = (50 - j2) * anIntArray1692[i2 - j2];
 				anIntArray1678[l] = j
@@ -2658,7 +2720,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (i4 + ((camera_vertex_x[j1] - i4) * k6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = i5
-				+ ((anIntArray1635[i] - i5) * k6 >> 16);
+				+ ((face_shade_b[i] - i5) * k6 >> 16);
 			}
 			if (l1 >= 50) {
 				int l6 = (50 - j2) * anIntArray1692[l1 - j2];
@@ -2669,7 +2731,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (i4 + ((camera_vertex_x[i1] - i4) * l6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = i5
-				+ ((anIntArray1634[i] - i5) * l6 >> 16);
+				+ ((face_shade_a[i] - i5) * l6 >> 16);
 			}
 		}
 		int j3 = anIntArray1678[0];
@@ -2681,8 +2743,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		if ((j3 - j4) * (k7 - j7) - (i7 - j7) * (j5 - j4) > 0) {
 			Rasterizer.aBoolean1462 = false;
 			if (l == 3) {
-				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX
-						|| j4 > DrawingArea.centerX || j5 > DrawingArea.centerX)
+				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.viewportRX
+						|| j4 > DrawingArea.viewportRX || j5 > DrawingArea.viewportRX)
 					Rasterizer.aBoolean1462 = true;
 				int l7;
 				if (face_render_type == null)
@@ -2690,45 +2752,36 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				else
 					l7 = face_render_type[i] & 3;
 				if (l7 == 0) {
-					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5,
-							anIntArray1680[0], anIntArray1680[1],
-							anIntArray1680[2]);
+					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1],
+							anIntArray1680[2], -1, -1, -1, bufferOffset);
 				} else if (l7 == 1) {
-					Rasterizer.method376(i7, j7, k7, j3, j4, j5,
-							anIntArray1691[anIntArray1634[i]]);
+					Rasterizer.drawFlatTriangle(i7, j7, k7, j3, j4, j5, hsl2rgb[face_shade_a[i]], -1, -1, -1,
+							bufferOffset);
 				}else if (l7 == 2) {
 					int j8 = face_render_type[i] >> 2;
-					int k9 = anIntArray1643[j8];
-					int k10 = anIntArray1644[j8];
-					int k11 = anIntArray1645[j8];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5,
-							anIntArray1680[0], anIntArray1680[1],
-							anIntArray1680[2], camera_vertex_y[k9],
-							camera_vertex_y[k10], camera_vertex_y[k11],
-							camera_vertex_x[k9], camera_vertex_x[k10],
-							camera_vertex_x[k11], camera_vertex_z[k9],
-							camera_vertex_z[k10], camera_vertex_z[k11],
-							face_color[i]);
+					int k9 = textures_face_a[j8];
+					int k10 = textures_face_b[j8];
+					int k11 = textures_face_c[j8];
+					Rasterizer.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1],
+							anIntArray1680[2], camera_vertex_y[k9], camera_vertex_y[k10], camera_vertex_y[k11],
+							camera_vertex_x[k9], camera_vertex_x[k10], camera_vertex_x[k11], camera_vertex_z[k9],
+							camera_vertex_z[k10], camera_vertex_z[k11], face_color[i], -1, -1, -1, bufferOffset);
 				} else if (l7 == 3) {
 					int k8 = face_render_type[i] >> 2;
-					int l9 = anIntArray1643[k8];
-					int l10 = anIntArray1644[k8];
-					int l11 = anIntArray1645[k8];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5,
-							anIntArray1634[i], anIntArray1634[i],
-							anIntArray1634[i], camera_vertex_y[l9],
-							camera_vertex_y[l10], camera_vertex_y[l11],
-							camera_vertex_x[l9], camera_vertex_x[l10],
-							camera_vertex_x[l11], camera_vertex_z[l9],
-							camera_vertex_z[l10], camera_vertex_z[l11],
-							face_color[i]);
+					int l9 = textures_face_a[k8];
+					int l10 = textures_face_b[k8];
+					int l11 = textures_face_c[k8];
+					Rasterizer.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, face_shade_a[i], face_shade_a[i],
+							face_shade_a[i], camera_vertex_y[l9], camera_vertex_y[l10], camera_vertex_y[l11],
+							camera_vertex_x[l9], camera_vertex_x[l10], camera_vertex_x[l11], camera_vertex_z[l9],
+							camera_vertex_z[l10], camera_vertex_z[l11], face_color[i], -1, -1, -1, bufferOffset);
 				}
 			}
 			if (l == 4) {
-				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX
-						|| j4 > DrawingArea.centerX || j5 > DrawingArea.centerX
+				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.viewportRX
+						|| j4 > DrawingArea.viewportRX || j5 > DrawingArea.viewportRX
 						|| anIntArray1678[3] < 0
-						|| anIntArray1678[3] > DrawingArea.centerX)
+						|| anIntArray1678[3] > DrawingArea.viewportRX)
 					Rasterizer.aBoolean1462 = true;
 				int i8;
 				if (face_render_type == null)
@@ -2736,65 +2789,49 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				else
 					i8 = face_render_type[i] & 3;
 				if (i8 == 0) {
-					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5,
-							anIntArray1680[0], anIntArray1680[1],
-							anIntArray1680[2]);
-					Rasterizer.drawGouraudTriangle(i7, k7, anIntArray1679[3], j3, j5,
-							anIntArray1678[3], anIntArray1680[0],
-							anIntArray1680[2], anIntArray1680[3]);
+					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1],
+							anIntArray1680[2], -1, -1, -1, bufferOffset);
+					Rasterizer.drawGouraudTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3],
+							anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], -1, -1, -1, bufferOffset);
 					return;
 				}
 				if (i8 == 1) {
-					int l8 = anIntArray1691[anIntArray1634[i]];
-					Rasterizer.method376(i7, j7, k7, j3, j4, j5, l8);
-					Rasterizer.method376(i7, k7, anIntArray1679[3], j3, j5,
-							anIntArray1678[3], l8);
+					int l8 = hsl2rgb[face_shade_a[i]];
+					Rasterizer.drawFlatTriangle(i7, j7, k7, j3, j4, j5, l8, -1, -1, -1, bufferOffset);
+					Rasterizer.drawFlatTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], l8, -1, -1, -1,
+							bufferOffset);
 					return;
 				}
 				if (i8 == 2) {
 					int i9 = face_render_type[i] >> 2;
-					int i10 = anIntArray1643[i9];
-					int i11 = anIntArray1644[i9];
-					int i12 = anIntArray1645[i9];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5,
-							anIntArray1680[0], anIntArray1680[1],
-							anIntArray1680[2], camera_vertex_y[i10],
-							camera_vertex_y[i11], camera_vertex_y[i12],
-							camera_vertex_x[i10], camera_vertex_x[i11],
-							camera_vertex_x[i12], camera_vertex_z[i10],
-							camera_vertex_z[i11], camera_vertex_z[i12],
-							face_color[i]);
-					Rasterizer.method378(i7, k7, anIntArray1679[3], j3, j5,
-							anIntArray1678[3], anIntArray1680[0],
-							anIntArray1680[2], anIntArray1680[3],
-							camera_vertex_y[i10], camera_vertex_y[i11],
-							camera_vertex_y[i12], camera_vertex_x[i10],
-							camera_vertex_x[i11], camera_vertex_x[i12],
-							camera_vertex_z[i10], camera_vertex_z[i11],
-							camera_vertex_z[i12], face_color[i]);
+					int i10 = textures_face_a[i9];
+					int i11 = textures_face_b[i9];
+					int i12 = textures_face_c[i9];
+					Rasterizer.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1],
+							anIntArray1680[2], camera_vertex_y[i10], camera_vertex_y[i11], camera_vertex_y[i12],
+							camera_vertex_x[i10], camera_vertex_x[i11], camera_vertex_x[i12], camera_vertex_z[i10],
+							camera_vertex_z[i11], camera_vertex_z[i12], face_color[i], -1, -1, -1, bufferOffset);
+					Rasterizer.drawTexturedTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3],
+							anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], camera_vertex_y[i10],
+							camera_vertex_y[i11], camera_vertex_y[i12], camera_vertex_x[i10], camera_vertex_x[i11],
+							camera_vertex_x[i12], camera_vertex_z[i10], camera_vertex_z[i11], camera_vertex_z[i12],
+							face_color[i], -1, -1, -1, bufferOffset);
 					return;
 				}
 				if (i8 == 3) {
 					int j9 = face_render_type[i] >> 2;
-					int j10 = anIntArray1643[j9];
-					int j11 = anIntArray1644[j9];
-					int j12 = anIntArray1645[j9];
-					Rasterizer.method378(i7, j7, k7, j3, j4, j5,
-							anIntArray1634[i], anIntArray1634[i],
-							anIntArray1634[i], camera_vertex_y[j10],
-							camera_vertex_y[j11], camera_vertex_y[j12],
-							camera_vertex_x[j10], camera_vertex_x[j11],
-							camera_vertex_x[j12], camera_vertex_z[j10],
-							camera_vertex_z[j11], camera_vertex_z[j12],
-							face_color[i]);
-					Rasterizer.method378(i7, k7, anIntArray1679[3], j3, j5,
-							anIntArray1678[3], anIntArray1634[i],
-							anIntArray1634[i], anIntArray1634[i],
-							camera_vertex_y[j10], camera_vertex_y[j11],
-							camera_vertex_y[j12], camera_vertex_x[j10],
-							camera_vertex_x[j11], camera_vertex_x[j12],
-							camera_vertex_z[j10], camera_vertex_z[j11],
-							camera_vertex_z[j12], face_color[i]);
+					int j10 = textures_face_a[j9];
+					int j11 = textures_face_b[j9];
+					int j12 = textures_face_c[j9];
+					Rasterizer.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, face_shade_a[i], face_shade_a[i],
+							face_shade_a[i], camera_vertex_y[j10], camera_vertex_y[j11], camera_vertex_y[j12],
+							camera_vertex_x[j10], camera_vertex_x[j11], camera_vertex_x[j12], camera_vertex_z[j10],
+							camera_vertex_z[j11], camera_vertex_z[j12], face_color[i], -1, -1, -1, bufferOffset);
+					Rasterizer.drawTexturedTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3],
+							face_shade_a[i], face_shade_a[i], face_shade_a[i], camera_vertex_y[j10],
+							camera_vertex_y[j11], camera_vertex_y[j12], camera_vertex_x[j10], camera_vertex_x[j11],
+							camera_vertex_x[j12], camera_vertex_z[j10], camera_vertex_z[j11], camera_vertex_z[j12],
+							face_color[i], -1, -1, -1, bufferOffset);
 				}
 			}
 		}
@@ -2823,27 +2860,28 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	private static int anIntArray1623[] = new int[2000];
 	private static int anIntArray1624[] = new int[2000];
 	private static int anIntArray1625[] = new int[2000];
+	public int[] verticesParticle;
     public boolean scaledVertices;
 	public int vertexCount;
 	public int verticesX[];
 	public int verticesY[];
 	public int verticesZ[];
 	public int triangleCount;
-	public int triangleX[];
-	public int triangleY[];
-	public int triangleZ[];
-	public int anIntArray1634[];
-	public int anIntArray1635[];
-	public int anIntArray1636[];
+	public int face_a[];
+	public int face_b[];
+	public int face_c[];
+	public int face_shade_a[];
+	public int face_shade_b[];
+	public int face_shade_c[];
 	public int face_render_type[];
 	public int face_render_priorities[];
 	public int face_alpha[];
 	public int[] face_color;
 	public int face_priority;
-	public int anInt1642;
-	public int anIntArray1643[];
-	public int anIntArray1644[];
-	public int anIntArray1645[];
+	public int numberOfTexturesFaces;
+	public int textures_face_a[];
+	public int textures_face_b[];
+	public int textures_face_c[];
 	public int minX;
 	public int maxX;
 	public int maxZ;
@@ -2859,12 +2897,16 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public int triangleSkin[][];
 	public boolean aBoolean1659;
 	VertexNormal vertexNormalOffset[];
+	private int offX = 0;
+	private int offZ = 0;
+	private int lastRenderedRotation = 0;
 	static Class21 aClass21Array1661[];
 	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
 	static boolean aBooleanArray1663[] = new boolean[16000];
 	static boolean aBooleanArray1664[] = new boolean[16000];
 	static int projected_vertex_x[] = new int[16000];
 	static int projected_vertex_y[] = new int[16000];
+	static int projected_vertex_z[] = new int[16000];
 	static int anIntArray1667[] = new int[16000];
 	static int camera_vertex_y[] = new int[16000];
 	static int camera_vertex_x[] = new int[16000];
@@ -2889,13 +2931,13 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public static long anIntArray1688[] = new long[1000];
 	public static int SINE[];
 	public static int COSINE[];
-	static int anIntArray1691[];
+	static int hsl2rgb[];
 	static int anIntArray1692[];
 
 	static {
 		SINE = Rasterizer.anIntArray1470;
 		COSINE = Rasterizer.anIntArray1471;
-		anIntArray1691 = Rasterizer.anIntArray1482;
+		hsl2rgb = Rasterizer.hsl2rgb;
 		anIntArray1692 = Rasterizer.anIntArray1469;
 	}
 }

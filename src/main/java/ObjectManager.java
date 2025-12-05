@@ -241,7 +241,7 @@ final class ObjectManager {
 								}
 								int i22 = 0;
 								if(j21 != -1) {
-									i22 = Rasterizer.anIntArray1482[method187(k21, 96)];
+									i22 = Rasterizer.hsl2rgb[method187(k21, 96)];
 								}
 								if(i19 == 0) {
 									worldController.method279(l, l6, k17, 0, 0, -1, 154, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0, false);
@@ -270,12 +270,12 @@ final class ObjectManager {
 										k23 = 0;
 										j23 = -2;
 										} else if(class22_2.rgb == 0x333333) {
-											k23 = Rasterizer.anIntArray1482[method185(class22_2.hsl16, 96)];
+											k23 = Rasterizer.hsl2rgb[method185(class22_2.hsl16, 96)];
 											j23 = -2;
 											//   textureId = -1;
 										} else {
 										j23 = method177(class22_2.anInt394, class22_2.anInt395, class22_2.anInt396);
-										k23 = Rasterizer.anIntArray1482[method185(class22_2.hsl16, 96)];
+										k23 = Rasterizer.hsl2rgb[method185(class22_2.hsl16, 96)];
 										}
 
 									if(floorId == 111) {                                            //Water
@@ -521,7 +521,7 @@ final class ObjectManager {
 			}
 			do
 			{
-				int j = stream.method1606();
+				int j = stream.readSmart();
 				if(j == 0) {
 					break label0;
 				}
@@ -1132,7 +1132,7 @@ final class ObjectManager {
 			}
 			do
 			{
-				int i2 = stream.method1606();
+				int i2 = stream.readSmart();
 				if(i2 == 0) {
 					break label0;
 				}
@@ -1457,7 +1457,7 @@ final class ObjectManager {
 		Stream stream = new Stream(is, 891);
 		int i_252_ = -1;
 		for (;;) {
-			int i_253_ = stream.method1606();
+			int i_253_ = stream.readSmart();
 			if (i_253_ == 0)
 				break;
 			i_252_ += i_253_;
@@ -1498,7 +1498,7 @@ final class ObjectManager {
 			Stream stream = new Stream(abyte0, 891);
 			int l = -1;
 			do {
-				int i1 = stream.method1606();
+				int i1 = stream.readSmart();
 				if(i1 == 0) {
 					break label0;
 				}

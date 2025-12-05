@@ -231,6 +231,7 @@ final class ShapedTile
     static int[] viewspaceX = new int[6];
     static int[] viewspaceY = new int[6];
     static int[] viewspaceZ = new int[6];
+    public static final int[] depthPoint = new int[6];
 
     static final int[][] shapedTilePointData = {
         {

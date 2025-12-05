@@ -442,6 +442,7 @@ public final class Sprite extends DrawingArea {
             System.out.println(var12);
          }
          //applyPinkOverlay();
+         this.setTransparency(255, 0, 255);
       } else {
          int var21;
          if(i1 == 0) {
@@ -449,6 +450,7 @@ public final class Sprite extends DrawingArea {
                this.myPixels[var21] = ai[stream.readUnsignedByte()];
             }
              //applyPinkOverlay();
+            this.setTransparency(255, 0, 255);
             return;
          }
 
@@ -457,6 +459,7 @@ public final class Sprite extends DrawingArea {
                for(int var20 = 0; var20 < this.myHeight; ++var20) {
                   this.myPixels[var21 + var20 * this.myWidth] = ai[stream.readUnsignedByte()];
                   //applyPinkOverlay();
+                  this.setTransparency(255, 0, 255);
                }
             }
          }
@@ -524,7 +527,7 @@ public final class Sprite extends DrawingArea {
          this.aBoolean1438 = !this.aBoolean1438;
       }
 
-      DrawingArea.method331(this.myHeight, this.myWidth, this.myPixels, (float[])null);
+      DrawingArea.initDrawingArea(this.myHeight, this.myWidth, this.myPixels, (float[])null);
    }
 
    public void method344(int i, int j, int k, int l) {
@@ -660,6 +663,7 @@ public final class Sprite extends DrawingArea {
    }
 
    public void drawARGBSprite(int xPos, int yPos, int alpha) {
+      int alphaValue = alpha;
       xPos += this.drawOffsetX;
       yPos += this.drawOffsetY;
       int i1 = xPos + yPos * DrawingArea.width;
@@ -698,8 +702,8 @@ public final class Sprite extends DrawingArea {
          i2 += i3;
       }
 
-      if(spriteWidth > 0 && spriteHeight > 0) {
-         this.renderARGBPixels(spriteWidth, spriteHeight, this.myPixels, DrawingArea.pixels, i1, alpha, j1, j2, i2);
+      if(!(spriteWidth <= 0 || spriteHeight <= 0)) {
+         this.renderARGBPixels(spriteWidth, spriteHeight, this.myPixels, DrawingArea.pixels, i1, alphaValue, j1, j2, i2);
       }
 
    }
@@ -721,11 +725,14 @@ public final class Sprite extends DrawingArea {
             }
 
             int pixelColor = spritePixels[i++];
-            if(pixelColor != 0) {
+            if (pixelColor != 0) {
                int pixelValue = renderAreaPixels[pixel];
-               renderAreaPixels[pixel++] = ((pixelColor & 16711935) * alphaValue + (pixelValue & 16711935) * alphaLevel & -16711936) + ((pixelColor & '\uff00') * alphaValue + (pixelValue & '\uff00') * alphaLevel & 16711680) >> 8;
+               drawAlpha(renderAreaPixels, pixel++, ((pixelColor & 0xff00ff) * alphaValue
+                       + (pixelValue & 0xff00ff) * alphaLevel & 0xff00ff00)
+                       + ((pixelColor & 0xff00) * alphaValue + (pixelValue & 0xff00) * alphaLevel
+                       & 0xff0000) >> 8, alphaValue);
             } else {
-               ++pixel;
+               pixel++;
             }
          }
 
@@ -734,7 +741,12 @@ public final class Sprite extends DrawingArea {
       }
 
    }
+   public static void drawAlpha(int[] pixels, int index, int value, int alpha) {
 
+      // (int) x * 0x8081 >>> 23 is equivalent to (short) x / 255
+      int outAlpha = alpha + ((pixels[index] >>> 24) * (255 - alpha) * 0x8081 >>> 23);
+      pixels[index] = value & 0x00FFFFFF | outAlpha << 24;
+   }
    public void drawSprite(int i, int k) {
       i += this.drawOffsetX;
       k += this.drawOffsetY;

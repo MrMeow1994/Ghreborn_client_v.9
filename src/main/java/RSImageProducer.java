@@ -19,7 +19,7 @@ public final class RSImageProducer
     }
     public void initDrawingArea()
     {
-        DrawingArea.method331(anInt317, anInt316, anIntArray315, null);
+        DrawingArea.initDrawingArea(anInt317, anInt316, anIntArray315, null);
     }
 
     public void method238(int i, int j, Graphics g, int k)

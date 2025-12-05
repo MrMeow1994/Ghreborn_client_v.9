@@ -42,8 +42,8 @@ public class Xml$
 
     public Xml$(String fileName)
     {
-        itemName = new String[10000];
-        itemID = new String[10000];
+        itemName = new String[30000];
+        itemID = new String[30000];
         File file = new File(fileName);
         this.fileName = file.getName();
         try
@@ -64,7 +64,7 @@ public class Xml$
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         int linenumber = 0;
         String clientline[];
-        for(clientline = new String[30000]; (clientline[linenumber] = reader.readLine()) != null; linenumber++) { }
+        for(clientline = new String[60000]; (clientline[linenumber] = reader.readLine()) != null; linenumber++) { }
         inputStream.close();
         int y = 0;
         for(int x = 0; x < clientline.length && clientline[x] != null; x++)

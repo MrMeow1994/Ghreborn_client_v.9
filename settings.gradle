@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        maven {
+            url 'https://releases.guardsquare.com'
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}

@@ -23,7 +23,11 @@ java {
 // Dependencies
 dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
+
 
 // Shadow JAR task
 shadowJar {

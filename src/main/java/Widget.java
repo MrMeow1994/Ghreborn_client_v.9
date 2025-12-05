@@ -1,13 +1,10 @@
-import com.google.common.base.Preconditions;
-import sign.signlink;
-
 import java.util.List;
 import java.util.function.Consumer;
 
 public class Widget {
     public int anInt208;
     public int scrollPosition;
-    public int anInt246;
+    public int currentFrame;
     public int anInt263;
     public int anInt265;
     public boolean allowInvDraggingToOtherContainers;
@@ -17,6 +14,8 @@ public class Widget {
     public boolean invAutoScrollHeight;
     public int invAutoScrollHeightOffset;
     public boolean updatesEveryInput;
+    public int msgX, msgY;
+    public boolean toggled = false;
     public boolean inputFieldSendPacket = true;
     public String defaultInputFieldText = "";
     public int invAutoScrollInterfaceId;
@@ -48,7 +47,7 @@ public class Widget {
     public int contentType;
     public int width;
     public int height;
-    public byte aByte254;
+    public byte opacity;
     public int mOverInterToTrigger;
     public int[] anIntArray245;
     public int[] anIntArray212;
@@ -69,7 +68,7 @@ public class Widget {
     public boolean deleteOnDrag2;
     public boolean aBoolean227;
     public String message;
-    public String aString228;
+    public String secondaryText;
     public boolean centerText;
     public boolean isInventoryInterface;
     public int textColor;
@@ -77,8 +76,8 @@ public class Widget {
     public static RSFont[] fonts;
     public boolean usableItemInterface;
     public int secondaryColor;
-    public int anInt216;
-    public int anInt239;
+    public int defaultHoverColor;
+    public int secondaryHoverColor;
     public boolean textShadow;
     public boolean dragDeletes;
     public int invSpritePadX;
@@ -102,8 +101,34 @@ public class Widget {
     public int modelZoom;
     public int modelRotation1;
     public int modelRotation2;
+    public boolean inventoryhover;
     public boolean invAlwaysInfinity;
     private int anInt213 = 9;
+    public static final int TYPE_CONTAINER = 0;
+    public static final int TYPE_MODEL_LIST = 1;
+    public static final int TYPE_INVENTORY = 2;
+    public static final int TYPE_RECTANGLE = 3;
+    public static final int TYPE_TEXT = 4;
+    public static final int TYPE_SPRITE = 5;
+    public static final int TYPE_MODEL = 6;
+    public static final int TYPE_ITEM_LIST = 7;
+    public static final int TYPE_HOVER = 9;
+    public static final int TYPE_CONFIG = 10;
+    public static final int TYPE_CONFIG_HOVER = 11;
+    public static final int TYPE_SLIDER = 12;
+    public static final int TYPE_DROPDOWN = 13;
+    public static final int TYPE_KEYBINDS_DROPDOWN = 15;
+    public static final int TYPE_XP_POSITION_DROPDOWN = 22;
+    public static final int TYPE_ADJUSTABLE_CONFIG = 17;
+    public static final int TYPE_BOX = 18;
+    public static final int TYPE_MAP = 19;
+    public static final int TYPE_STRING_CONTAINER = 20;
+    public static final int TYPE_PROGRESS_BAR = 21;
+    public static final int TYPE_TEXT_DRAW_FROM_LEFT = 22;
+    public static final int TYPE_PROGRESS_BAR_2021 = 23;
+    public static final int TYPE_DRAW_BOX = 24;
+    public static final int TYPE_HORIZONTAL_STRING_CONTAINER = 25;
+
     static Class12 aClass12_264 = new Class12(false, 30);
 
     public void method204(int i, byte byte0, int j) {
@@ -123,11 +148,11 @@ public class Widget {
 
     public static void unpack(FileArchive fileArchive, RSFont[] aclass30_sub2_sub1_sub4, byte byte0, FileArchive fileArchive_1) {
         fonts = aclass30_sub2_sub1_sub4;
-        aClass12_238 = new Class12(false, 50000);
+        aClass12_238 = new Class12(false, 80000);
         Stream stream = new Stream(fileArchive.method571("data"), 891);
         int i = -1;
         int j = stream.readUnsignedShort();
-        interfaceCache = new Widget[j + 80000];
+        interfaceCache = new Widget[80000];
 
         while(stream.currentPosition < stream.buffer.length) {
                 int k = stream.readUnsignedShort();
@@ -143,7 +168,7 @@ public class Widget {
                 class9.contentType = stream.readUnsignedShort();
                 class9.width = stream.readUnsignedShort();
                 class9.height = stream.readUnsignedShort();
-                class9.aByte254 = (byte)stream.readUnsignedByte();
+                class9.opacity = (byte)stream.readUnsignedByte();
                 class9.mOverInterToTrigger = stream.readUnsignedByte();
                 if(class9.mOverInterToTrigger != 0) {
                     class9.mOverInterToTrigger = (class9.mOverInterToTrigger - 1 << 8) + stream.readUnsignedByte();
@@ -259,7 +284,7 @@ public class Widget {
 
                 if(class9.type == 4) {
                     class9.message = stream.readString();
-                    class9.aString228 = stream.readString();
+                    class9.secondaryText = stream.readString();
                 }
 
                 if(class9.type == 1 || class9.type == 3 || class9.type == 4) {
@@ -268,8 +293,8 @@ public class Widget {
 
                 if(class9.type == 3 || class9.type == 4) {
                     class9.secondaryColor = stream.readDWord();
-                    class9.anInt216 = stream.readDWord();
-                    class9.anInt239 = stream.readDWord();
+                    class9.defaultHoverColor = stream.readDWord();
+                    class9.secondaryHoverColor = stream.readDWord();
                 }
 
                 if(class9.type == 5) {
@@ -369,9 +394,12 @@ public class Widget {
         clanChatSetup(aclass30_sub2_sub1_sub4);
         slayerInterface.Unpack(aclass30_sub2_sub1_sub4);
         slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
+        configureLunar(aclass30_sub2_sub1_sub4);
+        constructLunar();
         slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
         shopWidget(aclass30_sub2_sub1_sub4);
-        skillTab602();
+        skilllevel(aclass30_sub2_sub1_sub4);
+        skillTab602(aclass30_sub2_sub1_sub4);
         SpawnContainer.get().load();
         aClass12_238 = null;
     }
@@ -525,8 +553,7 @@ public class Widget {
         return rsi;
     }
     public static Widget get(int interfaceId) {
-        Preconditions.checkArgument(interfaceId >= 0 && interfaceId < interfaceCache.length);
-        Preconditions.checkArgument(interfaceCache[interfaceId] != null);
+
         return interfaceCache[interfaceId];
     }
     public static void setBounds(int ID, int X, int Y, int frame, Widget RSinterface) {
@@ -571,7 +598,7 @@ public class Widget {
         tab.contentType = 0;
         tab.width = 512;
         tab.height = 700;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = -1;
         return tab;
     }
@@ -594,13 +621,13 @@ public class Widget {
         rsinterface.width = w;
         rsinterface.height = 16;
         rsinterface.contentType = 0;
-        rsinterface.aByte254 = 31;
+        rsinterface.opacity = 31;
         rsinterface.mOverInterToTrigger = -1;
         rsinterface.centerText = l;
         rsinterface.textShadow = m;
         rsinterface.textDrawingAreas = RSFont[j];
         rsinterface.message = s;
-        rsinterface.aString228 = "";
+        rsinterface.secondaryText = "";
         rsinterface.secondaryColor = 16750623;
         rsinterface.textColor = 16750623;
         rsinterface.tooltip = tooltip;
@@ -621,17 +648,17 @@ public class Widget {
         Tab.width = 174;
         Tab.height = 11;
         Tab.contentType = 0;
-        Tab.aByte254 = 0;
+        Tab.opacity = 0;
         Tab.mOverInterToTrigger = -1;
         Tab.centerText = false;
         Tab.textShadow = true;
         Tab.textDrawingAreas = wid[idx];
         Tab.message = text;
-        Tab.aString228 = "";
+        Tab.secondaryText = "";
         Tab.textColor = color;
         Tab.secondaryColor = 0;
-        Tab.anInt216 = 0;
-        Tab.anInt239 = 0;
+        Tab.defaultHoverColor = 0;
+        Tab.secondaryHoverColor = 0;
     }
 
     public static void addText(int id, String text, RSFont[] tda, int idx, int color, boolean center, boolean shadow) {
@@ -643,16 +670,34 @@ public class Widget {
         tab.width = 0;
         tab.height = 11;
         tab.contentType = 0;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = -1;
         tab.centerText = center;
         tab.textShadow = shadow;
         tab.textDrawingAreas = tda[idx];
         tab.message = text;
-        tab.aString228 = "";
+        tab.secondaryText = "";
         tab.textColor = color;
         tab.secondaryColor = 0;
-        tab.anInt216 = 0;
+        tab.defaultHoverColor = 0;
+    }
+    public static void addText(int i, String s, int k, boolean l, boolean m, int a, RSFont[] RSFont, int j) {
+        Widget Widget = addInterface(i);
+        Widget.parentID = i;
+        Widget.id = i;
+        Widget.type = 4;
+        Widget.atActionType = 0;
+        Widget.width = 0;
+        Widget.height = 0;
+        Widget.contentType = 0;
+        Widget.opacity = 0;
+        Widget.mOverInterToTrigger = a;
+        Widget.centerText = l;
+        Widget.textShadow = m;
+        Widget.textDrawingAreas = RSFont[j];
+        Widget.message = s;
+        Widget.secondaryText = "";
+        Widget.textColor = k;
     }
 
     public static void getext(int id, String text, RSFont[] tda, int idx, int color, boolean center, boolean shadow, int width, int height) {
@@ -664,16 +709,16 @@ public class Widget {
         tab.width = width;
         tab.height = height;
         tab.contentType = 0;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = -1;
         tab.centerText = center;
         tab.textShadow = shadow;
         tab.textDrawingAreas = tda[idx];
         tab.message = text;
-        tab.aString228 = "";
+        tab.secondaryText = "";
         tab.textColor = color;
         tab.secondaryColor = 0;
-        tab.anInt216 = 0;
+        tab.defaultHoverColor = 0;
     }
 
     public static void addHoverButton(int i, String imageName, int j, int width, int height, String text, int contentType, int hoverOver, int aT) {
@@ -683,7 +728,10 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = aT;
         tab.contentType = contentType;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
+        tab.msgX = tab.width / 2;
+        tab.msgY = (tab.height / 2) + 4;
+        tab.toggled = false;
         tab.mOverInterToTrigger = hoverOver;
         tab.disabledSprite = imageLoader(j, imageName);
         tab.enabledSprite = imageLoader(j, imageName);
@@ -699,9 +747,11 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = 0;
         tab.contentType = 0;
+        tab.msgX = tab.width / 2;
+        tab.msgY = (tab.height / 2) + 4;
         tab.width = 512;
         tab.height = 334;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(j, name);
         tab.enabledSprite = imageLoader(k, name);
@@ -716,7 +766,7 @@ public class Widget {
         tab.width = w;
         tab.height = h;
         tab.isMouseoverTriggered = true;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = -1;
         tab.scrollMax = 0;
         addHoverImage(IMAGEID, j, j, imageName);
@@ -759,7 +809,7 @@ public class Widget {
         Widget.type = 5;
         Widget.atActionType = AT;
         Widget.contentType = 0;
-        Widget.aByte254 = 0;
+        Widget.opacity = 0;
         Widget.mOverInterToTrigger = 52;
         Widget.disabledSprite = imageLoader(j, name);
         Widget.enabledSprite = imageLoader(j, name);
@@ -775,7 +825,7 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = 1;
         tab.contentType = 0;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(sid, spriteName);
         tab.enabledSprite = imageLoader(sid, spriteName);
@@ -792,7 +842,7 @@ public class Widget {
         rsinterface.contentType = 0;
         rsinterface.width = sprite.myWidth;
         rsinterface.height = sprite.myHeight;
-        rsinterface.aByte254 = 0;
+        rsinterface.opacity = 0;
         rsinterface.mOverInterToTrigger = 52;
         rsinterface.disabledSprite = sprite;
         rsinterface.enabledSprite = sprite;
@@ -806,7 +856,7 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = 0;
         tab.contentType = 0;
-        tab.aByte254 = 0;
+        tab.opacity = 0;
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(spriteId, spriteName);
         tab.enabledSprite = imageLoader(spriteId, spriteName);
@@ -1023,18 +1073,37 @@ public class Widget {
         }
         text.message = "%1";
     }
-    public static void skillTab602() {
+    public static void skillTab602(RSFont[] RSFont) {
         Widget skill = addInterface(3917);
-        String[] spriteNames = { "Attack", "HP", "Mine", "Strength", "Agility", "Smith", "Defence", "Herblore", "Fish", "Range", "Thief", "Cook", "Prayer", "Craft", "Fire", "Mage", "Fletch", "Wood", "Rune", "Slay", "Farm", "Construction", "Hunter", "Summon", "Dungeon" };
+        String[] spriteNames = {
+                "Attack",
+                "HP",
+                "Mine",
+                "Strength",
+                "Agility",
+                "Smith",
+                "Defence",
+                "Herblore",
+                "Fish",
+                "Range",
+                "Thief", "Cook", "Prayer", "Craft", "Fire", "Mage", "Fletch", "Wood", "Rune", "Slay", "Farm", "Construction", "Hunter", "Summon", "Dungeon" };
         int[] buttons = { 8654, 8655, 8656, 8657, 8658, 8659, 8660, 8861, 8662, 8663, 8664, 8665, 8666, 8667, 8668, 8669, 8670, 8671, 8672, 12162, 13928, 18177, 18178, 18179, 18180 };
         int[] hovers = { 4040, 4076, 4112, 4046, 4082, 4118, 4052, 4088, 4124, 4058, 4094, 4130, 4064, 4100, 4136, 4070, 4106, 4142, 4160, 2832, 13917, 18173, 18174, 18175, 18176 };
-        int[][] text = { { 4004, 4005 }, { 4016, 4017 }, { 4028, 4029 },
-                { 4006, 4007 }, { 4018, 4019 }, { 4030, 4031 }, { 4008, 4009 },
-                { 4020, 4021 }, { 4032, 4033 }, { 4010, 4011 }, { 4022, 4023 },
-                { 4034, 4035 }, { 4012, 4013 }, { 4024, 4025 }, { 4036, 4037 },
-                { 4014, 4015 }, { 4026, 4027 }, { 4038, 4039 }, { 4152, 4153 },
-                { 12166, 12167 }, { 13926, 13927 }, { 18165, 18169 },
-                { 18166, 18170 }, { 18167, 18171 }, { 18168, 18172 } };
+        addText(36001, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36002, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36003, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36004, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36005, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36006, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36007, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        addText(36008, "99", 0xFFFF00, false, true, -1, RSFont, 0);
+        int[][] text = {{4004, 4005}, {4016, 4017}, {4028, 4029},
+                {4006, 4007}, {4018, 4019}, {4030, 4031}, {4008, 4009},
+                {4020, 4021}, {4032, 4033}, {4010, 4011}, {4022, 4023},
+                {4034, 4035}, {4012, 4013}, {4024, 4025}, {4036, 4037},
+                {4014, 4015}, {4026, 4027}, {4038, 4039}, {4152, 4153},
+                {12166, 12167}, {13926, 13927}, {36001, 36002},
+                {36003, 36004}, {36005, 36006}, {36007, 36008}};
 
         int[] icons = { 3965, 3966, 3967, 3968, 3969, 3970, 3971, 3972, 3973,
                 3974, 3975, 3976, 3977, 3978, 3979, 3980, 3981, 3982, 4151,
@@ -1121,6 +1190,706 @@ public class Widget {
         button.height = 27;
         button.disabledSprite = getSprite("Button");
         button.tooltip = "View";
+    }
+    public static void addLunar2RunesSmallBox(int ID, int r1, int r2, int ra1, int ra2,int rune1, int lvl,String name, String descr,RSFont[] RSFont,int sid,int suo,int type){
+        Widget rsInterface = addInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 5;
+        rsInterface.atActionType = type;
+        rsInterface.contentType = 0;
+        rsInterface.mOverInterToTrigger = ID+1;
+        rsInterface.spellUsableOn = suo;
+        rsInterface.selectedActionName = "Cast On";
+        rsInterface.width = 20;
+        rsInterface.height = 20;
+        rsInterface.tooltip = "Cast <col=65280>"+name;
+        rsInterface.spellName = name;
+        rsInterface.anIntArray245 = new int[3];
+        rsInterface.anIntArray212 = new int[3];
+        rsInterface.anIntArray245[0] = 3;
+        rsInterface.anIntArray212[0] = ra1;
+        rsInterface.anIntArray245[1] = 3;
+        rsInterface.anIntArray212[1] = ra2;
+        rsInterface.anIntArray245[2] = 3;
+        rsInterface.anIntArray212[2] = lvl;
+        rsInterface.valueIndexArray = new int[3][];
+        rsInterface.valueIndexArray[0] = new int[4];
+        rsInterface.valueIndexArray[0][0] = 4;
+        rsInterface.valueIndexArray[0][1] = 3214;
+        rsInterface.valueIndexArray[0][2] = r1;
+        rsInterface.valueIndexArray[0][3] = 0;
+        rsInterface.valueIndexArray[1] = new int[4];
+        rsInterface.valueIndexArray[1][0] = 4;
+        rsInterface.valueIndexArray[1][1] = 3214;
+        rsInterface.valueIndexArray[1][2] = r2;
+        rsInterface.valueIndexArray[1][3] = 0;
+        rsInterface.valueIndexArray[2] = new int[3];
+        rsInterface.valueIndexArray[2][0] = 1;
+        rsInterface.valueIndexArray[2][1] = 6;
+        rsInterface.valueIndexArray[2][2] = 0;
+        rsInterface.enabledSprite =  imageLoader(sid, "Lunar/LUNARON");
+        rsInterface.disabledSprite =  imageLoader(sid, "Lunar/LUNAROFF");
+        Widget INT = addInterface(ID+1);
+        INT.isMouseoverTriggered = true;
+        INT.mOverInterToTrigger = -1;
+        setChildren(7, INT);
+        addLunarSprite(ID+2, 0, "BOX");
+        setBounds(ID+2, 0, 0, 0, INT);
+        addText(ID+3, "Level "+(lvl+1)+": "+name, 0xFF981F, true, true, 52, RSFont, 1);
+        setBounds(ID+3, 90, 4, 1, INT);
+        addText(ID+4, descr, 0xAF6A1A, true, true, 52, RSFont, 0);
+        setBounds(ID+4, 90, 19, 2, INT);
+        setBounds(30016, 37, 35, 3, INT);//Rune
+        setBounds(rune1, 112, 35, 4, INT);//Rune
+        addRuneText(ID+5, ra1+1, r1, RSFont);
+        setBounds(ID+5, 50, 66, 5, INT);
+        addRuneText(ID+6, ra2+1, r2, RSFont);
+        setBounds(ID+6, 123, 66, 6, INT);
+
+    }
+    public static void addLunarSprite(int i, int j, String name) {
+        Widget Widget = addInterface(i);
+        Widget.id = i;
+        Widget.parentID = i;
+        Widget.type = 5;
+        Widget.atActionType = 5;
+        Widget.contentType = 0;
+        Widget.opacity = 0;
+        Widget.mOverInterToTrigger = 52;
+        Widget.disabledSprite = LoadLunarSprite(j, name);
+        Widget.width = 500;
+        Widget.height = 500;
+        Widget.tooltip = "";
+    }
+    public static void addRuneText(int ID, int runeAmount, int RuneID, RSFont[] font) {
+        Widget rsInterface = addTabInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 4;
+        rsInterface.atActionType = 0;
+        rsInterface.contentType = 0;
+        rsInterface.width = 0;
+        rsInterface.height = 14;
+        rsInterface.opacity = 0;
+        rsInterface.mOverInterToTrigger = -1;
+        rsInterface.anIntArray245 = new int[1];
+        rsInterface.anIntArray212 = new int[1];
+        rsInterface.anIntArray245[0] = 3;
+        rsInterface.anIntArray212[0] = runeAmount;
+        rsInterface.valueIndexArray = new int[1][4];
+        rsInterface.valueIndexArray[0][0] = 4;
+        rsInterface.valueIndexArray[0][1] = 3214;
+        rsInterface.valueIndexArray[0][2] = RuneID;
+        rsInterface.valueIndexArray[0][3] = 0;
+        rsInterface.centerText = true;
+        rsInterface.textDrawingAreas = font[0];
+        rsInterface.textShadow = true;
+        rsInterface.message = "%1/" + runeAmount + "";
+        rsInterface.secondaryText = "";
+        rsInterface.textColor = 12582912;
+        rsInterface.secondaryColor = 49152;
+    }
+    public static void drawRune(int i, int id, String runeName) {
+        Widget Widget = addInterface(i);
+        Widget.type = 5;
+        Widget.atActionType = 0;
+        Widget.contentType = 0;
+        Widget.opacity = 0;
+        Widget.mOverInterToTrigger = 52;
+        Widget.disabledSprite = LoadLunarSprite(id, "RUNE");
+        Widget.width = 500;
+        Widget.height = 500;
+    }
+
+    public static void drawRune(int i, int id) {
+        Widget Widget = addInterface(i);
+        Widget.type = 5;
+        Widget.atActionType = 0;
+        Widget.contentType = 0;
+        Widget.opacity = 0;
+        Widget.mOverInterToTrigger = 52;
+        Widget.disabledSprite = LoadLunarSprite(id, "RUNE");
+        Widget.width = 500;
+        Widget.height = 500;
+    }
+    public static void homeTeleport(){
+        Widget Widget = addInterface(30000);
+        Widget.tooltip = "Cast <col=65280>Lunar Home Teleport";
+        Widget.id = 30000;
+        Widget.parentID = 30000;
+        Widget.type = 5;
+        Widget.atActionType = 5;
+        Widget.contentType = 0;
+        Widget.opacity = 0;
+        Widget.mOverInterToTrigger = 30001;
+        Widget.disabledSprite =  imageLoader(1, "Lunar/SPRITE");
+        Widget.width = 20;
+        Widget.height = 20;
+        Widget Int = addInterface(30001);
+        Int.isMouseoverTriggered = true;
+        Int.mOverInterToTrigger = -1;
+        setChildren(1, Int);
+        addLunarSprite(30002, 0, "SPRITE");
+        setBounds(30002, 0, 0,0, Int);
+    }
+
+    public static void configureLunar(RSFont[] RSFont) {
+        constructLunar();
+        homeTeleport();
+        drawRune(30003, 1, "Fire");
+        drawRune(30004, 2, "Water");
+        drawRune(30005, 3, "Air");
+        drawRune(30006, 4, "Earth");
+        drawRune(30007, 5, "Mind");
+        drawRune(30008, 6, "Body");
+        drawRune(30009, 7, "Death");
+        drawRune(30010, 8, "Nature");
+        drawRune(30011, 9, "Chaos");
+        drawRune(30012, 10, "Law");
+        drawRune(30013, 11, "Cosmic");
+        drawRune(30014, 12, "Blood");
+        drawRune(30015, 13, "Soul");
+        drawRune(30016, 14, "Astral");
+        addLunar3RunesSmallBox(30017, 9075, 554, 555, 0, 4, 3, 30003, 30004,
+                64, "Bake Pie", "Bake pies without a stove", RSFont, 0, 16, 2);
+        addLunar2RunesSmallBox(30025, 9075, 557, 0, 7, 30006, 65, "Cure Plant",
+                "Cure disease on farming patch", RSFont, 1, 4, 2);
+        addLunar3RunesBigBox(30032, 9075, 564, 558, 0, 0, 0, 30013, 30007, 65,
+                "Monster Examine",
+                "Detect the combat statistics of a\\nmonster", RSFont, 2, 2, 2);
+        addLunar3RunesSmallBox(30040, 9075, 564, 556, 0, 0, 1, 30013, 30005,
+                66, "NPC Contact", "Speak with varied NPCs", RSFont, 3, 0, 2);
+        addLunar3RunesSmallBox(30048, 9075, 563, 557, 0, 0, 9, 30012, 30006,
+                67, "Cure Other", "Cure poisoned players", RSFont, 4, 8, 2);
+        addLunar3RunesSmallBox(30056, 9075, 555, 554, 0, 2, 0, 30004, 30003,
+                67, "Humidify", "fills certain vessels with water", RSFont, 5, 0,
+                5);
+        addLunar3RunesSmallBox(30064, 9075, 563, 557, 1, 0, 1, 30012, 30006,
+                68, "Moonclan Teleport", "Teleports you to moonclan island",
+                RSFont, 6, 0, 5);
+        addLunar3RunesBigBox(30075, 9075, 563, 557, 1, 0, 3, 30012, 30006, 69,
+                "Tele Group Moonclan",
+                "Teleports players to Moonclan\\nisland", RSFont, 7, 0, 5);
+        addLunar3RunesSmallBox(30083, 9075, 563, 557, 1, 0, 5, 30012, 30006,
+                70, "Ourania Teleport", "Teleports you to ourania rune altar",
+                RSFont, 8, 0, 5);
+        addLunar3RunesSmallBox(30091, 9075, 564, 563, 1, 1, 0, 30013, 30012,
+                70, "Cure Me", "Cures Poison", RSFont, 9, 0, 5);
+        addLunar2RunesSmallBox(30099, 9075, 557, 1, 1, 30006, 70, "Hunter Kit",
+                "Get a kit of hunting gear", RSFont, 10, 0, 5);
+        addLunar3RunesSmallBox(30106, 9075, 563, 555, 1, 0, 0, 30012, 30004,
+                71, "Waterbirth Teleport",
+                "Teleports you to Waterbirth island", RSFont, 11, 0, 5);
+        addLunar3RunesBigBox(30114, 9075, 563, 555, 1, 0, 4, 30012, 30004, 72,
+                "Tele Group Waterbirth",
+                "Teleports players to Waterbirth\\nisland", RSFont, 12, 0, 5);
+        addLunar3RunesSmallBox(30122, 9075, 564, 563, 1, 1, 1, 30013, 30012,
+                73, "Cure Group", "Cures Poison on players", RSFont, 13, 0, 5);
+        addLunar3RunesBigBox(30130, 9075, 564, 559, 1, 1, 4, 30013, 30008, 74,
+                "Stat Spy",
+                "Cast on another player to see their\\nskill levels", RSFont, 14,
+                8, 2);
+        addLunar3RunesBigBox(30138, 9075, 563, 554, 1, 1, 2, 30012, 30003, 74,
+                "Barbarian Teleport",
+                "Teleports you to the Barbarian\\noutpost", RSFont, 15, 0, 5);
+        addLunar3RunesBigBox(30146, 9075, 563, 554, 1, 1, 5, 30012, 30003, 75,
+                "Tele Group Barbarian",
+                "Teleports players to the Barbarian\\noutpost", RSFont, 16, 0, 5);
+        addLunar3RunesSmallBox(30154, 9075, 554, 556, 1, 5, 9, 30003, 30005,
+                76, "Superglass Make", "Make glass without a furnace", RSFont, 17,
+                16, 2);
+        addLunar3RunesSmallBox(30162, 9075, 563, 555, 1, 1, 3, 30012, 30004,
+                77, "Khazard Teleport", "Teleports you to Port khazard", RSFont,
+                18, 0, 5);
+        addLunar3RunesSmallBox(30170, 9075, 563, 555, 1, 1, 7, 30012, 30004,
+                78, "Tele Group Khazard", "Teleports players to Port khazard",
+                RSFont, 19, 0, 5);
+        addLunar3RunesBigBox(30178, 9075, 564, 559, 1, 0, 4, 30013, 30008, 78,
+                "Dream", "Take a rest and restore hitpoints 3\\n times faster",
+                RSFont, 20, 0, 5);
+        addLunar3RunesSmallBox(30186, 9075, 557, 555, 1, 9, 4, 30006, 30004,
+                79, "String Jewellery", "String amulets without wool", RSFont, 21,
+                0, 5);
+        addLunar3RunesLargeBox(30194, 9075, 557, 555, 1, 9, 9, 30006, 30004,
+                80, "Stat Restore Pot\\nShare",
+                "Share a potion with up to 4 nearby\\nplayers", RSFont, 22, 0, 5);
+        addLunar3RunesSmallBox(30202, 9075, 554, 555, 1, 6, 6, 30003, 30004,
+                81, "Magic Imbue", "Combine runes without a talisman", RSFont, 23,
+                0, 5);
+        addLunar3RunesBigBox(30210, 9075, 561, 557, 2, 1, 14, 30010, 30006, 82,
+                "Fertile Soil",
+                "Fertilise a farming patch with super\\ncompost", RSFont, 24, 4, 2);
+        addLunar3RunesBigBox(30218, 9075, 557, 555, 2, 11, 9, 30006, 30004, 83,
+                "Boost Potion Share",
+                "Shares a potion with up to 4 nearby\\nplayers", RSFont, 25, 0, 5);
+        addLunar3RunesSmallBox(30226, 9075, 563, 555, 2, 2, 9, 30012, 30004,
+                84, "Fishing Guild Teleport",
+                "Teleports you to the fishing guild", RSFont, 26, 0, 5);
+        addLunar3RunesLargeBox(30234, 9075, 563, 555, 1, 2, 13, 30012, 30004,
+                85, "Tele Group Fishing\\nGuild",
+                "Teleports players to the Fishing\\nGuild", RSFont, 27, 0, 5);
+        addLunar3RunesSmallBox(30242, 9075, 557, 561, 2, 14, 0, 30006, 30010,
+                85, "Plank Make", "Turn Logs into planks", RSFont, 28, 16, 5);
+        /******** Cut Off Limit **********/
+        addLunar3RunesSmallBox(30250, 9075, 563, 555, 2, 2, 9, 30012, 30004,
+                86, "Catherby Teleport", "Teleports you to Catherby", RSFont, 29,
+                0, 5);
+        addLunar3RunesSmallBox(30258, 9075, 563, 555, 2, 2, 14, 30012, 30004,
+                87, "Tele Group Catherby", "Teleports players to Catherby",
+                RSFont, 30, 0, 5);
+        addLunar3RunesSmallBox(30266, 9075, 563, 555, 2, 2, 7, 30012, 30004,
+                88, "Ice Plateau Teleport", "Teleports you to Ice Plateau",
+                RSFont, 31, 0, 5);
+        addLunar3RunesBigBox(30274, 9075, 563, 555, 2, 2, 15, 30012, 30004, 89,
+                "Tele Group Ice\\n Plateau",
+                "Teleports players to Ice Plateau", RSFont, 32, 0, 5);
+        addLunar3RunesBigBox(
+                30282,
+                9075,
+                563,
+                561,
+                2,
+                1,
+                0,
+                30012,
+                30010,
+                90,
+                "Energy Transfer",
+                "Spend hitpoints and SA Energy to\\n give another player hitpoints and run energy",
+                RSFont, 33, 8, 2);
+        addLunar3RunesBigBox(30290, 9075, 563, 565, 2, 2, 0, 30012, 30014, 91,
+                "Heal Other",
+                "Transfer up to 75% of hitpoints\\n to another player", RSFont,
+                34, 8, 2);
+        addLunar3RunesBigBox(30298, 9075, 560, 557, 2, 1, 9, 30009, 30006, 92,
+                "Vengeance Other",
+                "Allows another player to rebound\\ndamage to an opponent",
+                RSFont, 35, 8, 2);
+        addLunar3RunesSmallBox(30306, 9075, 560, 557, 3, 1, 9, 30009, 30006,
+                93, "Vengeance", "Rebound damage to an opponent", RSFont, 36, 0, 5);
+        addLunar3RunesBigBox(30314, 9075, 565, 563, 3, 2, 5, 30014, 30012, 94,
+                "Heal Group", "Transfer up to 75% of hitpoints to a group",
+                RSFont, 37, 0, 5);
+        addLunar3RunesBigBox(30322, 9075, 564, 563, 2, 1, 0, 30013, 30012, 95,
+                "Spellbook Swap",
+                "Change to another spellbook for 1\\nspell cast", RSFont, 38, 0, 5);
+    }
+    public static void skilllevel(RSFont[] tda) {
+        Widget text = interfaceCache[7202];
+        Widget attack = interfaceCache[6247];
+        Widget defence = interfaceCache[6253];
+        Widget str = interfaceCache[6206];
+        Widget hits = interfaceCache[6216];
+        Widget rng = interfaceCache[4443];
+        Widget pray = interfaceCache[6242];
+        Widget mage = interfaceCache[6211];
+        Widget cook = interfaceCache[6226];
+        Widget wood = interfaceCache[4272];
+        Widget flet = interfaceCache[6231];
+        Widget fish = interfaceCache[6258];
+        Widget fire = interfaceCache[4282];
+        Widget craf = interfaceCache[6263];
+        Widget smit = interfaceCache[6221];
+        Widget mine = interfaceCache[4416];
+        Widget herb = interfaceCache[6237];
+        Widget agil = interfaceCache[4277];
+        Widget thie = interfaceCache[4261];
+        Widget slay = interfaceCache[12122];
+        Widget farm = addInterface(25267);
+        Widget rune = interfaceCache[4267];
+        Widget cons = addInterface(7267);
+        Widget hunt = addInterface(29267);
+        Widget summ = addInterface(9267);
+        Widget dungg = addInterface(32267);
+        addSprite(17878, 0, "Interfaces/skillchat/skill");
+        addSprite(17879, 1, "Interfaces/skillchat/skill");
+        addSprite(17880, 2, "Interfaces/skillchat/skill");
+        addSprite(17881, 3, "Interfaces/skillchat/skill");
+        addSprite(17882, 4, "Interfaces/skillchat/skill");
+        addSprite(17883, 5, "Interfaces/skillchat/skill");
+        addSprite(17884, 6, "Interfaces/skillchat/skill");
+        addSprite(17885, 7, "Interfaces/skillchat/skill");
+        addSprite(17886, 8, "Interfaces/skillchat/skill");
+        addSprite(17887, 9, "Interfaces/skillchat/skill");
+        addSprite(17888, 10, "Interfaces/skillchat/skill");
+        addSprite(17889, 11, "Interfaces/skillchat/skill");
+        addSprite(17890, 12, "Interfaces/skillchat/skill");
+        addSprite(17891, 13, "Interfaces/skillchat/skill");
+        addSprite(17892, 14, "Interfaces/skillchat/skill");
+        addSprite(17893, 15, "Interfaces/skillchat/skill");
+        addSprite(17894, 16, "Interfaces/skillchat/skill");
+        addSprite(17895, 17, "Interfaces/skillchat/skill");
+        addSprite(17896, 18, "Interfaces/skillchat/skill");
+        addSprite(27897, 19, "Interfaces/skillchat/skill");
+        addSprite(17898, 20, "Interfaces/skillchat/skill");
+        addSprite(17899, 21, "Interfaces/skillchat/skill");
+        addSprite(17900, 22, "Interfaces/skillchat/skill");
+        addSprite(17901, 23, "Interfaces/skillchat/skill");
+        addSprite(17902, 24, "Interfaces/skillchat/skill");
+
+        setChildren(4, attack);
+        setBounds(17878, 20, 30, 0, attack);
+        setBounds(4268, 80, 15, 1, attack);
+        setBounds(4269, 80, 45, 2, attack);
+        setBounds(358, 95, 75, 3, attack);
+        setChildren(4, defence);
+        setBounds(17879, 20, 30, 0, defence);
+        setBounds(4268, 80, 15, 1, defence);
+        setBounds(4269, 80, 45, 2, defence);
+        setBounds(358, 95, 75, 3, defence);
+        setChildren(4, str);
+        setBounds(17880, 20, 30, 0, str);
+        setBounds(4268, 80, 15, 1, str);
+        setBounds(4269, 80, 45, 2, str);
+        setBounds(358, 95, 75, 3, str);
+        setChildren(4, hits);
+        setBounds(17881, 20, 30, 0, hits);
+        setBounds(4268, 80, 15, 1, hits);
+        setBounds(4269, 80, 45, 2, hits);
+        setBounds(358, 95, 75, 3, hits);
+        setChildren(4, rng);
+        setBounds(17882, 20, 30, 0, rng);
+        setBounds(4268, 80, 15, 1, rng);
+        setBounds(4269, 80, 45, 2, rng);
+        setBounds(358, 95, 75, 3, rng);
+        setChildren(4, pray);
+        setBounds(17883, 20, 30, 0, pray);
+        setBounds(4268, 80, 15, 1, pray);
+        setBounds(4269, 80, 45, 2, pray);
+        setBounds(358, 95, 75, 3, pray);
+        setChildren(4, mage);
+        setBounds(17884, 20, 30, 0, mage);
+        setBounds(4268, 80, 15, 1, mage);
+        setBounds(4269, 80, 45, 2, mage);
+        setBounds(358, 95, 75, 3, mage);
+        setChildren(4, cook);
+        setBounds(17885, 20, 30, 0, cook);
+        setBounds(4268, 80, 15, 1, cook);
+        setBounds(4269, 80, 45, 2, cook);
+        setBounds(358, 95, 75, 3, cook);
+        setChildren(4, wood);
+        setBounds(17886, 20, 30, 0, wood);
+        setBounds(4268, 80, 15, 1, wood);
+        setBounds(4269, 80, 45, 2, wood);
+        setBounds(358, 95, 75, 3, wood);
+        setChildren(4, flet);
+        setBounds(17887, 20, 30, 0, flet);
+        setBounds(4268, 80, 15, 1, flet);
+        setBounds(4269, 80, 45, 2, flet);
+        setBounds(358, 95, 75, 3, flet);
+        setChildren(4, fish);
+        setBounds(17888, 20, 30, 0, fish);
+        setBounds(4268, 80, 15, 1, fish);
+        setBounds(4269, 80, 45, 2, fish);
+        setBounds(358, 95, 75, 3, fish);
+        setChildren(4, fire);
+        setBounds(17889, 20, 30, 0, fire);
+        setBounds(4268, 80, 15, 1, fire);
+        setBounds(4269, 80, 45, 2, fire);
+        setBounds(358, 95, 75, 3, fire);
+        setChildren(4, craf);
+        setBounds(17890, 20, 30, 0, craf);
+        setBounds(4268, 80, 15, 1, craf);
+        setBounds(4269, 80, 45, 2, craf);
+        setBounds(358, 95, 75, 3, craf);
+        setChildren(4, smit);
+        setBounds(17891, 20, 30, 0, smit);
+        setBounds(4268, 80, 15, 1, smit);
+        setBounds(4269, 80, 45, 2, smit);
+        setBounds(358, 95, 75, 3, smit);
+        setChildren(4, mine);
+        setBounds(17892, 20, 30, 0, mine);
+        setBounds(4268, 80, 15, 1, mine);
+        setBounds(4269, 80, 45, 2, mine);
+        setBounds(358, 95, 75, 3, mine);
+        setChildren(4, herb);
+        setBounds(17893, 20, 30, 0, herb);
+        setBounds(4268, 80, 15, 1, herb);
+        setBounds(4269, 80, 45, 2, herb);
+        setBounds(358, 95, 75, 3, herb);
+        setChildren(4, agil);
+        setBounds(17894, 20, 30, 0, agil);
+        setBounds(4268, 80, 15, 1, agil);
+        setBounds(4269, 80, 45, 2, agil);
+        setBounds(358, 95, 75, 3, agil);
+        setChildren(4, thie);
+        setBounds(17895, 20, 30, 0, thie);
+        setBounds(4268, 80, 15, 1, thie);
+        setBounds(4269, 80, 45, 2, thie);
+        setBounds(358, 95, 75, 3, thie);
+        setChildren(4, slay);
+        setBounds(17896, 20, 30, 0, slay);
+        setBounds(4268, 80, 15, 1, slay);
+        setBounds(4269, 80, 45, 2, slay);
+        setBounds(358, 95, 75, 3, slay);
+        setChildren(4, farm);
+        setBounds(27897, 20, 30, 0, farm);
+        setBounds(4268, 80, 15, 1, farm);
+        setBounds(4269, 80, 45, 2, farm);
+        setBounds(358, 95, 75, 3, farm);
+        setChildren(4, rune);
+        setBounds(17898, 20, 30, 0, rune);
+        setBounds(4268, 80, 15, 1, rune);
+        setBounds(4269, 80, 45, 2, rune);
+        setBounds(358, 95, 75, 3, rune);
+        setChildren(4, cons);
+        setBounds(17899, 20, 30, 0, cons);
+        setBounds(4268, 80, 15, 1, cons);
+        setBounds(4269, 80, 45, 2, cons);
+        setBounds(358, 95, 75, 3, cons);
+        setChildren(4, hunt);
+        setBounds(17900, 20, 30, 0, hunt);
+        setBounds(4268, 80, 15, 1, hunt);
+        setBounds(4269, 80, 45, 2, hunt);
+        setBounds(358, 95, 75, 3, hunt);
+        setChildren(4, summ);
+        setBounds(17901, 20, 30, 0, summ);
+        setBounds(4268, 80, 15, 1, summ);
+        setBounds(4269, 80, 45, 2, summ);
+        setBounds(358, 95, 75, 3, summ);
+        setChildren(4, dungg);
+        setBounds(17902, 20, 30, 0, dungg);
+        setBounds(4268, 80, 15, 1, dungg);
+        setBounds(4269, 80, 45, 2, dungg);
+        setBounds(358, 95, 75, 3, dungg);
+    }
+    public static void constructLunar() {
+        Widget Interface = addInterface(29999);
+        setChildren(80, Interface); //71
+        int[] Cid = {30000, 30017, 30025, 30032, 30040, 30048, 30056, 30064, 30075,
+                30083, 30091, 30099, 30106, 30114, 30122, 30130, 30138, 30146,
+                30154, 30162, 30170, 30178, 30186, 30194, 30202, 30210, 30218,
+                30226, 30234, 30242, 30250, 30258, 30266, 30274, 30282, 30290,
+                30298, 30306, 30314, 30322, 30001, 30018, 30026, 30033, 30041,
+                30049, 30057, 30065, 30076, 30084, 30092, 30100, 30107, 30115,
+                30123, 30131, 30139, 30147, 30155, 30163, 30171, 30179, 30187,
+                30195, 30203, 30211, 30219, 30227, 30235, 30243, 30251,
+                30259, 30267, 30275, 30283, 30291,
+                30299, 30307, 30315, 30323 };
+
+        int[] xCord = {11, 40, 71, 103, 135, 165, 8, 39, 71, 103, 135, 165, 12, 42, 71,
+                103, 135, 165, 14, 42, 71, 101, 135, 168, 11, 42, 74, 103, 135,
+                164, 10, 42, 71, 103, 136, 165, 13, 42, 71, 104, 6, 5, 5, 5, 5,
+                5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+                5, 5, 5, 5, 5,
+                5, 5, 5, 5, 5,
+                5, 5, 5, 5 };
+
+        int[] yCord = {9, 9, 12, 10, 12, 10, 39, 39, 39, 39, 39, 37, 68, 68, 68, 68, 68,
+                68, 97, 97, 97, 97, 98, 98, 125, 124, 125, 125, 125, 126, 155, 155,
+                155, 155, 155, 155, 185, 185, 184, 184, 184, 176, 176, 163, 176,
+                176, 176, 176, 163, 176, 176, 176, 176, 163, 176, 163, 163, 163, 176,
+                176, 176, 163, 176, 149, 176, 163, 163, 176, 149, 176, 176,
+                176, 176, 176, 9, 9,
+                9, 9, 9, 9 };
+
+        for(int i = 0; i < Cid.length; i++) {
+            setBounds(Cid[i], xCord[i], yCord[i], i, Interface);
+        }
+    }
+
+    public static void addLunar3RunesSmallBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3,int rune1, int rune2, int lvl,String name, String descr,RSFont[] RSFont, int sid,int suo,int type){
+        Widget rsInterface = addInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 5;
+        rsInterface.atActionType = type;
+        rsInterface.contentType = 0;
+        rsInterface.mOverInterToTrigger = ID+1;
+        rsInterface.spellUsableOn = suo;
+        rsInterface.selectedActionName = "Cast on";
+        rsInterface.width = 20;
+        rsInterface.height = 20;
+        rsInterface.tooltip = "Cast <col=65280>"+name;
+        rsInterface.spellName = name;
+        rsInterface.anIntArray245 = new int[4];
+        rsInterface.anIntArray212 = new int[4];
+        rsInterface.anIntArray245[0] = 3;
+        rsInterface.anIntArray212[0] = ra1;
+        rsInterface.anIntArray245[1] = 3;
+        rsInterface.anIntArray212[1] = ra2;
+        rsInterface.anIntArray245[2] = 3;
+        rsInterface.anIntArray212[2] = ra3;
+        rsInterface.anIntArray245[3] = 3;
+        rsInterface.anIntArray212[3] = lvl;
+        rsInterface.valueIndexArray = new int[4][];
+        rsInterface.valueIndexArray[0] = new int[4];
+        rsInterface.valueIndexArray[0][0] = 4;
+        rsInterface.valueIndexArray[0][1] = 3214;
+        rsInterface.valueIndexArray[0][2] = r1;
+        rsInterface.valueIndexArray[0][3] = 0;
+        rsInterface.valueIndexArray[1] = new int[4];
+        rsInterface.valueIndexArray[1][0] = 4;
+        rsInterface.valueIndexArray[1][1] = 3214;
+        rsInterface.valueIndexArray[1][2] = r2;
+        rsInterface.valueIndexArray[1][3] = 0;
+        rsInterface.valueIndexArray[2] = new int[4];
+        rsInterface.valueIndexArray[2][0] = 4;
+        rsInterface.valueIndexArray[2][1] = 3214;
+        rsInterface.valueIndexArray[2][2] = r3;
+        rsInterface.valueIndexArray[2][3] = 0;
+        rsInterface.valueIndexArray[3] = new int[3];
+        rsInterface.valueIndexArray[3][0] = 1;
+        rsInterface.valueIndexArray[3][1] = 6;
+        rsInterface.valueIndexArray[3][2] = 0;
+        rsInterface.enabledSprite =  imageLoader(sid, "Lunar/LUNARON");
+        rsInterface.disabledSprite =  imageLoader(sid, "Lunar/LUNAROFF");
+        Widget INT = addInterface(ID+1);
+        INT.isMouseoverTriggered = true;
+        INT.mOverInterToTrigger = -1;
+        setChildren(9, INT);
+        addLunarSprite(ID+2, 0, "BOX");
+        setBounds(ID+2, 0, 0, 0, INT);
+        addText(ID+3, "Level "+(lvl+1)+": "+name, 0xFF981F, true, true, 52, RSFont, 1);setBounds(ID+3, 90, 4, 1, INT);
+        addText(ID+4, descr, 0xAF6A1A, true, true, 52, RSFont, 0);	setBounds(ID+4, 90, 19, 2, INT);
+        setBounds(30016, 14, 35, 3, INT);
+        setBounds(rune1, 74, 35, 4, INT);
+        setBounds(rune2, 130, 35, 5, INT);
+        addRuneText(ID+5, ra1+1, r1, RSFont);
+        setBounds(ID+5, 26, 66, 6, INT);
+        addRuneText(ID+6, ra2+1, r2, RSFont);
+        setBounds(ID+6, 87, 66, 7, INT);
+        addRuneText(ID+7, ra3+1, r3, RSFont);
+        setBounds(ID+7, 142, 66, 8, INT);
+    }
+
+    public static void addLunar3RunesBigBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3,int rune1, int rune2, int lvl,String name, String descr,RSFont[] RSFont, int sid,int suo,int type){
+        Widget rsInterface = addInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 5;
+        rsInterface.atActionType = type;
+        rsInterface.contentType = 0;
+        rsInterface.mOverInterToTrigger = ID+1;
+        rsInterface.spellUsableOn = suo;
+        rsInterface.selectedActionName = "Cast on";
+        rsInterface.width = 20;
+        rsInterface.height = 20;
+        rsInterface.tooltip = "Cast <col=65280>"+name;
+        rsInterface.spellName = name;
+        rsInterface.anIntArray245 = new int[4];
+        rsInterface.anIntArray212 = new int[4];
+        rsInterface.anIntArray245[0] = 3;
+        rsInterface.anIntArray212[0] = ra1;
+        rsInterface.anIntArray245[1] = 3;
+        rsInterface.anIntArray212[1] = ra2;
+        rsInterface.anIntArray245[2] = 3;
+        rsInterface.anIntArray212[2] = ra3;
+        rsInterface.anIntArray245[3] = 3;
+        rsInterface.anIntArray212[3] = lvl;
+        rsInterface.valueIndexArray = new int[4][];
+        rsInterface.valueIndexArray[0] = new int[4];
+        rsInterface.valueIndexArray[0][0] = 4;
+        rsInterface.valueIndexArray[0][1] = 3214;
+        rsInterface.valueIndexArray[0][2] = r1;
+        rsInterface.valueIndexArray[0][3] = 0;
+        rsInterface.valueIndexArray[1] = new int[4];
+        rsInterface.valueIndexArray[1][0] = 4;
+        rsInterface.valueIndexArray[1][1] = 3214;
+        rsInterface.valueIndexArray[1][2] = r2;
+        rsInterface.valueIndexArray[1][3] = 0;
+        rsInterface.valueIndexArray[2] = new int[4];
+        rsInterface.valueIndexArray[2][0] = 4;
+        rsInterface.valueIndexArray[2][1] = 3214;
+        rsInterface.valueIndexArray[2][2] = r3;
+        rsInterface.valueIndexArray[2][3] = 0;
+        rsInterface.valueIndexArray[3] = new int[3];
+        rsInterface.valueIndexArray[3][0] = 1;
+        rsInterface.valueIndexArray[3][1] = 6;
+        rsInterface.valueIndexArray[3][2] = 0;
+        rsInterface.enabledSprite =  imageLoader(sid, "Lunar/LUNARON");
+        rsInterface.disabledSprite =  imageLoader(sid, "Lunar/LUNAROFF");
+        Widget INT = addInterface(ID+1);
+        INT.isMouseoverTriggered = true;
+        INT.mOverInterToTrigger = -1;
+        setChildren(9, INT);
+        addLunarSprite(ID+2, 1, "BOX");
+        setBounds(ID+2, 0, 0, 0, INT);
+        addText(ID+3, "Level "+(lvl+1)+": "+name, 0xFF981F, true, true, 52, RSFont, 1);setBounds(ID+3, 90, 4, 1, INT);
+        addText(ID+4, descr, 0xAF6A1A, true, true, 52, RSFont, 0);	setBounds(ID+4, 90, 21, 2, INT);
+        setBounds(30016, 14, 48, 3, INT);
+        setBounds(rune1, 74, 48, 4, INT);
+        setBounds(rune2, 130, 48, 5, INT);
+        addRuneText(ID+5, ra1+1, r1, RSFont);
+        setBounds(ID+5, 26, 79, 6, INT);
+        addRuneText(ID+6, ra2+1, r2, RSFont);
+        setBounds(ID+6, 87, 79, 7, INT);
+        addRuneText(ID+7, ra3+1, r3, RSFont);
+        setBounds(ID+7, 142, 79, 8, INT);
+    }
+
+
+    public static void addLunar3RunesLargeBox(int ID, int r1, int r2, int r3, int ra1, int ra2, int ra3,int rune1, int rune2, int lvl,String name, String descr,RSFont[] RSFont, int sid,int suo,int type){
+        Widget rsInterface = addInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 5;
+        rsInterface.atActionType = type;
+        rsInterface.contentType = 0;
+        rsInterface.mOverInterToTrigger = ID+1;
+        rsInterface.spellUsableOn = suo;
+        rsInterface.selectedActionName = "Cast on";
+        rsInterface.width = 20;
+        rsInterface.height = 20;
+        rsInterface.tooltip = "Cast <col=65280>"+name;
+        rsInterface.spellName = name;
+        rsInterface.anIntArray245 = new int[4];
+        rsInterface.anIntArray212 = new int[4];
+        rsInterface.anIntArray245[0] = 3;
+        rsInterface.anIntArray212[0] = ra1;
+        rsInterface.anIntArray245[1] = 3;
+        rsInterface.anIntArray212[1] = ra2;
+        rsInterface.anIntArray245[2] = 3;
+        rsInterface.anIntArray212[2] = ra3;
+        rsInterface.anIntArray245[3] = 3;
+        rsInterface.anIntArray212[3] = lvl;
+        rsInterface.valueIndexArray = new int[4][];
+        rsInterface.valueIndexArray[0] = new int[4];
+        rsInterface.valueIndexArray[0][0] = 4;
+        rsInterface.valueIndexArray[0][1] = 3214;
+        rsInterface.valueIndexArray[0][2] = r1;
+        rsInterface.valueIndexArray[0][3] = 0;
+        rsInterface.valueIndexArray[1] = new int[4];
+        rsInterface.valueIndexArray[1][0] = 4;
+        rsInterface.valueIndexArray[1][1] = 3214;
+        rsInterface.valueIndexArray[1][2] = r2;
+        rsInterface.valueIndexArray[1][3] = 0;
+        rsInterface.valueIndexArray[2] = new int[4];
+        rsInterface.valueIndexArray[2][0] = 4;
+        rsInterface.valueIndexArray[2][1] = 3214;
+        rsInterface.valueIndexArray[2][2] = r3;
+        rsInterface.valueIndexArray[2][3] = 0;
+        rsInterface.valueIndexArray[3] = new int[3];
+        rsInterface.valueIndexArray[3][0] = 1;
+        rsInterface.valueIndexArray[3][1] = 6;
+        rsInterface.valueIndexArray[3][2] = 0;
+        rsInterface.enabledSprite =  imageLoader(sid, "Lunar/LUNARON");
+        rsInterface.disabledSprite =  imageLoader(sid, "Lunar/LUNAROFF");
+        Widget INT = addInterface(ID+1);
+        INT.isMouseoverTriggered = true;
+        INT.mOverInterToTrigger = -1;
+        setChildren(9, INT);
+        addLunarSprite(ID+2, 2, "BOX");
+        setBounds(ID+2, 0, 0, 0, INT);
+        addText(ID+3, "Level "+(lvl+1)+": "+name, 0xFF981F, true, true, 52, RSFont, 1);
+        setBounds(ID+3, 90, 4, 1, INT);
+        addText(ID+4, descr, 0xAF6A1A, true, true, 52, RSFont, 0);
+        setBounds(ID+4, 90, 34, 2, INT);
+        setBounds(30016, 14, 61, 3, INT);
+        setBounds(rune1, 74, 61, 4, INT);
+        setBounds(rune2, 130, 61, 5, INT);
+        addRuneText(ID+5, ra1+1, r1, RSFont);
+        setBounds(ID+5, 26, 92, 6, INT);
+        addRuneText(ID+6, ra2+1, r2, RSFont);
+        setBounds(ID+6, 87, 92, 7, INT);
+        addRuneText(ID+7, ra3+1, r3, RSFont);
+        setBounds(ID+7, 142, 92, 8, INT);
+    }
+
+    private static Sprite LoadLunarSprite(int i, String s) {
+        Sprite sprite = imageLoader(i, "/Lunar/" + s);
+        return sprite;
     }
     public static Sprite getSprite(String s) {
         Sprite image;

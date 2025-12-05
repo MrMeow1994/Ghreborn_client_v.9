@@ -768,8 +768,8 @@ public final class Texture extends DrawingArea {
                     l1 = (k1 - j1) / (i1 - l);
                 else
                     l1 = 0;
-                if (i1 > DrawingArea.centerX)
-                    i1 = DrawingArea.centerX;
+                if (i1 > DrawingArea.viewportRX)
+                    i1 = DrawingArea.viewportRX;
                 if (l < 0) {
                     j1 -= l * l1;
                     l = 0;
@@ -840,8 +840,8 @@ public final class Texture extends DrawingArea {
             return;
         int i2 = (k1 - j1) / (i1 - l);
         if (aBoolean1462) {
-            if (i1 > DrawingArea.centerX)
-                i1 = DrawingArea.centerX;
+            if (i1 > DrawingArea.viewportRX)
+                i1 = DrawingArea.viewportRX;
             if (l < 0) {
                 j1 -= l * i2;
                 l = 0;
@@ -1466,9 +1466,9 @@ public final class Texture extends DrawingArea {
         g2 = (g2 - g1) / n;
         b2 = (b2 - b1) / n;
         if (aBoolean1462) {
-            if (x2 > DrawingArea.centerX) {
-                n -= x2 - DrawingArea.centerX;
-                x2 = DrawingArea.centerX;
+            if (x2 > DrawingArea.viewportRX) {
+                n -= x2 - DrawingArea.viewportRX;
+                x2 = DrawingArea.viewportRX;
             }
             if (x1 < 0) {
                 n = x2;
@@ -1813,8 +1813,8 @@ public final class Texture extends DrawingArea {
     private static void method377(int ai[], int i, int j, int l, int i1) {
         int k;// was parameter
         if (aBoolean1462) {
-            if (i1 > DrawingArea.centerX)
-                i1 = DrawingArea.centerX;
+            if (i1 > DrawingArea.viewportRX)
+                i1 = DrawingArea.viewportRX;
             if (l < 0)
                 l = 0;
         }
@@ -2413,8 +2413,8 @@ public final class Texture extends DrawingArea {
         int k3;
         if (aBoolean1462) {
             j3 = (k1 - j1) / (i1 - l);
-            if (i1 > DrawingArea.centerX)
-                i1 = DrawingArea.centerX;
+            if (i1 > DrawingArea.viewportRX)
+                i1 = DrawingArea.viewportRX;
             if (l < 0) {
                 j1 -= l * j3;
                 l = 0;
@@ -3296,8 +3296,8 @@ public final class Texture extends DrawingArea {
         int dl = (l2 - l1) / (x2 - x1);
         int n;
         if (aBoolean1462) {
-            if (x2 > DrawingArea.centerX)
-                x2 = DrawingArea.centerX;
+            if (x2 > DrawingArea.viewportRX)
+                x2 = DrawingArea.viewportRX;
             if (x1 < 0) {
                 l1 -= x1 * dl;
                 x1 = 0;

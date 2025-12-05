@@ -532,6 +532,9 @@ public final class TextDrawingArea extends DrawingArea {
       }
 
    }
+   public void method382(int i, int j, String s, int l, boolean flag) {
+      method389(true, flag, j - getTextWidth(s) / 2, i, s, l);
+   }
 
    public void drawChatInput(int i, int j, String s, int l, boolean flag) {
       this.method389(true, flag, j, i, s, l);

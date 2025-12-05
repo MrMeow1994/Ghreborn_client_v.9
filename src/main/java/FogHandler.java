@@ -22,7 +22,7 @@ public class FogHandler {
         int fogBegin = (int) (fogStartDistance + fogDistance);
         int fogEnd = (int) (fogEndDistance + fogDistance);
         for (int y = 0; y < DrawingArea.bottomY; y++) {
-            for (int x = 0; x < DrawingArea.centerX; x++) {
+            for (int x = 0; x < DrawingArea.viewportRX; x++) {
                 //if (Class30_Sub2_Sub1.depthBuffer[pos] >= fogEnd) {
                    // Class30_Sub2_Sub1.anIntArray1378[pos] = setColor;
                 //} else if (Class30_Sub2_Sub1.depthBuffer[pos] >= fogBegin) {
@@ -35,7 +35,7 @@ public class FogHandler {
                 }
                 pos++;
             }
-            pos += DrawingArea.width - DrawingArea.centerX;
+            pos += DrawingArea.width - DrawingArea.viewportRX;
         }
    // }
     

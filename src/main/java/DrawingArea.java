@@ -9,18 +9,53 @@ public class DrawingArea extends Node_Sub2 {
    public static int topY;
    public static int bottomX;
    public static int bottomY;
-   public static int centerX;
-   public static int centerY;
-   public static int anInt1387;
+   public static int viewportRX;
+   public static int viewport_centerX;
+   public static int viewport_centerY;
    private static int anInt1374 = 1;
    private static int anInt1376 = -12499;
 
-   public static void method331(int i, int j, int[] ai, float[] depth) {
+   public static void initDrawingArea(int i, int j, int[] ai, float[] depth) {
       depthBuffer = depth;
       pixels = ai;
       width = j;
       height = i;
       setDrawingArea(i, 0, j, 0);
+   }
+   public static void fillDepthCircle(int x, int y, int z, int r, int color, int alpha) {
+      int radius = r * r;
+      color = ((color & 0xFF00FF) * alpha >> 8 & 0xFF00FF) + ((color & 0xFF00) * alpha >> 8 & 0xFF00);
+
+      int alphaB = 256 - alpha;
+      for (int xA = x - r; xA < x + r; xA++) {
+         if (xA < leftX || xA > bottomX) {
+            continue;
+         }
+
+         for (int yA = y - r; yA < y + r; yA++) {
+            if (yA < topY || yA > bottomY) {
+               continue;
+            }
+
+            int xD = (xA - x);
+            int yD = (yA - y);
+            int distance = (xD * xD + yD * yD);
+
+            if (distance < radius) {
+               int pos = xA + (yA * width);
+               if (pos > pixels.length - 1) {
+                  pos = pixels.length - 1;
+               }
+
+               final float depth = depthBuffer[pos];
+               if (z < depth) {
+                  int old = pixels[pos];
+                  old = ((old & 0xFF00FF) * alphaB >> 8 & 0xFF00FF) + ((old & 0xFF00) * alphaB >> 8 & 0xFF00);
+                  pixels[pos] = color + old;
+               }
+            }
+         }
+      }
    }
 
    public static void drawAlphaPixels(int x, int y, int w, int h, int color, int alpha) {
@@ -113,8 +148,8 @@ public class DrawingArea extends Node_Sub2 {
          topY = 0;
          bottomX = width;
          bottomY = height;
-         centerX = bottomX - 1;
-         centerY = bottomX / 2;
+         viewportRX = bottomX - 1;
+         viewport_centerX = bottomX / 2;
       }
    }
 
@@ -139,16 +174,20 @@ public class DrawingArea extends Node_Sub2 {
       topY = l;
       bottomX = k;
       bottomY = i;
-      centerX = bottomX - 1;
-      centerY = bottomX / 2;
-      anInt1387 = bottomY / 2;
+      viewportRX = bottomX - 1;
+      viewport_centerX = bottomX / 2;
+      viewport_centerY = bottomY / 2;
    }
 
    public static void setAllPixelsToZero() {
-      int i = width * height;
+      int i = (width * height);
+      if (depthBuffer == null || depthBuffer.length != i) {
+         depthBuffer = new float[i];
+      }
 
       for(int j = 0; j < i; ++j) {
          pixels[j] = 0;
+         depthBuffer[j] = Float.MAX_VALUE;
       }
 
    }
@@ -526,8 +565,8 @@ public class DrawingArea extends Node_Sub2 {
       topY = 0;
       bottomX = width;
       bottomY = height;
-      centerX = bottomX;
-      centerY = bottomX / 2;
+      viewportRX = bottomX;
+      viewport_centerX = bottomX / 2;
    }
 
    public static void method342(int i, int j, int k, int l, byte byte0, int i1) {

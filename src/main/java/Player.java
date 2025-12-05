@@ -247,12 +247,12 @@ final class Player extends Entity {
 
 
                 if (animation.leftHandItem >= 0) {
-                    j1 = (animation.leftHandItem);
+                    j1 = (animation.leftHandItem - 32256);
                     l += (j1 - equipment[5]) << 40;
                 }
 
                 if (animation.rightHandItem >= 0) {
-                    k1 = (animation.rightHandItem  );
+                    k1 = (animation.rightHandItem - 32256);
                     l += (k1 - equipment[3]) << 48;
                 }
 

@@ -117,23 +117,31 @@ final class ItemDefinition {
     public static int[] unNoteable = {};
 
     public static void dumpNotes() {
-        try {
-            FileOutputStream out = new FileOutputStream(new File("notes.dat"));
-            for (int j = 0; j < anInt203; j++) {
-                ItemDefinition item = method198(j);
-                        out.write(item.certID != -1 ? 0 : 1);
+        File file = new File("./temp/notes.dat");
+
+        try (FileOutputStream out = new FileOutputStream(file)) {
+
+            for (int id = 0; id < anInt203; id++) {
+                ItemDefinition def = method198(id);
+
+                // 0 = note, 1 = non-note
+                boolean isNote = def.certID != -1;
+                out.write(isNote ? 0 : 1);
             }
-            out.write(-1);
-            out.close();
-        } catch (IOException ioe) {ioe.printStackTrace();}
+
+            // No need to write -1 — EOF handles termination.
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void dumpStackable() {
+    public static void dumpStacks() {
         try {
-            FileOutputStream out = new FileOutputStream(new File("stackable.dat"));
+            FileOutputStream out = new FileOutputStream(new File("./temp/stackable.dat"));
             for (int j = 0; j < anInt203; j++) {
-                ItemDefinition definition = method198(j);
-                out.write(definition.stackable ? 0 : 1);
+                ItemDefinition item = method198(j);
+                out.write(item.stackable ? 1 : 0);
             }
             out.write(-1);
             out.close();
@@ -141,10 +149,10 @@ final class ItemDefinition {
     }
     public static void dumpSellable() {
         try {
-            FileOutputStream out = new FileOutputStream(new File("sellable.dat"));
+            FileOutputStream out = new FileOutputStream(new File("./temp/sellable.dat"));
             for (int j = 0; j < anInt203; j++) {
                 ItemDefinition definition = method198(j);
-                out.write(definition.value >= 1 ? 0 : 1);
+                out.write(definition.value >= 1 ? 1 : 0);
             }
             out.write(-1);
             out.close();
@@ -155,7 +163,7 @@ final class ItemDefinition {
             ItemDefinition class8 = method198(i);
             BufferedWriter bw = null;
             try {
-                bw = new BufferedWriter(new FileWriter("Item Dump.txt", true));
+                bw = new BufferedWriter(new FileWriter("./temp/Item Dump.txt", true));
                 if(class8.name != null) {
                     bw.write("<item members='true'  name='" + class8.name + "'  type='"+i+"'> </item>");
                     bw.newLine();
@@ -166,9 +174,25 @@ final class ItemDefinition {
             }
         }
     }
+    public static void dumpPrices() {
+        for(int i = 0; i < 30000; i++) {
+            ItemDefinition class8 = method198(i);
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter(new FileWriter("/tempprices.txt", true));
+                if(class8.name != null) {
+                    bw.write(+i+" "+class8.value);
+                    bw.newLine();
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ioe2) {
+            }
+        }
+    }
     public static void dumpNotableList() {
         try {
-            File file = new File("note_id.dat");
+            File file = new File("/tempnote_id.dat");
 
             if (!file.exists()) {
                 file.createNewFile();
@@ -194,7 +218,24 @@ final class ItemDefinition {
             e.printStackTrace();
         }
     }
-
+    public static void dumpxmlItems() {
+        for(int i = 0; i < anInt203; i++) {
+            ItemDefinition class8 = method198(i);
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter(new FileWriter("./temp/Items.txt", true));
+                if(class8.name != null) {
+                    bw.write("<item members='"+class8.membersObject+"'  name='" + class8.name + "'  type='"+i+"'>");
+                    bw.newLine();
+                    bw.write("</item>");
+                    bw.newLine();
+                    bw.flush();
+                    bw.close();
+                }
+            } catch (IOException ioe2) {
+            }
+        }
+    }
     public static void dumpCfg() {
         boolean delete = (new File(signlink.findcachedir() + ("/dumps/item.cfg")).delete());
         for (int i = 20085; i < 30000; i++) {
@@ -512,8 +553,12 @@ final class ItemDefinition {
         cache = new ItemDefinition[10];
         for (int k = 0; k < 10; k++)
             cache[k] = new ItemDefinition();
-        dumpStackable();
-        dumpNotes();
+      //  dumpStackable();
+        //dumpStacks();
+        //dumpSellable();
+       // dumpNotes();
+       // dumpxmlItems();
+       // dumpPrices();
         //dumpItems2();
         //dumpNewItems();
         if (Configuration.dumpDataLists) {
@@ -563,7 +608,8 @@ final class ItemDefinition {
         class8.anInt157 = i;
         class8.method197();
         class8.readValues(true, aStream_183);
-
+        if (class8.certTemplateID != -1)
+            class8.method199((byte) 61);
         switch(i){
             case 23000:
                 copy(class8, 23_000, 6_542, "Resource box", "Open");
@@ -4511,8 +4557,6 @@ final class ItemDefinition {
             class8.name = "Mith Helm (W)";
             class8.description = "It's a Mith Helm (W)".getBytes();
         }
-        if (class8.certTemplateID != -1)
-            class8.method199((byte) 61);
         if (!aBoolean182 && class8.membersObject) {
             class8.name = "Members Object";
             class8.description = "Login to a members' server to use this object.".getBytes();
@@ -19181,7 +19225,7 @@ final class ItemDefinition {
         int i3 = DrawingArea.topY;
         int j3 = DrawingArea.bottomY;
         Rasterizer.aBoolean1464 = false;
-        DrawingArea.method331(32, 32, class30_sub2_sub1_sub1_1.myPixels, null);
+        DrawingArea.initDrawingArea(32, 32, class30_sub2_sub1_sub1_1.myPixels, null);
         DrawingArea.drawPixels(32, 0, 0, 0, 32);
         Rasterizer.method364();
         int k3 = class8.spriteScale;
@@ -19241,7 +19285,7 @@ final class ItemDefinition {
         }
         if (k == 0)
             aClass12_158.method223(class30_sub2_sub1_sub1_1, i, (byte) 2);
-        DrawingArea.method331(j2, i2, ai1, null);
+        DrawingArea.initDrawingArea(j2, i2, ai1, null);
         DrawingArea.setDrawingArea(j3, k2, l2, i3);
         Rasterizer.centerX = k1;
         Rasterizer.centerY = l1;
@@ -19423,11 +19467,7 @@ final class ItemDefinition {
         name = class8_1.name;
         membersObject = class8_1.membersObject;
         value = class8_1.value;
-        String s = "a";
-        char c = class8_1.name.charAt(0);
-        if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U')
-            s = "an";
-        description = ("Swap this note at any bank for " + s + " " + class8_1.name + ".").getBytes();
+        description = ("Swap this note at any bank for the equivalent item.").getBytes();
         stackable = true;
     }
 
@@ -19510,6 +19550,8 @@ final class ItemDefinition {
                 spriteTranslateY = stream.readUnsignedShort();
                 if (spriteTranslateY > 32767)
                     spriteTranslateY -= 0x10000;
+            } else if (opcode == 10) {
+                stream.readUnsignedShort();
             } else if (opcode == 11)
                 stackable = true;
             else if (opcode == 12)
@@ -19561,8 +19603,6 @@ final class ItemDefinition {
                 secondaryMaleHeadPiece = stream.readUnsignedShort();
             else if (opcode == 93)
                 secondaryFemaleHeadPiece = stream.readUnsignedShort();
-            else if (opcode == 94)
-                stream.readUnsignedShort();
             else if (opcode == 95)
                 spriteCameraYaw = stream.readUnsignedShort();
             else if (opcode == 97)

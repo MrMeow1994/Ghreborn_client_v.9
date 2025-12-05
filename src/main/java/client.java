@@ -17,10 +17,8 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -54,6 +52,11 @@ public class client extends Applet_Sub1 {
     int anInt1238;
     private int anInt1275;
     public static int anInt1290;
+    public int anInt1044;// 377
+    public int anInt1129;// 377
+    public int anInt1315;// 377
+    public int anInt1500;// 377
+    public int anInt1501;// 377
     public static int showpackets;
     public static int showframeids;
     private String inputString;
@@ -139,9 +142,9 @@ public class client extends Applet_Sub1 {
     private boolean tabAreaAltered;
     private byte[] aByteArray912;
     private static int anInt854;
-    private int xCameraPos;
+    public int xCameraPos;
     private int zCameraPos;
-    private int yCameraPos;
+    public int yCameraPos;
     private static boolean aBoolean919 = true;
     private int yCameraCurve;
     private int xCameraCurve;
@@ -476,7 +479,7 @@ public class client extends Applet_Sub1 {
     private int anInt935;
     private int anInt936;
     private int anInt1169;
-    private int anInt878;
+    private int weight;
     private int anInt995;
     private int anInt996;
     private int anInt997;
@@ -619,7 +622,7 @@ public class client extends Applet_Sub1 {
     static int[] tabInterfaceIDs = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     private static String aString1162 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"£$%^&*()-_=+[{]};:\'@#~,<.>/?\\| ";
     static final int[] anIntArray1204 = new int[]{9104, 10275, 7595, 3610, 7975, 8526, 918, '\u9792', 24466, 10145, '\ue51e', 5027, 1457, 16565, '\u88af', 25486};
-    private static int[] anIntArray1019;
+    private static int[] SKILL_EXPERIENCE;
     public static int[] anIntArray1232;
     private final boolean loginmusicEnabled = true;
 
@@ -2820,14 +2823,20 @@ public class client extends Applet_Sub1 {
                     Widget class9_1 = Widget.interfaceCache[class9.children[l1]];
                     i2 += class9_1.anInt263;
                     j2 += class9_1.anInt265;
-                    if((class9_1.mOverInterToTrigger >= 0 || class9_1.anInt216 != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                    if((class9_1.mOverInterToTrigger >= 0 || class9_1.defaultHoverColor != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
                         if(class9_1.mOverInterToTrigger >= 0) {
                             this.anInt886 = class9_1.mOverInterToTrigger;
                         } else {
                             this.anInt886 = class9_1.id;
                         }
                     }
+                    if (class9_1.type == 9 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        anInt1315 = class9_1.id;
+                    }
 
+                    if (class9_1.type == 8 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        this.anInt1315 = class9_1.id;
+                    }
                     if(class9_1.type == 0) {
                         this.buildInterfaceMenu(i2, 13037, class9_1, k, j2, i1, class9_1.scrollPosition);
                         if(class9_1.scrollMax > class9_1.height) {
@@ -2915,8 +2924,34 @@ public class client extends Applet_Sub1 {
                         }
 
                         if(class9_1.type == 2) {
-                            var21 = 0;
 
+                            var21 = 0;
+                            // Item container
+                            if (class9_1.invAutoScrollHeight) {
+                                int lastRow = -1;
+                                int rowCount = 0;
+                                int i3 = 0;
+
+                                for (int l3 = 0; l3 < class9_1.height; l3++) {
+                                    for (int l4 = 0; l4 < class9_1.width; l4++) {
+                                        if (class9_1.inventoryItemId[i3] > 1) {
+                                            if (lastRow != l3) {
+                                                lastRow = l3;
+                                                rowCount++;
+                                            }
+                                        }
+
+                                        i3++;
+                                    }
+                                }
+
+                                Widget scrollable = Widget.interfaceCache[class9_1.invAutoScrollInterfaceId];
+                                scrollable.scrollMax = scrollable.height + 1;
+                                int heightPerRow = class9_1.invSpritePadY + 32;
+                                if (heightPerRow * rowCount > scrollable.scrollMax) {
+                                    scrollable.scrollMax += (heightPerRow * rowCount) - scrollable.scrollMax + scrollable.invAutoScrollHeightOffset;
+                                }
+                            }
                             for(int l2 = 0; l2 < class9_1.height; ++l2) {
                                 for(int i3 = 0; i3 < class9_1.width; ++i3) {
                                     int j3 = i2 + i3 * (32 + class9_1.invSpritePadX);
@@ -5694,13 +5729,18 @@ public class client extends Applet_Sub1 {
     public final void method60(int i, byte byte0) {
         Widget class9 = Widget.interfaceCache[i];
 
-        for(int j = 0; j < class9.children.length && class9.children[j] != -1; ++j) {
+        for(int j = 0; j < class9.children.length; ++j) {
+            if (class9.children[j] == -1)
+                break;
             Widget class9_1 = Widget.interfaceCache[class9.children[j]];
+            if (class9_1 == null)
+                System.err.println("Null child of index " + j + " inside interface " + i);
+
             if(class9_1.type == 1) {
                 this.method60(class9_1.id, (byte)6);
             }
 
-            class9_1.anInt246 = 0;
+            class9_1.currentFrame = 0;
             class9_1.anInt208 = 0;
         }
 
@@ -5909,7 +5949,21 @@ public class client extends Applet_Sub1 {
             if(super.clickMode2 == 1 || super.clickMode3 == 1) {
                 ++this.anInt1213;
             }
-
+            if (anInt1500 != 0 || anInt1044 != 0 || anInt1129 != 0) {
+                if (anInt1501 < 50 && !menuOpen) {
+                    anInt1501++;
+                    if (anInt1501 == 50) {
+                        if (anInt1500 != 0) {
+                            inputTaken = true;
+                        }
+                        if (anInt1044 != 0) {
+                            tabAreaAltered = true;
+                        }
+                    }
+                }
+            } else if (anInt1501 > 0) {
+                anInt1501--;
+            }
             if(this.anInt1023 == 2) {
                 this.method108(3);
             }
@@ -6510,7 +6564,80 @@ public class client extends Applet_Sub1 {
             }
         }
     }
+    public List<Particle> particles = new ArrayList<>();
+    private int particleDrawX = -1;
+    private int particleDrawY = -1;
+    private int particleDrawX2 = -1;
+    private int particleDrawY2 = -1;
+    private int particleDrawZ = -1;
 
+    private void calcParticleScreenPos(int x, int offset, int z, int size) {
+        if (x < 128 || z < 128 || x > 13056 || z > 13056) {
+            particleDrawX = -1;
+            particleDrawY = -1;
+            particleDrawX2 = -1;
+            particleDrawY2 = -1;
+            particleDrawZ = -1;
+            return;
+        }
+
+        int y = method42(this.anInt918, z, true,  x) - offset;
+        x -= xCameraPos;
+        y -= zCameraPos;
+        z -= yCameraPos;
+        int ySin = Model.SINE[yCameraCurve];
+        int yCos = Model.COSINE[yCameraCurve];
+        int xSin = Model.SINE[xCameraCurve];
+        int xCos = Model.COSINE[xCameraCurve];
+
+        int w = z * xSin + x * xCos >> 16;
+        z = z * xCos - x * xSin >> 16;
+        x = w;
+        w = y * yCos - z * ySin >> 16;
+        z = y * ySin + z * yCos >> 16;
+        y = w;
+
+        if (z >= 50) {
+            particleDrawX = Rasterizer.centerX + (x << log_view_dist) / z;
+            particleDrawY = Rasterizer.centerY + + (y << log_view_dist) / z;
+            particleDrawX2 = Rasterizer.centerX + (x + size << log_view_dist) / z;
+            particleDrawY2 = Rasterizer.centerY + (y + size << log_view_dist) / z;
+            particleDrawZ = z;
+        } else {
+            particleDrawX = -1;
+            particleDrawY = -1;
+            particleDrawX2 = -1;
+            particleDrawY2 = -1;
+            particleDrawZ = -1;
+        }
+    }
+
+    private void renderParticles() {
+        Iterator<Particle> it = particles.iterator();
+        while (it.hasNext()) {
+            Particle p = it.next();
+            if (p != null) {
+                p.tick();
+                if (p.isDead()) {
+                    it.remove();
+                } else {
+                    int x = p.getPosition().getX();
+                    int y = p.getPosition().getY();
+                    int z = p.getPosition().getZ();
+                    int size = (int) (p.getSize() * 3.5f);
+
+                    // Translate particle positions
+                    calcParticleScreenPos(x, y, z, size);
+
+                    // Draw particles
+                    int width = particleDrawX2 - particleDrawX;
+                    int height = particleDrawY2 - particleDrawY;
+                    DrawingArea.fillDepthCircle(particleDrawX, particleDrawY, particleDrawZ,
+                            width + height, p.getColor(), (int) (p.getAlpha() * 255.0f));
+                }
+            }
+        }
+    }
     public final void doAction(int i, boolean flag) {
         if (i < 0)
             return;
@@ -9182,12 +9309,12 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method75(int i, Widget class9) {
+    public final void drawFriendsListOrWelcomeScreen(int i, Widget class9) {
         int j = class9.contentType;
         if(i <= 0) {
             this.stream.writeUnsignedByte(49);
         }
-        if(j >= 205 && j <= 205+25){
+        if ((j >= 205) && (j <= (205 + 25))) {
             j -= 205;
             class9.message = setMessage(j);
             return;
@@ -10322,6 +10449,7 @@ public class client extends Applet_Sub1 {
 
             this.buildBroadcasts();
             this.anInt886 = 0;
+            anInt1315 = 0;
             if(currentScreenMode == client.ScreenMode.FIXED) {
                 if(super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
                     if(openInterfaceID != -1) {
@@ -10341,8 +10469,12 @@ public class client extends Applet_Sub1 {
             if(this.anInt886 != this.anInt1026) {
                 this.anInt1026 = this.anInt886;
             }
-
+            if (anInt1315 != anInt1129) {
+                anInt1129 = anInt1315;
+            }
             this.anInt886 = 0;
+            anInt1315 = 0;
+
             int flag;
             int j;
             if(!changeTabArea) {
@@ -10370,8 +10502,12 @@ public class client extends Applet_Sub1 {
                 this.tabAreaAltered = true;
                 this.anInt1048 = this.anInt886;
             }
-
+            if (anInt1315 != anInt1044) {
+                tabAreaAltered = true;
+                anInt1044 = anInt1315;
+            }
             this.anInt886 = 0;
+            anInt1315 = 0;
             if(super.mouseX > 0 && super.mouseY > (currentScreenMode == client.ScreenMode.FIXED?338:currentGameHeight - 165) && super.mouseX < 490 && super.mouseY < (currentScreenMode == client.ScreenMode.FIXED?463:currentGameHeight - 40) && showChatComponents) {
                 if(this.backDialogID != -1) {
                     this.buildInterfaceMenu(20, 13037, Widget.interfaceCache[this.backDialogID], super.mouseX, currentScreenMode == client.ScreenMode.FIXED?358:currentGameHeight - 145, super.mouseY, 0);
@@ -10384,7 +10520,10 @@ public class client extends Applet_Sub1 {
                 this.inputTaken = true;
                 this.anInt1039 = this.anInt886;
             }
-
+            if (backDialogID != -1 && anInt1315 != anInt1500) {
+                inputTaken = true;
+                anInt1500 = anInt1315;
+            }
             this.rightClickChatButtons();
             this.processExtraMenus();
             boolean var8 = false;
@@ -12755,27 +12894,27 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void drawInterface(int j, int k, Widget class9, int l) {
+    public final void drawInterface(int scrollPosition, int xPosition, Widget class9, int yPosition) {
         if(class9.type == 0 && class9.children != null) {
             if(!class9.isMouseoverTriggered || this.anInt1026 == class9.id || this.anInt1048 == class9.id || this.anInt1039 == class9.id) {
                 int i1 = DrawingArea.leftX;
                 int j1 = DrawingArea.topY;
                 int k1 = DrawingArea.bottomX;
                 int l1 = DrawingArea.bottomY;
-                DrawingArea.setDrawingArea(l + class9.height, k, k + class9.width, l);
+                DrawingArea.setDrawingArea(yPosition + class9.height, xPosition, xPosition + class9.width, yPosition);
                 int i2 = class9.children.length;
 
                 for(int j2 = 0; j2 < i2; ++j2) {
-                    int _x = class9.childX[j2] + k;
-                    int _y = class9.childY[j2] + l - j;
+                    int _x = class9.childX[j2] + xPosition;
+                    int _y = class9.childY[j2] + yPosition - scrollPosition;
                     Widget class9_1 = Widget.interfaceCache[class9.children[j2]];
                     _x += class9_1.anInt263;
                     _y += class9_1.anInt265;
                     if(class9_1.contentType > 0) {
-                        this.method75(950, class9_1);
+                        this.drawFriendsListOrWelcomeScreen(950, class9_1);
                     }
 
-                    if(class9_1.type == 0) {
+                    if(class9_1.type == Widget.TYPE_CONTAINER) {
                         if(class9_1.scrollPosition > class9_1.scrollMax - class9_1.height) {
                             class9_1.scrollPosition = class9_1.scrollMax - class9_1.height;
                         }
@@ -12908,30 +13047,30 @@ public class client extends Applet_Sub1 {
 
                             if(this.method131(class9_1, false)) {
                                 k4 = class9_1.secondaryColor;
-                                if(var27 && class9_1.anInt239 != 0) {
-                                    k4 = class9_1.anInt239;
+                                if(var27 && class9_1.secondaryHoverColor != 0) {
+                                    k4 = class9_1.secondaryHoverColor;
                                 }
                             } else {
                                 k4 = class9_1.textColor;
-                                if(var27 && class9_1.anInt216 != 0) {
-                                    k4 = class9_1.anInt216;
+                                if(var27 && class9_1.defaultHoverColor != 0) {
+                                    k4 = class9_1.defaultHoverColor;
                                 }
                             }
 
-                            if(class9_1.aByte254 == 0) {
+                            if(class9_1.opacity == 0) {
                                 if(class9_1.aBoolean227) {
                                     DrawingArea.drawPixels(class9_1.height, _y, _x, k4, class9_1.width);
                                 } else {
                                     DrawingArea.fillPixels(_x, class9_1.width, class9_1.height, k4, _y, true);
                                 }
                             } else if(class9_1.aBoolean227) {
-                                DrawingArea.method335(k4, _y, class9_1.width, class9_1.height, 256 - (class9_1.aByte254 & 255), 0, _x);
+                                DrawingArea.method335(k4, _y, class9_1.width, class9_1.height, 256 - (class9_1.opacity & 255), 0, _x);
                             } else {
-                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.aByte254 & 255), k4, class9_1.width, _x, -17319);
+                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.opacity & 255), k4, class9_1.width, _x, -17319);
                             }
                         } else {
                             RSFont class30_sub2_sub1_sub4_1;
-                            if(class9_1.type == 4) {
+                            if(class9_1.type == 4 | class9_1.type == Widget.TYPE_TEXT_DRAW_FROM_LEFT) {
                                 class30_sub2_sub1_sub4_1 = class9_1.textDrawingAreas;
                                 String var28 = class9_1.message;
                                 boolean var29 = false;
@@ -12941,17 +13080,17 @@ public class client extends Applet_Sub1 {
 
                                 if(this.method131(class9_1, false)) {
                                     i6 = class9_1.secondaryColor;
-                                    if(var29 && class9_1.anInt239 != 0) {
-                                        i6 = class9_1.anInt239;
+                                    if(var29 && class9_1.secondaryHoverColor != 0) {
+                                        i6 = class9_1.secondaryHoverColor;
                                     }
 
-                                    if(class9_1.aString228.length() > 0) {
-                                        var28 = class9_1.aString228;
+                                    if(class9_1.secondaryText.length() > 0) {
+                                        var28 = class9_1.secondaryText;
                                     }
                                 } else {
                                     i6 = class9_1.textColor;
-                                    if(var29 && class9_1.anInt216 != 0) {
-                                        i6 = class9_1.anInt216;
+                                    if(var29 && class9_1.defaultHoverColor != 0) {
+                                        i6 = class9_1.defaultHoverColor;
                                     }
                                 }
 
@@ -13057,7 +13196,7 @@ public class client extends Applet_Sub1 {
                                     var33 = class9_1.method209(0, -1, -1, var30);
                                 } else {
                                     AnimationDefinition var34 = AnimationDefinition.anims[var32];
-                                    var33 = class9_1.method209(0, var34.secondaryFrames[class9_1.anInt246], var34.frames[class9_1.anInt246], var30);
+                                    var33 = class9_1.method209(0, var34.secondaryFrames[class9_1.currentFrame], var34.frames[class9_1.currentFrame], var30);
                                 }
 
                                 if(var33 != null) {
@@ -13089,6 +13228,177 @@ public class client extends Applet_Sub1 {
                                         }
 
                                         ++k4;
+                                    }
+                                }
+                            } else if (class9_1.type == 8
+                                    && (anInt1500 == class9_1.id || anInt1044 == class9_1.id || anInt1129 == class9_1.id)
+                                    && anInt1501 == 50 && !menuOpen) {
+                                if (class9_1.parentID == 3917) {
+                                    return;
+                                }
+                                int boxWidth = 0;
+                                int boxHeight = 0;
+
+                                /**
+                                 * Skill tab hovers Remove "next level at" and "remaining" for xp if we're level
+                                 * 99.
+                                 */
+
+                                TextDrawingArea textDrawingArea_2 = regularText;
+                                for (String s1 = class9_1.message; s1.length() > 0;) {
+                                    if (s1.indexOf("%") != -1) {
+                                        do {
+                                            int k7 = s1.indexOf("%1");
+                                            if (k7 == -1)
+                                                break;
+                                            s1 = s1.substring(0, k7) + this.method93(369, this.method124(341, class9_1, 0))
+                                                    + s1.substring(k7 + 2);
+                                        } while (true);
+                                        do {
+                                            int l7 = s1.indexOf("%2");
+                                            if (l7 == -1)
+                                                break;
+                                            s1 = s1.substring(0, l7) + this.method93(369, this.method124(341, class9_1, 1))
+                                                    + s1.substring(l7 + 2);
+                                        } while (true);
+                                        do {
+                                            int i8 = s1.indexOf("%3");
+                                            if (i8 == -1)
+                                                break;
+                                            s1 = s1.substring(0, i8) + this.method93(369, this.method124(341, class9_1, 2))
+                                                    + s1.substring(i8 + 2);
+                                        } while (true);
+                                        do {
+                                            int j8 = s1.indexOf("%4");
+                                            if (j8 == -1)
+                                                break;
+                                            s1 = s1.substring(0, j8) + this.method93(369, this.method124(341, class9_1, 3))
+                                                    + s1.substring(j8 + 2);
+                                        } while (true);
+                                        do {
+                                            int k8 = s1.indexOf("%5");
+                                            if (k8 == -1)
+                                                break;
+                                            s1 = s1.substring(0, k8) + this.method93(369, this.method124(341, class9_1, 4))
+                                                    + s1.substring(k8 + 2);
+                                        } while (true);
+                                    }
+                                    int l7 = s1.indexOf("\\n");
+
+                                    String s4;
+                                    if (l7 != -1) {
+                                        s4 = s1.substring(0, l7);
+                                        s1 = s1.substring(l7 + 2);
+                                    } else {
+                                        s4 = s1;
+                                        s1 = "";
+                                    }
+                                    int j10 = textDrawingArea_2.getTextWidth(s4);
+                                    if (j10 > boxWidth) {
+                                        boxWidth = j10;
+                                    }
+                                    boxHeight += textDrawingArea_2.anInt1497 + 1;
+                                }
+
+                                if (tabInterfaceIDs[tabID] == 17200) {
+                                    return;
+                                }
+                                boxWidth += 6;
+                                boxHeight += 7;
+                                int xPos = (_x + class9_1.width) - 5 - boxWidth;
+                                int yPos = _y + class9_1.height + 5;
+                                if (xPos < _x + 5)
+                                    xPos = _x + 5;
+                                if (xPos + boxWidth > xPosition + class9.width)
+                                    xPos = (xPosition + class9.width) - boxWidth;
+                                if (yPos + boxHeight > yPosition + class9.height)
+                                    yPos = (_y - boxHeight);
+                                switch (class9_1.id) {
+                                    case 27389:
+                                    case 27392:
+                                    case 27395:
+                                    case 27398:
+                                    case 27401:
+                                    case 27408:
+                                    case 27411:
+                                        xPos -= 80;
+                                        break;
+                                }
+                                if (class9_1.inventoryhover) {
+
+                                    //System.out.println(canvasWidth - 648);
+                                    if (xPos + boxWidth > currentGameWidth - 8 - boxWidth + 100) {
+                                        xPos = currentGameWidth - 8 - boxWidth;
+                                    }
+                                    if (yPos + boxHeight > currentGameHeight - 118 - boxHeight + 100
+                                            && yPos + boxHeight < currentGameHeight - 118 - boxHeight + 120) {
+                                        yPos = currentGameHeight - 148 - boxHeight;
+                                    } else if (yPos + boxHeight > currentGameHeight - 118 - boxHeight + 100) {
+                                        yPos = currentGameHeight - 118 - boxHeight;
+                                    }
+                                }
+                                DrawingArea.drawPixels(boxHeight, yPos, xPos, 0xFFFFA0, boxWidth);
+                                DrawingArea.fillPixels(xPos, boxWidth, boxHeight, 0, yPos, true);
+                                String s2 = class9_1.message;
+                                for (int j11 = yPos + textDrawingArea_2.anInt1497 + 2; s2
+                                        .length() > 0; j11 += textDrawingArea_2.anInt1497 + 1) {// anInt1497
+                                    if (s2.indexOf("%") != -1) {
+                                        do {
+                                            int k7 = s2.indexOf("%1");
+                                            if (k7 == -1)
+                                                break;
+                                            s2 = s2.substring(0, k7) + this.method93(369, this.method124(341, class9_1, 0))
+                                                    + s2.substring(k7 + 2);
+                                        } while (true);
+                                        do {
+                                            int l7 = s2.indexOf("%2");
+                                            if (l7 == -1)
+                                                break;
+                                            s2 = s2.substring(0, l7) + this.method93(369, this.method124(341, class9_1, 1))
+                                                    + s2.substring(l7 + 2);
+                                        } while (true);
+                                        do {
+                                            int i8 = s2.indexOf("%3");
+                                            if (i8 == -1)
+                                                break;
+                                            s2 = s2.substring(0, i8) + this.method93(369, this.method124(341, class9_1, 2))
+                                                    + s2.substring(i8 + 2);
+                                        } while (true);
+                                        do {
+                                            int j8 = s2.indexOf("%4");
+                                            if (j8 == -1)
+                                                break;
+                                            s2 = s2.substring(0, j8) + this.method93(369, this.method124(341, class9_1, 3))
+                                                    + s2.substring(j8 + 2);
+                                        } while (true);
+                                        do {
+                                            int k8 = s2.indexOf("%5");
+                                            if (k8 == -1)
+                                                break;
+                                            s2 = s2.substring(0, k8) + this.method93(369, this.method124(341, class9_1, 4))
+                                                    + s2.substring(k8 + 2);
+                                        } while (true);
+                                    }
+                                    int l11 = s2.indexOf("\\n");
+                                    String s5;
+                                    if (l11 != -1) {
+                                        s5 = s2.substring(0, l11);
+                                        s2 = s2.substring(l11 + 2);
+                                    } else {
+                                        s5 = s2;
+                                        s2 = "";
+                                    }
+                                    if (class9_1.centerText) {
+                                        textDrawingArea_2.method382(yPos, xPos + class9_1.width / 2,  s5, j11, false);
+                                    } else {
+                                        if (s5.contains("\\r")) {
+                                            String text = s5.substring(0, s5.indexOf("\\r"));
+                                            String text2 = s5.substring(s5.indexOf("\\r") + 2);
+                                            textDrawingArea_2.method389(false, true, xPos + 3, 0, text, j11);
+                                            int rightX = boxWidth + xPos - textDrawingArea_2.getTextWidth(text2) - 2;
+                                            textDrawingArea_2.method389(false, true, rightX, 0, text2, j11);
+                                        } else
+                                            textDrawingArea_2.method389(false, true,xPos + 3, 0, s5, j11);
                                     }
                                 }
                             } else if (class9_1.type == 16) {
@@ -13991,13 +14301,13 @@ public class client extends Applet_Sub1 {
                     if(l != -1) {
                         AnimationDefinition class20 = AnimationDefinition.anims[l];
 
-                        for(class9_1.anInt208 += i; class9_1.anInt208 > class20.method258(class9_1.anInt246, (byte)-39); flag1 = true) {
-                            class9_1.anInt208 -= class20.method258(class9_1.anInt246, (byte)-39) + 1;
-                            ++class9_1.anInt246;
-                            if(class9_1.anInt246 >= class20.frameCount) {
-                                class9_1.anInt246 -= class20.anInt356;
-                                if(class9_1.anInt246 < 0 || class9_1.anInt246 >= class20.frameCount) {
-                                    class9_1.anInt246 = 0;
+                        for(class9_1.anInt208 += i; class9_1.anInt208 > class20.method258(class9_1.currentFrame, (byte)-39); flag1 = true) {
+                            class9_1.anInt208 -= class20.method258(class9_1.currentFrame, (byte)-39) + 1;
+                            ++class9_1.currentFrame;
+                            if(class9_1.currentFrame >= class20.frameCount) {
+                                class9_1.currentFrame -= class20.anInt356;
+                                if(class9_1.currentFrame < 0 || class9_1.currentFrame >= class20.frameCount) {
+                                    class9_1.currentFrame = 0;
                                 }
                             }
                         }
@@ -14241,7 +14551,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(j1 == 6) {
-                        k1 = anIntArray1019[this.maximumLevels[_ex[l++]] - 1];
+                        k1 = SKILL_EXPERIENCE[this.maximumLevels[_ex[l++]] - 1];
                     }
 
                     if(j1 == 7) {
@@ -14254,11 +14564,10 @@ public class client extends Applet_Sub1 {
 
                     int var18;
                     if(j1 == 9) {
-                        for(var18 = 0; var18 < Skills.SKILLS_COUNT; ++var18) {
-                            if(Skills.SKILLS_ENABLED[var18]) {
+                        for(var18 = 0; var18 < Skills.SKILLS_COUNT; ++var18) 
+                            if(Skills.SKILLS_ENABLED[var18]) 
                                 k1 += this.maximumLevels[var18];
-                            }
-                        }
+                        
                     }
 
                     if(j1 == 10) {
@@ -14279,7 +14588,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(j1 == 12) {
-                        k1 = this.anInt878;
+                        k1 = this.weight;
                     }
 
                     if(j1 == 13) {
@@ -16322,9 +16631,12 @@ public class client extends Applet_Sub1 {
                     var23 = this.in.readUnsignedByte();
                     j15 = this.in.method439((byte)41);
                     j20 = this.in.readUnsignedByte();
+                    int xp = currentExp[var23];
                     this.currentExp[var23] = j15;
                     this.currentLevels[var23] = j20;
                     this.maximumLevels[var23] = 1;
+                    xpCounter += currentExp[var23] - xp;
+                    expAdded = currentExp[var23] - xp;
                     if(var23 < this.currentExp.length) {
                         i23 = j15 - this.currentExp[var23];
                         if(this.currentExp[var23] > -1) {
@@ -16332,12 +16644,12 @@ public class client extends Applet_Sub1 {
                         }
 
                         for(l25 = 0; l25 < 98; ++l25) {
-                            if(j15 >= anIntArray1019[l25]) {
+                            if(j15 >= SKILL_EXPERIENCE[l25]) {
                                 this.maximumLevels[var23] = l25 + 2;
                             }
                         }
                     }
-
+                   // updateSkillStrings(var23);
                     this.packet = -1;
                     return true;
                 }
@@ -17293,7 +17605,7 @@ public class client extends Applet_Sub1 {
                         this.tabAreaAltered = true;
                     }
 
-                    this.anInt878 = this.in.readSignedWord();
+                    this.weight = this.in.readSignedWord();
                     this.packet = -1;
                     return true;
                 }
@@ -17503,7 +17815,7 @@ public class client extends Applet_Sub1 {
                     var26.disabledAnimationId = j15;
                     var26.modelZoom = 1600;
                     if(j15 == -1) {
-                        var26.anInt246 = 0;
+                        var26.currentFrame = 0;
                         var26.anInt208 = 0;
                     }
 
@@ -17715,7 +18027,7 @@ public class client extends Applet_Sub1 {
         } catch (Exception var10) {
             var10.printStackTrace();
         }
-
+        renderParticles();
         this.method34(this.anInt898);
         this.method61(-252);
         this.method37(854, k2);
@@ -17787,12 +18099,29 @@ public class client extends Applet_Sub1 {
                 maximumLevels[level] = 120;
             }
         }
-        int[] stuff = {0,3,14,2,16,13,1,15,10,4,17,7,5,12,11,6,9,8,20,18,19,21,22,23,24};
-        messages[0] = skillNames[level]+": "+currentLevels[stuff[level]]+"/"+maximumLevels[stuff[level]]+"\\n";
-        messages[1] = "Current XP: " + getXPForLevel(maximumLevels[stuff[level]])+"\\n";
-        messages[2]= "Next level: "+ (getXPForLevel(maximumLevels[stuff[level]]+1)-getXPForLevel(maximumLevels[stuff[level]]))+"\\n";
-        messages[3]= "Remainder: "+ getXPForLevel(maximumLevels[stuff[level]]+1);
-        message = messages[0] + messages[1] + messages[2] + messages[3];
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+        int[] getSkillId = { 0, 0, 2, 1, 4, 5, 6, 20, 22, 3, 16, 15, 17, 12, 9, 18, 21, 14, 14, 13, 10, 7, 11, 8, 19,
+                24 };
+        if (!Skills.SKILL_NAMES[level].equals("-1")) {
+            if (maximumLevels[getSkillId[level]] >= 99) {
+                messages[0] = Skills.SKILL_NAMES[level] + " XP: "
+                        + numberFormat.format(currentExp[getSkillId[level]]) + "\\n";
+                message = messages[0];
+            } else {
+                messages[0] = Skills.SKILL_NAMES[level] + " XP: " + "\\r"
+                        + numberFormat.format(currentExp[getSkillId[level]]) + "\\n";
+                messages[1] = "Next level: " + "\\r"
+                        + (numberFormat.format(getXPForLevel(maximumLevels[getSkillId[level]] + 1))) + "\\n";
+                messages[2] = "Remainder: " + "\\r" + numberFormat.format(
+                        getXPForLevel(maximumLevels[getSkillId[level]] + 1) - currentExp[getSkillId[level]])
+                        + "\\n";
+                messages[3] = "";
+
+                message = messages[0] + messages[1] + messages[2];
+            }
+        } else {
+            message = "Click here to logout";
+        }
         return message;
     }
     public client() {
@@ -18017,15 +18346,15 @@ public class client extends Applet_Sub1 {
         showTabComponents = true;
         changeChatArea = currentScreenMode != client.ScreenMode.FIXED;
         changeTabArea = currentScreenMode != client.ScreenMode.FIXED;
-        anIntArray1019 = new int[1000];
+        SKILL_EXPERIENCE = new int[120];
         int i = 0;
 
         int k;
-        for(k = 0; k < 1000; ++k) {
+        for(k = 0; k < 119; ++k) {
             int l = k + 1;
             int i1 = (int)((double)l + 300.0D * Math.pow(2.0D, (double)l / 7.0D));
             i += i1;
-            anIntArray1019[k] = i / 4;
+            SKILL_EXPERIENCE[k] = i / 4;
         }
 
         anIntArray1232 = new int[32];

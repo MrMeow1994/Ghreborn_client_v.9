@@ -1,7 +1,4 @@
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.Arrays;
 
 import sign.signlink;
 
@@ -261,7 +258,7 @@ public final class Stream extends Node_Sub2 {
         return i_6_ < 128?this.readUnsignedByte():-32768 + this.readUnsignedShort();
     }
 
-    public int method1606() {
+    public int readSmart() {
         int var2 = 0;
 
         int var3;
@@ -275,7 +272,7 @@ public final class Stream extends Node_Sub2 {
 
     public int readUShortSmart() {
         int var2 = this.buffer[this.currentPosition] & 255;
-        return var2 < 128?this.readUnsignedByte():this.readUnsignedShort() - '\u8000';
+        return var2 < 128?this.readUnsignedByte():this.readUnsignedShort() - 32768;
     }
     public int method802(int arg0) {
         int i = 0;
@@ -337,56 +334,6 @@ public final class Stream extends Node_Sub2 {
         }
         return i;
     }
-    public int method802() {
-        int i = 0;
-        try {
-            currentPosition++;
-            int i_18_ = 0;
-            int i_19_ = method818((byte) 66);
-            while (i_19_ == 32767) {
-                i_19_ = method818((byte) 61);
-                i_18_ += 32767;
-            }
-            i_18_ += i_19_;
-            i = i_18_;
-        } catch (RuntimeException runtimeexception) {
-        }
-        return i;
-    }
-    public int method937(boolean bool) {
-        ++this.currentPosition;
-        int i = 0;
-        int i_25_ = this.method912(255);
-        if(!bool) {
-            return -6;
-        } else {
-            while(i_25_ == 32767) {
-                i += 32767;
-                i_25_ = this.method912(255);
-            }
-
-            i += i_25_;
-            return i;
-        }
-    }
-
-    public int method1758(int arg0) {
-        ++this.currentPosition;
-        int i = 0;
-        int i_33_ = this.readSmart(arg0 ^ -1647911569);
-        if(arg0 != 32767) {
-            this.method1717(-82, 97);
-        }
-
-        while(~i_33_ == -32768) {
-            i_33_ = this.readSmart(-1647926640);
-            i += 32767;
-        }
-
-        i += i_33_;
-        return i;
-    }
-
     public long method1717(int arg0, int arg1) {
         ++this.currentPosition;
         --arg0;
@@ -527,10 +474,6 @@ public final class Stream extends Node_Sub2 {
         return baseVal + lastVal1;
     }
 
-    public int readSmart() {
-        int value = this.buffer[this.currentPosition] & 255;
-        return value < 128?this.readUnsignedByte() - 64:this.readUnsignedShort() - '\uc000';
-    }
 
     public int readSmart(int arg0) {
         ++this.currentPosition;
