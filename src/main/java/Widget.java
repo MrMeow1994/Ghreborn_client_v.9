@@ -1,3 +1,5 @@
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -29,7 +31,7 @@ public class Widget {
     public boolean isInFocus;
 
     public String[] tooltips;
-
+    public static Int2ObjectOpenHashMap<Widget> interfaceCache = new Int2ObjectOpenHashMap<>();
     public Consumer<String> inputFieldListener;
     public Consumer<Integer> buttonListener;
     public static final int SHOP_CONTAINER = 64016;
@@ -38,7 +40,7 @@ public class Widget {
     public boolean newButtonClicking;
     private int anInt229 = 891;
     private static Class12 aClass12_238;
-    public static Widget[] interfaceCache;
+
     static FileArchive aFileArchive;
     public int id;
     public int parentID;
@@ -49,8 +51,8 @@ public class Widget {
     public int height;
     public byte opacity;
     public int mOverInterToTrigger;
-    public int[] anIntArray245;
-    public int[] anIntArray212;
+    public int[] valueCompareType;
+    public int[] requiredValues;
     public int[][] valueIndexArray;
     public int scrollableContainerInterfaceId;
     public RSFont font;
@@ -86,11 +88,11 @@ public class Widget {
     public int[] spritesY;
     public Sprite[] sprites;
     public String[] actions;
-    public int anInt233;
+    public int mediaType;
     public int mediaID;
     public Sprite disabledSprite;
-    public int anInt255;
-    public int anInt256;
+    public int enabledMediaType;
+    public int enabledMediaID;
     public String selectedActionName;
     public String spellName;
     public int spellUsableOn;
@@ -99,6 +101,7 @@ public class Widget {
     public int enabledAnimationId;
     public String tooltip;
     public int modelZoom;
+    public int selectedSpriteId, enabledSpriteId, disabledSpriteId;
     public int modelRotation1;
     public int modelRotation2;
     public boolean inventoryhover;
@@ -128,6 +131,11 @@ public class Widget {
     public static final int TYPE_PROGRESS_BAR_2021 = 23;
     public static final int TYPE_DRAW_BOX = 24;
     public static final int TYPE_HORIZONTAL_STRING_CONTAINER = 25;
+    private String popupString;
+
+    public Widget() {
+        enabledSpriteId = disabledSpriteId = -1;
+    }
 
     static Class12 aClass12_264 = new Class12(false, 30);
 
@@ -152,7 +160,6 @@ public class Widget {
         Stream stream = new Stream(fileArchive.method571("data"), 891);
         int i = -1;
         int j = stream.readUnsignedShort();
-        interfaceCache = new Widget[80000];
 
         while(stream.currentPosition < stream.buffer.length) {
                 int k = stream.readUnsignedShort();
@@ -160,7 +167,8 @@ public class Widget {
                     i = stream.readUnsignedShort();
                     k = stream.readUnsignedShort();
                 }
-                Widget class9 = interfaceCache[k] = new Widget();
+            interfaceCache.put(k, new Widget());
+                Widget class9 = interfaceCache.get(k);
                 class9.id = k;
                 class9.parentID = i;
                 class9.type = stream.readUnsignedByte();
@@ -179,12 +187,12 @@ public class Widget {
                 int l = stream.readUnsignedByte();
                 int j1;
                 if(l > 0) {
-                    class9.anIntArray245 = new int[l];
-                    class9.anIntArray212 = new int[l];
+                    class9.valueCompareType = new int[l];
+                    class9.requiredValues = new int[l];
 
                     for(j1 = 0; j1 < l; ++j1) {
-                        class9.anIntArray245[j1] = stream.readUnsignedByte();
-                        class9.anIntArray212[j1] = stream.readUnsignedShort();
+                        class9.valueCompareType[j1] = stream.readUnsignedByte();
+                        class9.requiredValues[j1] = stream.readUnsignedShort();
                     }
                 }
 
@@ -314,30 +322,23 @@ public class Widget {
                 if(class9.type == 6) {
                     i3 = stream.readUnsignedByte();
                     if(i3 != 0) {
-                        class9.anInt233 = 1;
+                        class9.mediaType = 1;
                         class9.mediaID = (i3 - 1 << 8) + stream.readUnsignedByte();
                     }
 
                     i3 = stream.readUnsignedByte();
                     if(i3 != 0) {
-                        class9.anInt255 = 1;
-                        class9.anInt256 = (i3 - 1 << 8) + stream.readUnsignedByte();
+                        class9.enabledMediaType = 1;
+                        class9.enabledMediaID = (i3 - 1 << 8) + stream.readUnsignedByte();
                     }
 
                     i3 = stream.readUnsignedByte();
                     if(i3 != 0) {
                         class9.disabledAnimationId = (i3 - 1 << 8) + stream.readUnsignedByte();
-                    } else {
-                        class9.disabledAnimationId = -1;
-                    }
-
+                    } else class9.disabledAnimationId = -1;
                     i3 = stream.readUnsignedByte();
-                    if(i3 != 0) {
-                        class9.enabledAnimationId = (i3 - 1 << 8) + stream.readUnsignedByte();
-                    } else {
-                        class9.enabledAnimationId = -1;
-                    }
-
+                    if(i3 != 0) class9.enabledAnimationId = (i3 - 1 << 8) + stream.readUnsignedByte();
+                    else class9.enabledAnimationId = -1;
                     class9.modelZoom = stream.readUnsignedShort();
                     class9.modelRotation1 = stream.readUnsignedShort();
                     class9.modelRotation2 = stream.readUnsignedShort();
@@ -395,11 +396,17 @@ public class Widget {
         slayerInterface.Unpack(aclass30_sub2_sub1_sub4);
         slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
         configureLunar(aclass30_sub2_sub1_sub4);
+        completionistCapeCustomizer(aclass30_sub2_sub1_sub4);
+        completionistCapeColorPicker(aclass30_sub2_sub1_sub4);
         constructLunar();
         slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
         shopWidget(aclass30_sub2_sub1_sub4);
         skilllevel(aclass30_sub2_sub1_sub4);
         skillTab602(aclass30_sub2_sub1_sub4);
+        prayerTabInterface();
+        quickPrayersInterface();
+        curseTabInterface();
+        quickCursesInterface();
         SpawnContainer.get().load();
         aClass12_238 = null;
     }
@@ -421,10 +428,11 @@ public class Widget {
         scroll.scrollMax = 800;
         addToItemGroup('\ufa10', 10, 40, 14, 14, true, "Value", "Buy 1", "Buy 5", "Buy 10", "Buy X", (String)null);
         setBounds('\ufa10', 8, 8, 0, scroll);
-        interfaceCache['\ufa10'].invAlwaysInfinity = false;
+        interfaceCache.get('\ufa10').invAlwaysInfinity = false;
     }
     public static Widget addFullScreenInterface(int id) {
-        Widget rsi = interfaceCache[id] = new Widget();
+        interfaceCache.put(id, new Widget());
+        Widget rsi = interfaceCache.get(id);
         rsi.id = id;
         rsi.parentID = id;
         rsi.width = 765;
@@ -554,7 +562,7 @@ public class Widget {
     }
     public static Widget get(int interfaceId) {
 
-        return interfaceCache[interfaceId];
+        return interfaceCache.get(interfaceId);
     }
     public static void setBounds(int ID, int X, int Y, int frame, Widget RSinterface) {
         RSinterface.children[frame] = ID;
@@ -588,9 +596,27 @@ public class Widget {
 
         rsi.type = 2;
     }
+    public static void addToItemGroup(int id, int w, int h, int x, int y, String[] actions) {
+        Widget rsi = addInterface(id);
+        rsi.width = w;
+        rsi.height = h;
+        rsi.inventoryItemId = new int[w * h];
+        rsi.inventoryAmounts = new int[w * h];
+        rsi.usableItemInterface = false;
+        rsi.isInventoryInterface = false;
+        rsi.isMouseoverTriggered = false;
+        rsi.invSpritePadX = x;
+        rsi.invSpritePadY = y;
+        rsi.spritesX = new int[20];
+        rsi.spritesY = new int[20];
+        rsi.sprites = new Sprite[20];
+        rsi.actions = actions;
 
+        rsi.type = 2;
+    }
     public static Widget addTabInterface(int id) {
-        Widget tab = interfaceCache[id] = new Widget();
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
         tab.id = id;
         tab.parentID = id;
         tab.type = 0;
@@ -604,7 +630,8 @@ public class Widget {
     }
 
     public static Widget addInterface(int id) {
-        Widget widget = interfaceCache[id] = new Widget();
+        interfaceCache.put(id, new Widget());
+        Widget widget = interfaceCache.get(id);
         widget.id = id;
         widget.parentID = id;
         widget.width = 512;
@@ -819,7 +846,8 @@ public class Widget {
     }
 
     public static void addButton(int id, int sid, String spriteName, String tooltip) {
-        Widget tab = interfaceCache[id] = new Widget();
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
         tab.id = id;
         tab.parentID = id;
         tab.type = 5;
@@ -834,7 +862,8 @@ public class Widget {
         tab.tooltip = tooltip;
     }
     public static Widget addSprite(int i, Sprite sprite) {
-        Widget rsinterface = interfaceCache[i] = new Widget();
+        interfaceCache.put(i, new Widget());
+        Widget rsinterface = interfaceCache.get(i);
         rsinterface.id = i;
         rsinterface.parentID = i;
         rsinterface.type = 5;
@@ -850,7 +879,8 @@ public class Widget {
     }
 
     public static void addSprite(int id, int spriteId, String spriteName) {
-        Widget tab = interfaceCache[id] = new Widget();
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
         tab.id = id;
         tab.parentID = id;
         tab.type = 5;
@@ -871,30 +901,30 @@ public class Widget {
     }
 
     public static void clanChatSetup(RSFont[] tda) {
-        Widget rsi = addInterface(18300);
+        Widget rsi = addInterface(28300);
         rsi.totalChildren(33);
         byte count = 0;
-        addSprite(18301, 1, "/Interfaces/Clan Chat/sprite");
+        addSprite(28301, 1, "/Interfaces/Clan Chat/sprite");
         int var15 = count + 1;
-        rsi.child(count, 18301, 14, 17);
-        addButton(18302, 0, "/Interfaces/Clan Chat/close", "Close");
-        interfaceCache[18302].atActionType = 3;
-        rsi.child(var15++, 18302, 475, 26);
-        addText(18303, "Clan Setup", tda, 2, 16750623, true, true);
-        rsi.child(var15++, 18303, 256, 26);
+        rsi.child(count, 28301, 14, 17);
+        addButton(28302, 0, "/Interfaces/Clan Chat/close", "Close");
+        interfaceCache.get(28302).atActionType = 3;
+        rsi.child(var15++, 28302, 475, 26);
+        addText(28303, "Clan Setup", tda, 2, 16750623, true, true);
+        rsi.child(var15++, 28303, 256, 26);
         String[] titles = new String[]{"Clan name:", "Who can enter chat?", "Who can talk on chat?", "Who can kick on chat?", "Who can ban on chat?"};
         String[] defaults = new String[]{"Chat Disabled", "Anyone", "Anyone", "Anyone", "Anyone"};
         String[] whoCan = new String[]{"Anyone", "Recruit", "Corporal", "Sergeant", "Lieutenant", "Captain", "General", "Only Me"};
         int id = 0;
-        int y = 18304;
+        int y = 28304;
 
         for(int list = 50; id < titles.length; list += 40) {
             addButton(y, 2, "/Interfaces/Clan Chat/sprite", "");
-            interfaceCache[y].atActionType = 0;
+            interfaceCache.get(y).atActionType = 0;
             if(id > 0) {
-                interfaceCache[y].actions = whoCan;
+                interfaceCache.get(y).actions = whoCan;
             } else {
-                interfaceCache[y].actions = new String[]{"Change title", "Delete clan"};
+                interfaceCache.get(y).actions = new String[]{"Change title", "Delete clan"};
             }
 
             addText(y + 1, titles[id], tda, 0, 16750623, true, true);
@@ -906,9 +936,9 @@ public class Widget {
             y += 3;
         }
 
-        addSprite(18319, 5, "/Interfaces/Clan Chat/sprite");
-        rsi.child(var15++, 18319, 197, 70);
-        short var16 = 18320;
+        addSprite(28319, 5, "/Interfaces/Clan Chat/sprite");
+        rsi.child(var15++, 28319, 197, 70);
+        short var16 = 28320;
         byte var17 = 74;
         addText(var16, "Ranked Members", tda, 2, 16750623, false, true);
         int var20 = var15++;
@@ -925,7 +955,7 @@ public class Widget {
         int clanSetup;
         for(clanSetup = id; clanSetup < id + lines; ++clanSetup) {
             addText(clanSetup, "", tda, 1, 16777215, false, true);
-            interfaceCache[clanSetup].actions = ranks;
+            interfaceCache.get(clanSetup).actions = ranks;
             var18.children[clanSetup - id] = clanSetup;
             var18.childX[clanSetup - id] = 2;
             var18.childY[clanSetup - id] = clanSetup - id > 0?var18.childY[clanSetup - id - 1] + 14:0;
@@ -942,7 +972,7 @@ public class Widget {
 
         for(clanSetup = id; clanSetup < id + lines; ++clanSetup) {
             addText(clanSetup, "", tda, 1, 16777215, false, true);
-            interfaceCache[clanSetup].actions = new String[]{"Unban"};
+            interfaceCache.get(clanSetup).actions = new String[]{"Unban"};
             var18.children[clanSetup - id] = clanSetup;
             var18.childX[clanSetup - id] = 0;
             var18.childY[clanSetup - id] = clanSetup - id > 0?var18.childY[clanSetup - id - 1] + 14:0;
@@ -960,10 +990,10 @@ public class Widget {
         rsi.child(var15++, id++, 337, var17 + 11);
         var17 = 75;
         addButton(id, 0, "/Interfaces/Clan Chat/plus", "Add ranked member");
-        interfaceCache[id].atActionType = 5;
+        interfaceCache.get(id).atActionType = 5;
         rsi.child(var15++, id++, 319, var17);
         addButton(id, 0, "/Interfaces/Clan Chat/plus", "Add banned member");
-        interfaceCache[id].atActionType = 5;
+        interfaceCache.get(id).atActionType = 5;
         rsi.child(var15++, id++, 459, var17);
         addHoverButton(id, "Interfaces/Clan Chat/sprite", 9, 150, 27, "Allow Teleports", 201, id, 5);
         rsi.child(var15++, id++, 25, 248);
@@ -977,61 +1007,186 @@ public class Widget {
         rsi.child(var15++, id++, 101, 284);
         addText(id, "No", tda, 1, 16711680, true, true);
         rsi.child(var15++, id++, 157, 285);
-        int[] var19 = new int[]{18302, 18304, 18307, 18310, 18313, 18316, 18526, 18527};
+        int[] var19 = new int[]{28302, 28304, 28307, 28310, 28313, 28316, 28526, 28527};
         String[] names = new String[]{"close", "sprite", "sprite", "sprite", "sprite", "sprite", "plus", "plus"};
         int[] ids = new int[]{1, 3, 3, 3, 3, 3, 1, 1};
 
         for(int index = 0; index < var19.length; ++index) {
-            rsi = interfaceCache[var19[index]];
+            rsi = interfaceCache.get(var19[index]);
             rsi.disabledSprite = imageLoader(ids[index], "/Interfaces/Clan Chat/" + names[index]);
         }
 
     }
+    public static void completionistCapeCustomizer(RSFont[] TDA) {
+        Widget widget = addInterface(21503);
 
+        int childId = 21504;
+        addSprite(childId++, 0, "Interfaces/CompletionistCape/BACKGROUND");
+
+        addText(childId++, "GodzHell Item Customizer", 0xff9933, true, true, -1, TDA, 2);
+
+        addHoverButton(childId++, "Interfaces/CompletionistCape/BANK", 1, 16, 16, "Close", -1, childId, 1);
+        addHoveredButton(childId++, "Interfaces/CompletionistCape/BANK", 2, 16, 16, childId++);
+
+        addHoverButton(childId++, "Interfaces/CompletionistCape/BUTTON", 0, 139, 31, "Done", -1, childId, 1);
+        addHoveredButton(childId++, "Interfaces/CompletionistCape/BUTTON", 1, 139, 31, childId++);
+
+        addHoverButton(childId++, "Interfaces/CompletionistCape/REFRESH", 0, 16, 16, "Refresh", -1, childId, 1);
+        addHoveredButton(childId++, "Interfaces/CompletionistCape/REFRESH", 1, 16, 16, childId++);
+
+        addText(childId++, "Done Customizing", 0xff9933, true, true, -1, TDA, 2);
+
+        addText(childId++, "Select a color to edit", 0xff9933, true, true, -1, TDA, 1);
+
+        addToItemGroup(childId++, 1, 1, 16, 7, null);
+
+        String colorOptions[] = {"Detail (top)", "Background (top)", "Detail (bottom)", "Background (bottom)"};
+
+        for (int i = 0; i < 4; i++) {
+            addRectangle(childId++, 46, 42, 0xcd1634, 0, true);
+            addText(childId++, colorOptions[i], 0xff9933, true, true, -1, TDA, 0);
+            addHoverButton(childId++, "Interfaces/CompletionistCape/INVIS", 0, 46, 42, "Modify", -1, childId, 1);
+            addHoveredButton(childId++, "Interfaces/CompletionistCape/INVIS", 1, 46, 42, childId++);
+        }
+
+        widget.totalChildren(childId - 21504 - 7);
+        childId = 21504;
+        int frame = 0;
+
+        widget.child(frame++, childId++, 11, 11);//Background
+
+        widget.child(frame++, childId++, 255, 21);//Title
+
+        widget.child(frame++, childId++, 473, 20);//Close
+        widget.child(frame++, childId++, 473, 20);
+        childId++;
+
+        widget.child(frame++, childId++, 122, 276);//Done
+        widget.child(frame++, childId++, 122, 276);
+        childId++;
+
+        widget.child(frame++, childId++, 451, 261);//Refresh
+        widget.child(frame++, childId++, 451, 261);
+        childId++;
+
+        widget.child(frame++, childId++, 191, 283);//Done text
+
+        widget.child(frame++, childId++, 199, 75);//Select text
+
+        widget.child(frame++, childId++, 400, 170);//Cape
+
+        int startX = 112;
+        int startY = 109;
+        for (int i = 0; i < 2; i++) {
+            widget.child(frame++, childId++, startX, startY);//Cape Box
+            widget.child(frame++, childId++, startX + 23, startY + 46);//Cape
+            widget.child(frame++, childId++, startX, startY);//Modify
+            widget.child(frame++, childId++, startX, startY);
+            childId++;
+
+            widget.child(frame++, childId++, startX, startY + 87);//Cape Box
+            widget.child(frame++, childId++, startX + 23, startY + 46 + 87);//Cape
+            widget.child(frame++, childId++, startX, startY + 87);//Modify
+            widget.child(frame++, childId++, startX, startY + 87);
+            childId++;
+
+            startX += 122;
+        }
+    }
+    public static void addRectangle(int id, int width, int height, int colour, int alpha, boolean filled) {
+        Widget widget = addTabInterface(id);
+        widget.type = 3;
+        widget.textColor = colour;
+        widget.atActionType = 0;
+        widget.opacity = (byte) alpha;
+        widget.aBoolean227 = filled;
+        widget.contentType = 0;
+        widget.width = width;
+        widget.height = height;
+    }
+
+    public static void completionistCapeColorPicker(RSFont[] TDA) {
+        Widget widget = addInterface(625);
+
+        int childId = 626;
+        addSprite(childId++, 1, "Interfaces/CompletionistCape/BACKGROUND");
+
+        addText(childId++, "GodzHell Item Customizer", 0xff9933, true, true, -1, TDA, 2);
+
+        addHoverButton(childId++, "Interfaces/CompletionistCape/BUTTON", 0, 139, 31, "Confirm", -1, childId, 1);
+        addHoveredButton(childId++, "Interfaces/CompletionistCape/BUTTON", 1, 139, 31, childId++);
+
+        addText(childId++, "Confirm", 0xff9933, true, true, -1, TDA, 2);
+
+        addRectangle(childId++, 46, 42, 0xcd1634, 0, true);
+
+        addHoverButton(childId++, "Interfaces/CompletionistCape/BUTTON", 2, 103, 31, "Reset", -1, childId, 1);
+        addHoveredButton(childId++, "Interfaces/CompletionistCape/BUTTON", 3, 103, 31, childId++);
+
+        addText(childId++, "Reset", 0xff9933, true, true, -1, TDA, 2);
+
+        widget.totalChildren(childId - 626 - 2);
+        childId = 626;
+        int frame = 0;
+
+        widget.child(frame++, childId++, 11, 11);//Background
+        widget.child(frame++, childId++, 255, 21);//Title
+        widget.child(frame++, childId++, 185, 274);//Confirm button
+        widget.child(frame++, childId++, 185, 274);
+        childId++;
+
+        widget.child(frame++, childId++, 254, 281);//Confirm text
+        widget.child(frame++, childId++, 397, 139);//Confirm text
+        widget.child(frame++, childId++, 370, 190);//Reset button
+        widget.child(frame++, childId++, 370, 190);
+        childId++;
+
+        widget.child(frame++, childId++, 422, 197);//Reset text
+    }
     public static void clanChatTab(RSFont[] tda) {
-        Widget tab = addTabInterface(18128);
-        addHoverButton(18129, "/Clan Chat/SPRITE", 6, 72, 32, "Join Chat", 550, 18130, 1);
-        addHoveredButton(18130, "/Clan Chat/SPRITE", 7, 72, 32, 18131);
-        addHoverButton(18132, "/Clan Chat/SPRITE", 6, 72, 32, "Leave Chat", -1, 18133, 5);
-        addHoveredButton(18133, "/Clan Chat/SPRITE", 7, 72, 32, 18134);
-        addButton(18250, 0, "/Clan Chat/Lootshare", "Toggle lootshare");
-        addText(18135, "Join Chat", tda, 0, 16751360, true, true);
-        addText(18136, "Leave Chat", tda, 0, 16751360, true, true);
-        addSprite(18137, 37, "/Clan Chat/SPRITE");
-        addText(18138, "Clan Chat", tda, 1, 16751360, true, true);
-        addText(18139, "Talking in: Not in chat", tda, 0, 16751360, false, true);
-        addText(18140, "Owner: None", tda, 0, 16751360, false, true);
+        Widget tab = addTabInterface(28128);
+        addHoverButton(28129, "/Clan Chat/SPRITE", 6, 72, 32, "Join Chat", 550, 28130, 1);
+        addHoveredButton(28130, "/Clan Chat/SPRITE", 7, 72, 32, 28131);
+        addHoverButton(28132, "/Clan Chat/SPRITE", 6, 72, 32, "Leave Chat", -1, 28133, 5);
+        addHoveredButton(28133, "/Clan Chat/SPRITE", 7, 72, 32, 28134);
+        addButton(28250, 0, "/Clan Chat/Lootshare", "Toggle lootshare");
+        addText(28135, "Join Chat", tda, 0, 16751360, true, true);
+        addText(28136, "Leave Chat", tda, 0, 16751360, true, true);
+        addSprite(28137, 37, "/Clan Chat/SPRITE");
+        addText(28138, "Clan Chat", tda, 1, 16751360, true, true);
+        addText(28139, "Talking in: Not in chat", tda, 0, 16751360, false, true);
+        addText(28140, "Owner: None", tda, 0, 16751360, false, true);
         tab.totalChildren(14);
         tab.child(0, 16126, 0, 221);
         tab.child(1, 16126, 0, 59);
-        tab.child(2, 18137, 0, 62);
-        tab.child(3, 18143, 0, 62);
-        tab.child(4, 18129, 15, 226);
-        tab.child(5, 18130, 15, 226);
-        tab.child(6, 18132, 103, 226);
-        tab.child(7, 18133, 103, 226);
-        tab.child(8, 18135, 51, 237);
-        tab.child(9, 18136, 139, 237);
-        tab.child(10, 18138, 95, 1);
-        tab.child(11, 18139, 10, 23);
-        tab.child(12, 18140, 25, 38);
-        tab.child(13, 18250, 145, 15);
-        Widget list = addTabInterface(18143);
+        tab.child(2, 28137, 0, 62);
+        tab.child(3, 28143, 0, 62);
+        tab.child(4, 28129, 15, 226);
+        tab.child(5, 28130, 15, 226);
+        tab.child(6, 28132, 103, 226);
+        tab.child(7, 28133, 103, 226);
+        tab.child(8, 28135, 51, 237);
+        tab.child(9, 28136, 139, 237);
+        tab.child(10, 28138, 95, 1);
+        tab.child(11, 28139, 10, 23);
+        tab.child(12, 28140, 25, 38);
+        tab.child(13, 28250, 145, 15);
+        Widget list = addTabInterface(28143);
         list.totalChildren(100);
 
         int id;
-        for(id = 18144; id <= 18244; ++id) {
+        for(id = 28144; id <= 28244; ++id) {
             addText(id, "", tda, 0, 16777215, false, true);
         }
 
-        id = 18144;
+        id = 28144;
 
-        for(int i = 0; id <= 18243 && i <= 99; ++i) {
+        for(int i = 0; id <= 28243 && i <= 99; ++i) {
             list.children[i] = id;
             list.childX[i] = 5;
             int id2 = 18144;
 
-            for(int i2 = 1; id2 <= 18243 && i2 <= 99; ++i2) {
+            for(int i2 = 1; id2 <= 28243 && i2 <= 99; ++i2) {
                 list.childY[0] = 2;
                 list.childY[i2] = list.childY[i2 - 1] + 14;
                 ++id2;
@@ -1146,7 +1301,7 @@ public class Widget {
         }
         skill.children(icons.length + (text.length * 2) + hovers.length + buttons.length + 1);
         int frame = 0;
-        Widget totalLevel = interfaceCache[3984];
+        Widget totalLevel = interfaceCache.get(3984);
         totalLevel.message = "Total level: %1";
         totalLevel.textDrawingAreas = fonts[2];
         skill.child(frame, 3984, 74, 237); frame++;
@@ -1205,14 +1360,14 @@ public class Widget {
         rsInterface.height = 20;
         rsInterface.tooltip = "Cast <col=65280>"+name;
         rsInterface.spellName = name;
-        rsInterface.anIntArray245 = new int[3];
-        rsInterface.anIntArray212 = new int[3];
-        rsInterface.anIntArray245[0] = 3;
-        rsInterface.anIntArray212[0] = ra1;
-        rsInterface.anIntArray245[1] = 3;
-        rsInterface.anIntArray212[1] = ra2;
-        rsInterface.anIntArray245[2] = 3;
-        rsInterface.anIntArray212[2] = lvl;
+        rsInterface.valueCompareType = new int[3];
+        rsInterface.requiredValues = new int[3];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = ra1;
+        rsInterface.valueCompareType[1] = 3;
+        rsInterface.requiredValues[1] = ra2;
+        rsInterface.valueCompareType[2] = 3;
+        rsInterface.requiredValues[2] = lvl;
         rsInterface.valueIndexArray = new int[3][];
         rsInterface.valueIndexArray[0] = new int[4];
         rsInterface.valueIndexArray[0][0] = 4;
@@ -1273,10 +1428,10 @@ public class Widget {
         rsInterface.height = 14;
         rsInterface.opacity = 0;
         rsInterface.mOverInterToTrigger = -1;
-        rsInterface.anIntArray245 = new int[1];
-        rsInterface.anIntArray212 = new int[1];
-        rsInterface.anIntArray245[0] = 3;
-        rsInterface.anIntArray212[0] = runeAmount;
+        rsInterface.valueCompareType = new int[1];
+        rsInterface.requiredValues = new int[1];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = runeAmount;
         rsInterface.valueIndexArray = new int[1][4];
         rsInterface.valueIndexArray[0][0] = 4;
         rsInterface.valueIndexArray[0][1] = 3214;
@@ -1476,28 +1631,28 @@ public class Widget {
                 "Change to another spellbook for 1\\nspell cast", RSFont, 38, 0, 5);
     }
     public static void skilllevel(RSFont[] tda) {
-        Widget text = interfaceCache[7202];
-        Widget attack = interfaceCache[6247];
-        Widget defence = interfaceCache[6253];
-        Widget str = interfaceCache[6206];
-        Widget hits = interfaceCache[6216];
-        Widget rng = interfaceCache[4443];
-        Widget pray = interfaceCache[6242];
-        Widget mage = interfaceCache[6211];
-        Widget cook = interfaceCache[6226];
-        Widget wood = interfaceCache[4272];
-        Widget flet = interfaceCache[6231];
-        Widget fish = interfaceCache[6258];
-        Widget fire = interfaceCache[4282];
-        Widget craf = interfaceCache[6263];
-        Widget smit = interfaceCache[6221];
-        Widget mine = interfaceCache[4416];
-        Widget herb = interfaceCache[6237];
-        Widget agil = interfaceCache[4277];
-        Widget thie = interfaceCache[4261];
-        Widget slay = interfaceCache[12122];
+        Widget text = interfaceCache.get(7202);
+        Widget attack = interfaceCache.get(6247);
+        Widget defence = interfaceCache.get(6253);
+        Widget str = interfaceCache.get(6206);
+        Widget hits = interfaceCache.get(6216);
+        Widget rng = interfaceCache.get(4443);
+        Widget pray = interfaceCache.get(6242);
+        Widget mage = interfaceCache.get(6211);
+        Widget cook = interfaceCache.get(6226);
+        Widget wood = interfaceCache.get(4272);
+        Widget flet = interfaceCache.get(6231);
+        Widget fish = interfaceCache.get(6258);
+        Widget fire = interfaceCache.get(4282);
+        Widget craf = interfaceCache.get(6263);
+        Widget smit = interfaceCache.get(6221);
+        Widget mine = interfaceCache.get(4416);
+        Widget herb = interfaceCache.get(6237);
+        Widget agil = interfaceCache.get(4277);
+        Widget thie = interfaceCache.get(4261);
+        Widget slay = interfaceCache.get(12122);
         Widget farm = addInterface(25267);
-        Widget rune = interfaceCache[4267];
+        Widget rune = interfaceCache.get(4267);
         Widget cons = addInterface(7267);
         Widget hunt = addInterface(29267);
         Widget summ = addInterface(9267);
@@ -1703,16 +1858,16 @@ public class Widget {
         rsInterface.height = 20;
         rsInterface.tooltip = "Cast <col=65280>"+name;
         rsInterface.spellName = name;
-        rsInterface.anIntArray245 = new int[4];
-        rsInterface.anIntArray212 = new int[4];
-        rsInterface.anIntArray245[0] = 3;
-        rsInterface.anIntArray212[0] = ra1;
-        rsInterface.anIntArray245[1] = 3;
-        rsInterface.anIntArray212[1] = ra2;
-        rsInterface.anIntArray245[2] = 3;
-        rsInterface.anIntArray212[2] = ra3;
-        rsInterface.anIntArray245[3] = 3;
-        rsInterface.anIntArray212[3] = lvl;
+        rsInterface.valueCompareType = new int[4];
+        rsInterface.requiredValues = new int[4];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = ra1;
+        rsInterface.valueCompareType[1] = 3;
+        rsInterface.requiredValues[1] = ra2;
+        rsInterface.valueCompareType[2] = 3;
+        rsInterface.requiredValues[2] = ra3;
+        rsInterface.valueCompareType[3] = 3;
+        rsInterface.requiredValues[3] = lvl;
         rsInterface.valueIndexArray = new int[4][];
         rsInterface.valueIndexArray[0] = new int[4];
         rsInterface.valueIndexArray[0][0] = 4;
@@ -1768,16 +1923,16 @@ public class Widget {
         rsInterface.height = 20;
         rsInterface.tooltip = "Cast <col=65280>"+name;
         rsInterface.spellName = name;
-        rsInterface.anIntArray245 = new int[4];
-        rsInterface.anIntArray212 = new int[4];
-        rsInterface.anIntArray245[0] = 3;
-        rsInterface.anIntArray212[0] = ra1;
-        rsInterface.anIntArray245[1] = 3;
-        rsInterface.anIntArray212[1] = ra2;
-        rsInterface.anIntArray245[2] = 3;
-        rsInterface.anIntArray212[2] = ra3;
-        rsInterface.anIntArray245[3] = 3;
-        rsInterface.anIntArray212[3] = lvl;
+        rsInterface.valueCompareType = new int[4];
+        rsInterface.requiredValues = new int[4];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = ra1;
+        rsInterface.valueCompareType[1] = 3;
+        rsInterface.requiredValues[1] = ra2;
+        rsInterface.valueCompareType[2] = 3;
+        rsInterface.requiredValues[2] = ra3;
+        rsInterface.valueCompareType[3] = 3;
+        rsInterface.requiredValues[3] = lvl;
         rsInterface.valueIndexArray = new int[4][];
         rsInterface.valueIndexArray[0] = new int[4];
         rsInterface.valueIndexArray[0][0] = 4;
@@ -1834,16 +1989,16 @@ public class Widget {
         rsInterface.height = 20;
         rsInterface.tooltip = "Cast <col=65280>"+name;
         rsInterface.spellName = name;
-        rsInterface.anIntArray245 = new int[4];
-        rsInterface.anIntArray212 = new int[4];
-        rsInterface.anIntArray245[0] = 3;
-        rsInterface.anIntArray212[0] = ra1;
-        rsInterface.anIntArray245[1] = 3;
-        rsInterface.anIntArray212[1] = ra2;
-        rsInterface.anIntArray245[2] = 3;
-        rsInterface.anIntArray212[2] = ra3;
-        rsInterface.anIntArray245[3] = 3;
-        rsInterface.anIntArray212[3] = lvl;
+        rsInterface.valueCompareType = new int[4];
+        rsInterface.requiredValues = new int[4];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = ra1;
+        rsInterface.valueCompareType[1] = 3;
+        rsInterface.requiredValues[1] = ra2;
+        rsInterface.valueCompareType[2] = 3;
+        rsInterface.requiredValues[2] = ra3;
+        rsInterface.valueCompareType[3] = 3;
+        rsInterface.requiredValues[3] = lvl;
         rsInterface.valueIndexArray = new int[4][];
         rsInterface.valueIndexArray[0] = new int[4];
         rsInterface.valueIndexArray[0][0] = 4;
@@ -1885,6 +2040,1014 @@ public class Widget {
         setBounds(ID+6, 87, 92, 7, INT);
         addRuneText(ID+7, ra3+1, r3, RSFont);
         setBounds(ID+7, 142, 92, 8, INT);
+    }
+    public static void addPrayerWithTooltip(int i, int configId, int configFrame, int requiredValues, int prayerSpriteID, int Hover, String tooltip) {
+        Widget Interface = addTabInterface(i);
+        Interface.id = i;
+        Interface.parentID = 5608;
+        Interface.type = 5;
+        Interface.atActionType = 4;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.mOverInterToTrigger = Hover;
+        Interface.disabledSpriteId = 480;
+        Interface.enabledSpriteId = -1;
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 1;
+        Interface.requiredValues[0] = configId;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 5;
+        Interface.valueIndexArray[0][1] = configFrame;
+        Interface.valueIndexArray[0][2] = 0;
+        Interface.tooltip = tooltip;
+        Interface = addTabInterface(i + 1);
+        Interface.id = i + 1;
+        Interface.parentID = 5608;
+        Interface.type = 5;
+        Interface.atActionType = 0;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.disabledSpriteId = 548 + prayerSpriteID;
+        Interface.enabledSpriteId = 522 + prayerSpriteID;
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 2;
+        Interface.requiredValues[0] = requiredValues + 1;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 2;
+        Interface.valueIndexArray[0][1] = 5;
+        Interface.valueIndexArray[0][2] = 0;
+    }
+    public static void addTooltip(int id, String text) {
+        Widget rsinterface = addTabInterface(id);
+        rsinterface.parentID = id;
+        rsinterface.type = 0;
+        rsinterface.mOverInterToTrigger = -1;
+        addTooltipBox(id + 1, text);
+        rsinterface.totalChildren(1);
+        rsinterface.child(0, id + 1, 0, 0);
+    }
+    public static void addTooltipBox(int id, String text) {
+        Widget rsi = addInterface(id);
+        rsi.id = id;
+        rsi.parentID = id;
+        rsi.type = 8;
+        rsi.popupString = text;
+    }
+    /*
+     * Prayer interface
+     */
+    private static void prayerTabInterface() {
+        Widget prayerMenu = addTabInterface(5608);
+        int index = 0;
+        int prayIndex = 0;
+        int firstRowXPos = 10;
+        int firstRowYPos = 50;
+        int secondRowXPos = 10;
+        int secondRowYPos = 86;
+        int thirdRowXPos = 10;
+        int thirdRowYPos = 122;
+        int fourthRowXPos = 10;
+        int fourthRowYPos = 159;
+        int fifthRowXPos = 10;
+        int fifthRowYPos = 86;
+        int sixthRowXPos = 1;
+        int sixthRowYPos = 52;
+        addText(687, "", 0xff981f, false, true, -1, fonts, 1);
+        addSpriteLoader(25105, 813);
+        addPrayerWithTooltip(25000, 0, 83, 0, prayIndex, 25052, "Activate @lre@Thick Skin");
+        prayIndex++;
+        addPrayerWithTooltip(25002, 0, 84, 3, prayIndex, 25054, "Activate @lre@Burst of Strength");
+        prayIndex++;
+        addPrayerWithTooltip(25004, 0, 85, 6, prayIndex, 25056, "Activate @lre@Clarity of Thought");
+        prayIndex++;
+        addPrayerWithTooltip(25006, 0, 601, 7, prayIndex, 25058, "Activate @lre@Sharp Eye");
+        prayIndex++;
+        addPrayerWithTooltip(25008, 0, 602, 8, prayIndex, 25060, "Activate @lre@Mystic Will");
+        prayIndex++;
+        addPrayerWithTooltip(25010, 0, 86, 9, prayIndex, 25062, "Activate @lre@Rock Skin");
+        prayIndex++;
+        addPrayerWithTooltip(25012, 0, 87, 12, prayIndex, 25064, "Activate @lre@Superhuman Strength");
+        prayIndex++;
+        addPrayerWithTooltip(25014, 0, 88, 15, prayIndex, 25066, "Activate @lre@Improved Reflexes");
+        prayIndex++;
+        addPrayerWithTooltip(25016, 0, 89, 18, prayIndex, 25068, "Activate @lre@Rapid Restore");
+        prayIndex++;
+        addPrayerWithTooltip(25018, 0, 90, 21, prayIndex, 25070, "Activate @lre@Rapid Heal");
+        prayIndex++;
+        addPrayerWithTooltip(25020, 0, 91, 24, prayIndex, 25072, "Activate @lre@Protect Item");
+        prayIndex++;
+        addPrayerWithTooltip(25022, 0, 603, 25, prayIndex, 25074, "Activate @lre@Hawk Eye");
+        prayIndex++;
+        addPrayerWithTooltip(25024, 0, 604, 26, prayIndex, 25076, "Activate @lre@Mystic Lore");
+        prayIndex++;
+        addPrayerWithTooltip(25026, 0, 92, 27, prayIndex, 25078, "Activate @lre@Steel Skin");
+        prayIndex++;
+        addPrayerWithTooltip(25028, 0, 93, 30, prayIndex, 25080, "Activate @lre@Ultimate Strength");
+        prayIndex++;
+        addPrayerWithTooltip(25030, 0, 94, 33, prayIndex, 25082, "Activate @lre@Incredible Reflexes");
+        prayIndex++;
+        addPrayerWithTooltip(25032, 0, 95, 36, prayIndex, 25084, "Activate @lre@Protect from Magic");
+        prayIndex++;
+        addPrayerWithTooltip(25034, 0, 96, 39, prayIndex, 25086, "Activate @lre@Protect from Missles");
+        prayIndex++;
+        addPrayerWithTooltip(25036, 0, 97, 42, prayIndex, 25088, "Activate @lre@Protect from Melee");
+        prayIndex++;
+        addPrayerWithTooltip(25038, 0, 605, 43, prayIndex, 25090, "Activate @lre@Eagle Eye");
+        prayIndex++;
+        addPrayerWithTooltip(25040, 0, 606, 44, prayIndex, 25092, "Activate @lre@Mystic Might");
+        prayIndex++;
+        addPrayerWithTooltip(25042, 0, 98, 45, prayIndex, 25094, "Activate @lre@Retribution");
+        prayIndex++;
+        addPrayerWithTooltip(25044, 0, 99, 48, prayIndex, 25096, "Activate @lre@Redemption");
+        prayIndex++;
+        addPrayerWithTooltip(25046, 0, 100, 51, prayIndex, 25098, "Activate @lre@Smite");
+        prayIndex++;
+        addPrayerWithTooltip(25048, 0, 607, 59, prayIndex, 25100, "Activate @lre@Chivalry");
+        prayIndex++;
+        addPrayerWithTooltip(25050, 0, 608, 69, prayIndex, 25102, "Activate @lre@Piety");
+        prayIndex++;
+        addTooltip(25052, "Level 01\nThick Skin\nIncreases your Defence by 5%");
+        addTooltip(25054, "Level 04\nBurst of Strength\nIncreases your Strength by 5%");
+        addTooltip(25056, "Level 07\nClarity of Thought\nIncreases your Attack by 5%");
+        addTooltip(25058, "Level 08\nSharp Eye\nIncreases your Ranged by 5%");
+        addTooltip(25060, "Level 09\nMystic Will\nIncreases your Magic by 5%");
+        addTooltip(25062, "Level 10\nRock Skin\nIncreases your Defence by 10%");
+        addTooltip(25064, "Level 13\nSuperhuman Strength\nIncreases your Strength by 10%");
+        addTooltip(25066, "Level 16\nImproved Reflexes\nIncreases your Attack by 10%");
+        addTooltip(25068, "Level 19\nRapid Restore\n2x restore rate for all stats\nexcept Hitpoints, Summoning\nand Prayer");
+        addTooltip(25070, "Level 22\nRapid Heal\n2x restore rate for the\nHitpoints stat");
+        addTooltip(25072, "Level 25\nProtect Item\nKeep 1 extra item if you die");
+        addTooltip(25074, "Level 26\nHawk Eye\nIncreases your Ranged by 10%");
+        addTooltip(25076, "Level 27\nMystic Lore\nIncreases your Magic by 10%");
+        addTooltip(25078, "Level 28\nSteel Skin\nIncreases your Defence by 15%");
+        addTooltip(25080, "Level 31\nUltimate Strength\nIncreases your Strength by 15%");
+        addTooltip(25082, "Level 34\nIncredible Reflexes\nIncreases your Attack by 15%");
+        addTooltip(25084, "Level 37\nProtect from Magic\nProtection from magical attacks");
+        addTooltip(25086, "Level 40\nProtect from Missles\nProtection from ranged attacks");
+        addTooltip(25088, "Level 43\nProtect from Melee\nProtection from melee attacks");
+        addTooltip(25090, "Level 44\nEagle Eye\nIncreases your Ranged by 15%");
+        addTooltip(25092, "Level 45\nMystic Might\nIncreases your Magic by 15%");
+        addTooltip(25094, "Level 46\nRetribution\nInflicts damage to nearby\ntargets if you die");
+        addTooltip(25096, "Level 49\nRedemption\nHeals you when damaged\nand Hitpoints falls\nbelow 10%");
+        addTooltip(25098, "Level 52\nSmite\n1/4 of damage dealt is\nalso removed from\nopponent's Prayer");
+        addTooltip(25100, "Level 60\nChivalry\nIncreases your Defence by 20%,\nStrength by 18%, and Attack by\n15%");
+        addTooltip(25102, "Level 70\nPiety\nIncreases your Defence by 25%,\nStrength by 23%, and Attack by\n20%");
+        setChildren(80, prayerMenu);
+        setBounds(687, 85, 241, index, prayerMenu);
+        index++;
+        setBounds(25105, 65, 241, index, prayerMenu);
+        index++;
+        setBounds(25000, 2, 5, index, prayerMenu);
+        index++;
+        setBounds(25001, 5, 8, index, prayerMenu);
+        index++;
+        setBounds(25002, 40, 5, index, prayerMenu);
+        index++;
+        setBounds(25003, 44, 8, index, prayerMenu);
+        index++;
+        setBounds(25004, 76, 5, index, prayerMenu);
+        index++;
+        setBounds(25005, 79, 11, index, prayerMenu);
+        index++;
+        setBounds(25006, 113, 5, index, prayerMenu);
+        index++;
+        setBounds(25007, 116, 10, index, prayerMenu);
+        index++;
+        setBounds(25008, 150, 5, index, prayerMenu);
+        index++;
+        setBounds(25009, 153, 9, index, prayerMenu);
+        index++;
+        setBounds(25010, 2, 45, index, prayerMenu);
+        index++;
+        setBounds(25011, 5, 48, index, prayerMenu);
+        index++;
+        setBounds(25012, 39, 45, index, prayerMenu);
+        index++;
+        setBounds(25013, 44, 47, index, prayerMenu);
+        index++;
+        setBounds(25014, 76, 45, index, prayerMenu);
+        index++;
+        setBounds(25015, 79, 49, index, prayerMenu);
+        index++;
+        setBounds(25016, 113, 45, index, prayerMenu);
+        index++;
+        setBounds(25017, 116, 50, index, prayerMenu);
+        index++;
+        setBounds(25018, 151, 45, index, prayerMenu);
+        index++;
+        setBounds(25019, 154, 50, index, prayerMenu);
+        index++;
+        setBounds(25020, 2, 82, index, prayerMenu);
+        index++;
+        setBounds(25021, 4, 84, index, prayerMenu);
+        index++;
+        setBounds(25022, 40, 82, index, prayerMenu);
+        index++;
+        setBounds(25023, 44, 87, index, prayerMenu);
+        index++;
+        setBounds(25024, 77, 82, index, prayerMenu);
+        index++;
+        setBounds(25025, 81, 85, index, prayerMenu);
+        index++;
+        setBounds(25026, 114, 83, index, prayerMenu);
+        index++;
+        setBounds(25027, 117, 85, index, prayerMenu);
+        index++;
+        setBounds(25028, 153, 83, index, prayerMenu);
+        index++;
+        setBounds(25029, 156, 87, index, prayerMenu);
+        index++;
+        setBounds(25030, 2, 120, index, prayerMenu);
+        index++;
+        setBounds(25031, 5, 125, index, prayerMenu);
+        index++;
+        setBounds(25032, 40, 120, index, prayerMenu);
+        index++;
+        setBounds(25033, 43, 124, index, prayerMenu);
+        index++;
+        setBounds(25034, 78, 120, index, prayerMenu);
+        index++;
+        setBounds(25035, 83, 124, index, prayerMenu);
+        index++;
+        setBounds(25036, 114, 120, index, prayerMenu);
+        index++;
+        setBounds(25037, 115, 121, index, prayerMenu);
+        index++;
+        setBounds(25038, 151, 120, index, prayerMenu);
+        index++;
+        setBounds(25039, 154, 124, index, prayerMenu);
+        index++;
+        setBounds(25040, 2, 158, index, prayerMenu);
+        index++;
+        setBounds(25041, 5, 160, index, prayerMenu);
+        index++;
+        setBounds(25042, 39, 158, index, prayerMenu);
+        index++;
+        setBounds(25043, 41, 158, index, prayerMenu);
+        index++;
+        setBounds(25044, 76, 158, index, prayerMenu);
+        index++;
+        setBounds(25045, 79, 163, index, prayerMenu);
+        index++;
+        setBounds(25046, 114, 158, index, prayerMenu);
+        index++;
+        setBounds(25047, 116, 158, index, prayerMenu);
+        index++;
+        setBounds(25048, 153, 158, index, prayerMenu);
+        index++;
+        setBounds(25049, 161, 160, index, prayerMenu);
+        index++;
+        setBounds(25050, 2, 196, index, prayerMenu);
+        index++;
+        setBounds(25051, 4, 207, index, prayerMenu);
+        setBoundry(++index, 25052, firstRowXPos - 2, firstRowYPos, prayerMenu);
+        setBoundry(++index, 25054, firstRowXPos - 5, firstRowYPos, prayerMenu);
+        setBoundry(++index, 25056, firstRowXPos, firstRowYPos, prayerMenu);
+        setBoundry(++index, 25058, firstRowXPos, firstRowYPos, prayerMenu);
+        setBoundry(++index, 25060, firstRowXPos, firstRowYPos, prayerMenu);
+        setBoundry(++index, 25062, secondRowXPos - 9, secondRowYPos, prayerMenu);
+        setBoundry(++index, 25064, secondRowXPos - 11, secondRowYPos, prayerMenu);
+        setBoundry(++index, 25066, secondRowXPos, secondRowYPos, prayerMenu);
+        setBoundry(++index, 25068, secondRowXPos, secondRowYPos, prayerMenu);
+        setBoundry(++index, 25070, secondRowXPos + 25, secondRowYPos, prayerMenu);
+        setBoundry(++index, 25072, thirdRowXPos, thirdRowYPos, prayerMenu);
+        setBoundry(++index, 25074, thirdRowXPos - 2, thirdRowYPos, prayerMenu);
+        setBoundry(++index, 25076, thirdRowXPos, thirdRowYPos, prayerMenu);
+        setBoundry(++index, 25078, thirdRowXPos - 7, thirdRowYPos, prayerMenu);
+        setBoundry(++index, 25080, thirdRowXPos - 10, thirdRowYPos, prayerMenu);
+        setBoundry(++index, 25082, fourthRowXPos, fourthRowYPos, prayerMenu);
+        setBoundry(++index, 25084, fourthRowXPos - 8, fourthRowYPos, prayerMenu);
+        setBoundry(++index, 25086, fourthRowXPos - 7, fourthRowYPos, prayerMenu);
+        setBoundry(++index, 25088, fourthRowXPos - 2, fourthRowYPos, prayerMenu);
+        setBoundry(++index, 25090, fourthRowXPos - 2, fourthRowYPos, prayerMenu);
+        setBoundry(++index, 25092, fifthRowXPos, fifthRowYPos, prayerMenu);
+        setBoundry(++index, 25094, fifthRowXPos, fifthRowYPos - 20, prayerMenu);
+        setBoundry(++index, 25096, fifthRowXPos, fifthRowYPos - 25, prayerMenu);
+        setBoundry(++index, 25098, fifthRowXPos + 15, fifthRowYPos - 25, prayerMenu);
+        setBoundry(++index, 25100, fifthRowXPos - 12, fifthRowYPos - 20, prayerMenu);
+        setBoundry(++index, 25102, sixthRowXPos - 2, sixthRowYPos, prayerMenu);
+        index++;
+    }
+    public static void setBoundry(int frame, int ID, int X, int Y, Widget RSInterface) {
+        RSInterface.children[frame] = ID;
+        RSInterface.childX[frame] = X;
+        RSInterface.childY[frame] = Y;
+    }
+    public static void addSpriteLoaderButtonWithTooltipBox(int childId, int spriteId, String tooltip, int hoverSpriteId, int tooltipBoxChildId, String tooltipBoxText, int tooltipx, int tooltipy) {
+        interfaceCache.put(childId, new Widget());
+        Widget rsi = interfaceCache.get(childId);
+        rsi.id = childId;
+        rsi.parentID = childId;
+        rsi.type = 5;
+        rsi.atActionType = 1;
+        rsi.contentType = 0;
+        rsi.mOverInterToTrigger = tooltipBoxChildId;
+        rsi.disabledSprite = client.spriteLoader.lookup(spriteId);
+        rsi.enabledSprite = client.spriteLoader.lookup(spriteId);
+        rsi.width = rsi.disabledSprite.myWidth;
+        rsi.height = rsi.enabledSprite.myHeight - 2;
+        rsi.tooltip = tooltip;
+        //rsi.isFalseTooltip = true;
+        addTooltip2(tooltipBoxChildId, tooltipBoxText, tooltipx, tooltipy);
+    }
+
+    public static void addSpriteLoader(int childId, int disabledId, int enabledId) {
+        interfaceCache.put(childId, new Widget());
+        Widget rsi = interfaceCache.get(childId);
+        rsi.id = childId;
+        rsi.parentID = childId;
+        rsi.type = 5;
+        rsi.atActionType = 0;
+        rsi.contentType = 0;
+        rsi.disabledSprite = client.spriteLoader.lookup(disabledId);
+        rsi.enabledSprite = client.spriteLoader.lookup(enabledId);
+        rsi.width = rsi.disabledSprite.myWidth;
+        rsi.height = rsi.enabledSprite.myHeight;
+    }
+
+    public static void addSpriteLoader(int childId, int spriteId) {
+        interfaceCache.put(childId, new Widget());
+        Widget rsi = interfaceCache.get(childId);
+        rsi.id = childId;
+        rsi.parentID = childId;
+        rsi.type = 5;
+        rsi.atActionType = 0;
+        rsi.contentType = 0;
+        rsi.disabledSprite = client.spriteLoader.lookup(spriteId);
+        rsi.enabledSprite = client.spriteLoader.lookup(spriteId);
+
+
+        //rsi.sprite1.spriteLoader = rsi.sprite2.spriteLoader = true;
+        //rsi.hoverSprite1 = client.spriteCache.lookup(hoverSpriteId);
+        //rsi.hoverSprite2 = client.spriteCache.lookup(hoverSpriteId);
+        //rsi.hoverSprite1.spriteLoader = rsi.hoverSprite2.spriteLoader = true;
+        //rsi.sprite1 = rsi.sprite2 = spriteId;
+        //rsi.hoverSprite1Id = rsi.hoverSprite2Id = hoverSpriteId;
+        rsi.width = rsi.disabledSprite.myWidth;
+        rsi.height = rsi.enabledSprite.myHeight - 2;
+        //rsi.isFalseTooltip = true;
+    }
+
+    public static void addTooltip2(int id, String text, int x, int y) {
+        Widget rsinterface = addTabInterface(id);
+        rsinterface.parentID = id;
+        rsinterface.type = 0;
+        rsinterface.mOverInterToTrigger = -1;
+        addTooltipBox2(id + 1, text);
+        rsinterface.totalChildren(1);
+        rsinterface.child(0, id + 1, x, y);
+    }
+    public static void addTooltipBox2(int id, String text) {
+        Widget rsi = addInterface(id);
+        rsi.id = id;
+        rsi.parentID = id;
+        rsi.type = 12;
+        rsi.message = text;
+    }
+
+    public static void addConfigButtonWSpriteLoader(int ID, int pID, int bID, int bID2, int width, int height, String tT, int configID, int aT, int configFrame) {
+        Widget Tab = addTabInterface(ID);
+        Tab.parentID = pID;
+        Tab.id = ID;
+        Tab.type = 5;
+        Tab.atActionType = aT;
+        Tab.contentType = 0;
+        Tab.width = width;
+        Tab.height = height;
+        Tab.mOverInterToTrigger = -1;
+        Tab.valueCompareType = new int[1];
+        Tab.requiredValues = new int[1];
+        Tab.valueCompareType[0] = 1;
+        Tab.requiredValues[0] = configID;
+        Tab.valueIndexArray = new int[1][3];
+        Tab.valueIndexArray[0][0] = 5;
+        Tab.valueIndexArray[0][1] = configFrame;
+        Tab.valueIndexArray[0][2] = 0;
+        Tab.disabledSprite = client.spriteLoader.lookup(bID);
+        Tab.enabledSprite = client.spriteLoader.lookup(bID2);
+        Tab.tooltip = tT;
+    }
+    public static void addTransparentSpriteWSpriteLoader(int id, int spriteId, int opacity) {
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
+        tab.id = id;
+        tab.parentID = id;
+        tab.type = 9;
+        tab.atActionType = 0;
+        tab.contentType = 0;
+        tab.opacity = (byte) opacity;
+        tab.mOverInterToTrigger = 52;
+        tab.disabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.enabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.width = 512;
+        tab.height = 334;
+    }
+
+    public static void addHoverButtonWSpriteLoader(int i, int spriteId, int width, int height, String text, int contentType, int hoverOver, int aT) {// hoverable
+        // button
+        Widget tab = addTabInterface(i);
+        tab.id = i;
+        tab.parentID = i;
+        tab.type = 5;
+        tab.atActionType = aT;
+        tab.contentType = contentType;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = hoverOver;
+        tab.disabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.enabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.width = width;
+        tab.height = height;
+        tab.tooltip = text;
+    }
+
+    public static void addButtonWSpriteLoader(int id, int spriteId, String tooltip) {
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
+        tab.id = id;
+        tab.parentID = id;
+        tab.type = 5;
+        tab.atActionType = 1;
+        tab.contentType = 0;
+        tab.opacity = (byte) 0;
+        tab.mOverInterToTrigger = 52;
+        tab.disabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.enabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.width = tab.disabledSprite.myWidth;
+        tab.height = tab.enabledSprite.myHeight - 2;
+        tab.tooltip = tooltip;
+    }
+
+    public static void addButtonWSpriteLoader(int id, int spriteId, int spriteId2, String tooltip) {
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
+        tab.id = id;
+        tab.parentID = id;
+        tab.type = 5;
+        tab.atActionType = 1;
+        tab.contentType = 0;
+        tab.opacity = (byte) 0;
+        tab.mOverInterToTrigger = 52;
+        tab.disabledSprite = client.spriteLoader.lookup(spriteId2);
+        tab.enabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.width = tab.disabledSprite.myWidth;
+        tab.height = tab.enabledSprite.myHeight - 2;
+        tab.tooltip = tooltip;
+    }
+
+    public static void addHoveredImageWSpriteLoader(int i, int spriteId, int w, int h, int imgInterface) {
+        Widget tab = addTabInterface(i);
+        tab.id = i;
+        tab.parentID = i;
+        tab.type = 0;
+        tab.atActionType = 0;
+        tab.contentType = 0;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = -1;
+        tab.scrollMax = 0;
+        tab.width = w;
+        tab.height = h;
+        addHoverImageWSpriteLoader(imgInterface, spriteId);
+        tab.totalChildren(1);
+        tab.child(0, imgInterface, 0, 0);
+    }
+
+    public static void addHoverImageWSpriteLoader(int i, int spriteId) {
+        Widget tab = addTabInterface(i);
+        tab.id = i;
+        tab.parentID = i;
+        tab.type = 5;
+        tab.atActionType = 0;
+        tab.contentType = 0;
+        tab.width = 512;
+        tab.height = 334;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = 52;
+        tab.disabledSprite = client.spriteLoader.lookup(spriteId);
+        tab.enabledSprite = client.spriteLoader.lookup(spriteId);
+    }
+    /**
+     * Quick prayers interface
+     */
+    private static void quickPrayersInterface() {
+        int frame = 0;
+        Widget tab = addTabInterface(17200);
+        addSpriteLoader(17201, 935);
+        addText(17230, "Select your quick prayers:", fonts, 0, 0xff981f, false, true);
+        addTransparentSpriteWSpriteLoader(17229, 936, 50);
+        int i = 17202;
+        for (int j = 630; j <= 659; j++) {
+            addConfigButtonWSpriteLoader(i, 17200, 938, 937, 14, 15, "Select", 0, 1, j);
+            i += i == 17229 ? 50 : 1;
+        }
+
+        addHoverButtonWSpriteLoader(17231, 939, 190, 24, "Confirm Selection", -1, 17232, 1);
+        addHoveredImageWSpriteLoader(17232, 940, 190, 24, 17233);
+
+        setChildren(62, tab);
+        setBounds(25001, 5, 28, frame++, tab);
+        setBounds(25003, 44, 28, frame++, tab);
+        setBounds(25005, 79, 31, frame++, tab);
+        setBounds(25007, 116, 30, frame++, tab);
+        setBounds(25009, 153, 29, frame++, tab);
+        setBounds(25011, 5, 68, frame++, tab);
+        setBounds(25013, 44, 67, frame++, tab);
+        setBounds(25015, 79, 69, frame++, tab);
+        setBounds(25017, 116, 70, frame++, tab);
+        setBounds(25019, 154, 70, frame++, tab);
+        setBounds(25021, 4, 104, frame++, tab);
+        setBounds(25023, 44, 107, frame++, tab);
+        setBounds(25025, 81, 105, frame++, tab);
+        setBounds(25027, 117, 105, frame++, tab);
+        setBounds(25029, 156, 107, frame++, tab);
+        setBounds(25031, 5, 145, frame++, tab);
+        setBounds(25033, 43, 144, frame++, tab);
+        setBounds(25035, 83, 144, frame++, tab);
+        setBounds(25037, 115, 141, frame++, tab);
+        setBounds(25039, 154, 144, frame++, tab);
+        setBounds(25041, 5, 180, frame++, tab);
+        setBounds(25043, 41, 178, frame++, tab);
+        setBounds(25045, 79, 183, frame++, tab);
+        setBounds(25047, 116, 178, frame++, tab);
+        setBounds(25049, 161, 180, frame++, tab);
+        setBounds(25051, 4, 219, frame++, tab);
+        setBounds(18019, 44, 214, frame++, tab);
+        setBounds(18026, 80, 214, frame++, tab);
+        setBounds(17229, 0, 25, frame++, tab);
+        setBounds(17201, 0, 22, frame++, tab);
+        setBounds(17201, 0, 237, frame++, tab);
+        setBounds(17202, 2, 25, frame++, tab);
+        setBounds(17203, 41, 25, frame++, tab);
+        setBounds(17204, 76, 25, frame++, tab);
+        setBounds(17205, 113, 25, frame++, tab);
+        setBounds(17206, 150, 25, frame++, tab);
+        setBounds(17207, 2, 65, frame++, tab);
+        setBounds(17208, 41, 65, frame++, tab);
+        setBounds(17209, 76, 65, frame++, tab);
+        setBounds(17210, 113, 65, frame++, tab);
+        setBounds(17211, 150, 65, frame++, tab);
+        setBounds(17212, 2, 102, frame++, tab);
+        setBounds(17213, 41, 102, frame++, tab);
+        setBounds(17214, 76, 102, frame++, tab);
+        setBounds(17215, 113, 102, frame++, tab);
+        setBounds(17216, 150, 102, frame++, tab);
+        setBounds(17217, 2, 141, frame++, tab);
+        setBounds(17218, 41, 141, frame++, tab);
+        setBounds(17219, 76, 141, frame++, tab);
+        setBounds(17220, 113, 141, frame++, tab);
+        setBounds(17221, 150, 141, frame++, tab);
+        setBounds(17222, 2, 177, frame++, tab);
+        setBounds(17223, 41, 177, frame++, tab);
+        setBounds(17224, 76, 177, frame++, tab);
+        setBounds(17225, 113, 177, frame++, tab);
+        setBounds(17226, 150, 177, frame++, tab);
+        setBounds(17227, 1, 211, frame++, tab);
+        setBounds(17230, 5, 5, frame++, tab);
+        setBounds(17231, 0, 237, frame++, tab);
+        setBounds(17232, 0, 237, frame++, tab);
+        setBounds(17279, 41, 211, frame++, tab);
+        setBounds(17280, 76, 211, frame++, tab);
+    }
+    public static void addPrayer(int i, int configId, int configFrame, int requiredValues, int prayerSpriteID, String PrayerName, int Hover) {
+        Widget Interface = addTabInterface(i);
+        Interface.id = i;
+        Interface.parentID = 22500;
+        Interface.type = 5;
+        Interface.atActionType = 4;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.mOverInterToTrigger = Hover;
+        Interface.disabledSpriteId = 480;
+        Interface.enabledSpriteId = -1;
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 1;
+        Interface.requiredValues[0] = configId;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 5;
+        Interface.valueIndexArray[0][1] = configFrame;
+        Interface.valueIndexArray[0][2] = 0;
+        Interface.tooltip = "Activate@lre@ " + PrayerName;
+        Interface = addTabInterface(i + 1);
+        Interface.id = i + 1;
+        Interface.parentID = 22500;
+        Interface.type = 5;
+        Interface.atActionType = 0;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.disabledSpriteId = 501 + prayerSpriteID;
+        Interface.enabledSpriteId = 481 + prayerSpriteID;
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 2;
+        Interface.requiredValues[0] = requiredValues + 1;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 2;
+        Interface.valueIndexArray[0][1] = 5;
+        Interface.valueIndexArray[0][2] = 0;
+    }
+    public static void addPrayer(int i, int configId, int configFrame, int requiredValues, int prayerSpriteID, int disablePrayerId, String PrayerName, int Hover) {
+        Widget Interface = addTabInterface(i);
+        Interface.id = i;
+        Interface.parentID = 22500;
+        Interface.type = 5;
+        Interface.atActionType = 4;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.mOverInterToTrigger = Hover;
+        Interface.disabledSpriteId = 480;
+        Interface.enabledSpriteId = -1;
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 1;
+        Interface.requiredValues[0] = configId;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 5;
+        Interface.valueIndexArray[0][1] = configFrame;
+        Interface.valueIndexArray[0][2] = 0;
+        Interface.tooltip = "Activate@lre@ " + PrayerName;
+        Interface = addTabInterface(i + 1);
+        Interface.id = i + 1;
+        Interface.parentID = 22500;
+        Interface.type = 5;
+        Interface.atActionType = 0;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.disabledSprite = client.spriteLoader.lookup(disablePrayerId);
+        Interface.enabledSprite = client.spriteLoader.lookup(prayerSpriteID);
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 2;
+        Interface.requiredValues[0] = requiredValues + 1;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 2;
+        Interface.valueIndexArray[0][1] = 5;
+        Interface.valueIndexArray[0][2] = 0;
+    }
+    public static void addPrayer(int i, int configId, int configFrame, int requiredValues, int spriteOn, int spriteOff, String tooltip) {
+        Widget tab = addTabInterface(i);
+        tab.id = i;
+        tab.parentID = 5608;
+        tab.type = 5;
+        tab.atActionType = 4;
+        tab.contentType = 0;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = -1;
+        tab.disabledSprite = client.spriteLoader.lookup(941);
+        tab.enabledSprite = new Sprite("");
+        tab.width = 34;
+        tab.height = 34;
+        tab.valueCompareType = new int[1];
+        tab.requiredValues = new int[1];
+        tab.valueCompareType[0] = 1;
+        tab.requiredValues[0] = configId;
+        tab.valueIndexArray = new int[1][3];
+        tab.valueIndexArray[0][0] = 5;
+        tab.valueIndexArray[0][1] = configFrame;
+        tab.valueIndexArray[0][2] = 0;
+        tab.tooltip = tooltip;
+        Widget tab2 = addTabInterface(i + 1);
+        tab2.id = i + 1;
+        tab2.parentID = 5608;
+        tab2.type = 5;
+        tab2.atActionType = 0;
+        tab2.contentType = 0;
+        tab2.opacity = 0;
+        tab2.mOverInterToTrigger = -1;
+        tab2.disabledSprite = client.spriteLoader.lookup(spriteOn);
+        if (spriteOff != -1) tab2.enabledSprite = client.spriteLoader.lookup(spriteOff);
+        tab2.width = 34;
+        tab2.height = 34;
+        tab2.valueCompareType = new int[1];
+        tab2.requiredValues = new int[1];
+        tab2.valueCompareType[0] = 2;
+        tab2.requiredValues[0] = requiredValues + 1;
+        tab2.valueIndexArray = new int[1][3];
+        tab2.valueIndexArray[0][0] = 2;
+        tab2.valueIndexArray[0][1] = 5;
+        tab2.valueIndexArray[0][2] = 0;
+        //RSInterface tab3 = addTabInterface(i + 50);
+    }
+    public static void addPrayerWithTooltipSpriteLoader(int i, int configId, int configFrame, int requiredValues, int spriteOn, int spriteOff, int Hover, String tooltip) {
+        Widget Interface = addTabInterface(i);
+        Interface.id = i;
+        Interface.parentID = 5608;
+        Interface.type = 5;
+        Interface.atActionType = 4;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.mOverInterToTrigger = Hover;
+        Interface.disabledSpriteId = 480;
+        Interface.enabledSpriteId = -1;
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 1;
+        Interface.requiredValues[0] = configId;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 5;
+        Interface.valueIndexArray[0][1] = configFrame;
+        Interface.valueIndexArray[0][2] = 0;
+        Interface.tooltip = tooltip;
+        Interface = addTabInterface(i + 1);
+        Interface.id = i + 1;
+        Interface.parentID = 5608;
+        Interface.type = 5;
+        Interface.atActionType = 0;
+        Interface.contentType = 0;
+        Interface.opacity = 0;
+        Interface.disabledSprite = client.spriteLoader.lookup(spriteOn);
+        if (spriteOff != -1) Interface.enabledSprite = client.spriteLoader.lookup(spriteOff);
+        Interface.width = 34;
+        Interface.height = 34;
+        Interface.valueCompareType = new int[1];
+        Interface.requiredValues = new int[1];
+        Interface.valueCompareType[0] = 2;
+        Interface.requiredValues[0] = requiredValues + 1;
+        Interface.valueIndexArray = new int[1][3];
+        Interface.valueIndexArray[0][0] = 2;
+        Interface.valueIndexArray[0][1] = 5;
+        Interface.valueIndexArray[0][2] = 0;
+    }
+    /*
+     * Curse tab
+     */
+    private static void curseTabInterface() {
+        Widget Interface = addTabInterface(32500);
+        int index = 0;
+        addSpriteLoader(688, 814);
+        //addTooltip(19021, "This is the effect that prayers\nand curses have during combat.\nIt includes curses that have\nbeen used against you. The\nadjustment has no effect\noutside of combat. The\npercentage shown is relative to\n your skill level, and may vary\ndepending on the enemy you are\nfighting, and the prayers or\n curses used. Partial\npercentages are not shown.");
+        addSpriteLoader(689, 815);
+        addText(19025, "  Stat Adjustments", 0xFFCC00, false, true, 52, fonts, 0);
+        addText(690, "690", 0xFF981F, false, false, -1, fonts, 0);
+        addText(691, "691", 0xFF981F, false, false, -1, fonts, 0);
+        addText(692, "692", 0xFF981F, false, false, -1, fonts, 0);
+        addText(693, "693", 0xFF981F, false, false, -1, fonts, 0);
+        addText(694, "694", 0xFF981F, false, false, -1, fonts, 0);
+        addText(687, "99/99", 0xFF981F, false, false, -1, fonts, 1);
+        addSpriteLoader(32502, 813);
+        addPrayer(32503, 0, 610, 49, 7, "Protect Item", 32582);
+        addPrayer(32505, 0, 611, 49, 4, "Sap Warrior", 32544);
+        addPrayer(32507, 0, 612, 51, 5, "Sap Ranger", 32546);
+        addPrayer(32509, 0, 613, 53, 3, "Sap Mage", 32548);
+        addPrayer(32511, 0, 614, 55, 2, "Sap Spirit", 32550);
+        addPrayer(32513, 0, 615, 58, 18, "Berserker", 32552);
+        addPrayer(32515, 0, 616, 61, 15, "Deflect Summoning", 32554);
+        addPrayer(32517, 0, 617, 64, 17, "Deflect Magic", 32556);
+        addPrayer(32519, 0, 618, 67, 16, "Deflect Missiles", 32558);
+        addPrayer(32521, 0, 619, 70, 6, "Deflect Melee", 32560);
+        addPrayer(32523, 0, 620, 73, 9, "Leech Attack", 32562);
+        addPrayer(32525, 0, 621, 75, 10, "Leech Ranged", 32564);
+        addPrayer(32527, 0, 622, 77, 11, "Leech Magic", 32566);
+        addPrayer(32529, 0, 623, 79, 12, "Leech Defence", 32568);
+        addPrayer(32531, 0, 624, 81, 13, "Leech Strength", 32570);
+        addPrayer(32533, 0, 625, 83, 14, "Leech Energy", 32572);
+        addPrayer(32535, 0, 626, 91, 1157, 1159, "Torment", 32574);
+        addPrayer(32537, 0, 627, 91, 1156, 1158, "Anguish", 32576);
+        addPrayer(32539, 0, 628, 91, 8, "Soul Split", 32578);
+        addPrayer(32541, 0, 629, 94, 20, "Turmoil", 32580);
+        addTooltip(32582, "Level 50\nProtect Item\nKeep 1 extra item if you die");
+        addTooltip(32544, "Level 50\nSap Warrior\nDrains 10% of enemy Attack,\nStrength and Defence,\nincreasing to 20% over time");
+        addTooltip(32546, "Level 52\nSap Ranger\nDrains 10% of enemy Ranged\nand Defence, increasing to 20%\nover time");
+        addTooltip(32548, "Level 54\nSap Mage\nDrains 10% of enemy Magic\nand Defence, increasing to 20%\nover time");
+        addTooltip(32550, "Level 56\nSap Spirit\nDrains enenmy special attack\nenergy");
+        addTooltip(32552, "Level 59\nBerserker\nBoosted stats last 15% longer");
+        addTooltip(32554, "Level 62\nDeflect Summoning\nReduces damage dealt from\nSummoning scrolls, prevents the\nuse of a familiar's special\nattack, and can deflect some of\ndamage back to the attacker");
+        addTooltip(32556, "Level 65\nDeflect Magic\nProtects against magical attacks\nand can deflect some of the\ndamage back to the attacker");
+        addTooltip(32558, "Level 68\nDeflect Missiles\nProtects against ranged attacks\nand can deflect some of the\ndamage back to the attacker");
+        addTooltip(32560, "Level 71\nDeflect Melee\nProtects against melee attacks\nand can deflect some of the\ndamage back to the attacker");
+        addTooltip(32562, "Level 74\nLeech Attack\nBoosts Attack by 5%, increasing\nto 10% over time, while draining\nenemy Attack by 10%, increasing\nto 25% over time");
+        addTooltip(32564, "Level 76\nLeech Ranged\nBoosts Ranged by 15% while \ndraining enemy Ranged by 10%\nincreasing to 25% over time");
+        addTooltip(32566, "Level 78\nLeech Magic\nBoosts Magic by 15% while \ndraining enemy Magic by 10%\nincreasing to 25% over time");
+        addTooltip(32568, "Level 80\nLeech Defence\nBoosts Defence by 5%, increasing\nto 10% over time, while draining\n enemy Defence by10%,\nincreasing to 25% over\ntime");
+        addTooltip(32570, "Level 82\nLeech Strength\nBoosts Strength by 5%, increasing\nto 10% over time, while draining\nenemy Strength by 10%, increasing\n to 25% over time");
+        addTooltip(32572, "Level 84\nLeech Energy\nDrains enemy run energy, while\nincreasing your own");
+        addTooltip(32574, "Level 95\nTorment\nIncreases Magic and Defence\nby 15%, plus 15% of enemy's\nlevel, and Magic Strength by 23%\nplus 10% of enemy's level");
+        addTooltip(32576, "Level 95\nAnguish\nIncreases Ranged and Defence\nby 15%, plus 15% of enemy's\nlevel, and Ranged Strength by 23%\nplus 10% of enemy's level");
+        addTooltip(32578, "Level 92\nSoul Split\n1/4 of damage dealt is also removed\nfrom opponent's Prayer and\nadded to your Hitpoints");
+        addTooltip(32580, "Level 95\nTurmoil\nIncreases Attack and Defence\nby 15%, plus 15% of enemy's\nlevel, and Strength by 23% plus\n10% of enemy's level");
+        setChildren(70, Interface);
+        /*curse start*/
+        setBounds(689, 0, 217, index, Interface);
+        index++;
+        //setBounds(701, 0, 217, index, Interface);index++;
+        setBounds(687, 85, 241, index, Interface);
+        index++;
+        setBounds(688, 0, 170, index, Interface);
+        index++;
+        setBounds(690, 2, 200, index, Interface);
+        index++;
+        setBounds(691, 41, 200, index, Interface);
+        index++;
+        setBounds(692, 79, 200, index, Interface);
+        index++;
+        setBounds(693, 117, 200, index, Interface);
+        index++;
+        setBounds(694, 160, 200, index, Interface);
+        index++;
+        setBounds(19025, 47, 218, index, Interface);
+        index++;
+        //setBounds(19030, 47, 219, index, Interface);index++;
+        setBounds(32502, 65, 241, index, Interface);
+        index++;
+        setBounds(32503, 2, 5, index, Interface);
+        index++;
+        setBounds(32504, 8, 8, index, Interface);
+        index++;
+        setBounds(32505, 40, 5, index, Interface);
+        index++;
+        setBounds(32506, 47, 12, index, Interface);
+        index++;
+        setBounds(32507, 76, 5, index, Interface);
+        index++;
+        setBounds(32508, 82, 11, index, Interface);
+        index++;
+        setBounds(32509, 113, 5, index, Interface);
+        index++;
+        setBounds(32510, 116, 8, index, Interface);
+        index++;
+        setBounds(32511, 150, 5, index, Interface);
+        index++;
+        setBounds(32512, 155, 10, index, Interface);
+        index++;
+        setBounds(32513, 2, 45, index, Interface);
+        index++;
+        setBounds(32514, 9, 48, index, Interface);
+        index++;
+        setBounds(32515, 39, 45, index, Interface);
+        index++;
+        setBounds(32516, 42, 47, index, Interface);
+        index++;
+        setBounds(32517, 76, 45, index, Interface);
+        index++;
+        setBounds(32518, 79, 48, index, Interface);
+        index++;
+        setBounds(32519, 113, 45, index, Interface);
+        index++;
+        setBounds(32520, 116, 48, index, Interface);
+        index++;
+        setBounds(32521, 151, 45, index, Interface);
+        index++;
+        setBounds(32522, 154, 48, index, Interface);
+        index++;
+        setBounds(32523, 2, 82, index, Interface);
+        index++;
+        setBounds(32524, 6, 86, index, Interface);
+        index++;
+        setBounds(32525, 40, 82, index, Interface);
+        index++;
+        setBounds(32526, 42, 86, index, Interface);
+        index++;
+        setBounds(32527, 77, 82, index, Interface);
+        index++;
+        setBounds(32528, 79, 86, index, Interface);
+        index++;
+        setBounds(32529, 114, 83, index, Interface);
+        index++;
+        setBounds(32530, 119, 87, index, Interface);
+        index++;
+        setBounds(32531, 153, 83, index, Interface);
+        index++;
+        setBounds(32532, 156, 86, index, Interface);
+        index++;
+        setBounds(32533, 2, 120, index, Interface);
+        index++;
+        setBounds(32534, 7, 125, index, Interface);
+        index++;
+        setBounds(32535, 40, 120, index, Interface);
+        index++;
+        setBounds(32536, 45, 124, index, Interface);
+        index++;
+        setBounds(32537, 78, 120, index, Interface);
+        index++;
+        setBounds(32538, 86, 124, index, Interface);
+        index++;
+        setBounds(32539, 114, 120, index, Interface);
+        index++;
+        setBounds(32540, 120, 125, index, Interface);
+        index++;
+        setBounds(32541, 151, 120, index, Interface);
+        index++;
+        setBounds(32542, 153, 127, index, Interface);
+        index++;
+        setBounds(32582, 10, 40, index, Interface);
+        index++;
+        setBounds(32544, 20, 40, index, Interface);
+        index++;
+        setBounds(32546, 20, 40, index, Interface);
+        index++;
+        setBounds(32548, 20, 40, index, Interface);
+        index++;
+        setBounds(32550, 20, 40, index, Interface);
+        index++;
+        setBounds(32552, 10, 80, index, Interface);
+        index++;
+        setBounds(32554, 10, 80, index, Interface);
+        index++;
+        setBounds(32556, 10, 80, index, Interface);
+        index++;
+        setBounds(32558, 10, 80, index, Interface);
+        index++;
+        setBounds(32560, 10, 80, index, Interface);
+        index++;
+        setBounds(32562, 10, 120, index, Interface);
+        index++;
+        setBounds(32564, 10, 120, index, Interface);
+        index++;
+        setBounds(32566, 10, 120, index, Interface);
+        index++;
+        setBounds(32568, 5, 120, index, Interface);
+        index++;
+        setBounds(32570, 5, 120, index, Interface);
+        index++;
+        setBounds(32572, 10, 160, index, Interface);
+        index++;
+        setBounds(32574, 10, 160, index, Interface);
+        index++;
+        setBounds(32576, 10, 160, index, Interface);
+        index++;
+        setBounds(32578, 10, 160, index, Interface);
+        index++;
+        setBounds(32580, 10, 160, index, Interface);
+        index++;
+    }
+
+    private static void quickCursesInterface() {
+        int frame = 0;
+        Widget tab = addTabInterface(17234);
+        addText(17235, "Select your quick curses:", fonts, 0, 0xff981f, false, true);
+        int i = 17202;
+        for (int j = 630; i <= 17222 || j <= 656; j++) {
+            addConfigButtonWSpriteLoader(i, 17200, 938, 937, 14, 15, "Select", 0, 1, j);
+            i++;
+        }
+
+
+        addHoverButtonWSpriteLoader(17231, 939, 190, 24, "Confirm Selection", -1, 17232, 1);
+        addHoveredImageWSpriteLoader(17232, 940, 190, 24, 17233);
+
+
+        setChildren(46, tab);
+        setBounds(32504, 5, 8 + 17, frame++, tab);
+        setBounds(32506, 44, 8 + 20, frame++, tab);
+        setBounds(32508, 79, 11 + 19, frame++, tab);
+        setBounds(32510, 116, 10 + 18, frame++, tab);
+        setBounds(32512, 153, 9 + 20, frame++, tab);
+        setBounds(32514, 5, 48 + 18, frame++, tab);
+        setBounds(32516, 44, 47 + 21, frame++, tab);
+        setBounds(32518, 79, 49 + 20, frame++, tab);
+        setBounds(32520, 116, 50 + 19, frame++, tab);
+        setBounds(32522, 154, 50 + 20, frame++, tab);
+        setBounds(32524, 4, 84 + 21, frame++, tab);
+        setBounds(32526, 44, 87 + 19, frame++, tab);
+        setBounds(32528, 81, 85 + 20, frame++, tab);
+        setBounds(32530, 117, 85 + 20, frame++, tab);
+        setBounds(32532, 156, 87 + 18, frame++, tab);
+        setBounds(32534, 5, 125 + 19, frame++, tab);
+        setBounds(32536, 43, 124 + 19, frame++, tab);
+        setBounds(32538, 83, 124 + 20, frame++, tab);
+        setBounds(32540, 115, 125 + 21, frame++, tab);
+        setBounds(32542, 154, 126 + 22, frame++, tab);
+        setBounds(17229, 0, 25, frame++, tab);
+        setBounds(17201, 0, 22, frame++, tab);
+        setBounds(17201, 0, 237, frame++, tab);
+        setBounds(17202, 2, 25, frame++, tab);
+        setBounds(17203, 41, 25, frame++, tab);
+        setBounds(17204, 76, 25, frame++, tab);
+        setBounds(17205, 113, 25, frame++, tab);
+        setBounds(17206, 150, 25, frame++, tab);
+        setBounds(17207, 2, 65, frame++, tab);
+        setBounds(17208, 41, 65, frame++, tab);
+        setBounds(17209, 76, 65, frame++, tab);
+        setBounds(17210, 113, 65, frame++, tab);
+        setBounds(17211, 150, 65, frame++, tab);
+        setBounds(17212, 2, 102, frame++, tab);
+        setBounds(17213, 41, 102, frame++, tab);
+        setBounds(17214, 76, 102, frame++, tab);
+        setBounds(17215, 113, 102, frame++, tab);
+        setBounds(17216, 150, 102, frame++, tab);
+        setBounds(17217, 2, 141, frame++, tab);
+        setBounds(17218, 41, 141, frame++, tab);
+        setBounds(17219, 76, 141, frame++, tab);
+        setBounds(17220, 113, 141, frame++, tab);
+        setBounds(17221, 150, 141, frame++, tab);
+        setBounds(17235, 5, 5, frame++, tab);
+        setBounds(17231, 0, 237, frame++, tab);
+        setBounds(17232, 0, 237, frame++, tab);
     }
 
     private static Sprite LoadLunarSprite(int i, String s) {
@@ -1979,9 +3142,9 @@ public class Widget {
     public Model method209(int i, int j, int k, boolean flag) {
         Model model;
         if(flag) {
-            model = this.method206(this.anInt255, this.anInt256);
+            model = this.method206(this.enabledMediaType, this.enabledMediaID);
         } else {
-            model = this.method206(this.anInt233, this.mediaID);
+            model = this.method206(this.mediaType, this.mediaID);
         }
 
         if(model == null) {

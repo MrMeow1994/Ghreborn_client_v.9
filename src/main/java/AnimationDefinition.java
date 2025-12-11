@@ -159,6 +159,8 @@ public class AnimationDefinition
 				anInt364 = stream.readUnsignedByte();
 			else if(i == 11) {
                 replayMode = stream.readUnsignedByte();
+            }else if (i == 12) {
+                    stream.readDWord();
             }
 
             else
@@ -188,6 +190,10 @@ public class AnimationDefinition
 			}
 			anInt364 = 0;
 		}
+        if(leftHandItem == 65535)
+            leftHandItem = 0;
+        if(rightHandItem == 65535)
+            rightHandItem = 0;
 	}
 
     public AnimationDefinition()

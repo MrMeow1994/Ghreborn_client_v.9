@@ -437,6 +437,11 @@ public class Model extends Animable {
 				face_color[k] = j;
 			}
 	}
+	public void recolorForce(int j) {
+		for (int k = 0; k < triangleCount; k++) {
+			face_color[k] = j;
+		}
+	}
 
 	public void read622Model(byte abyte0[], int modelID) {
 		Stream nc1 = new Stream(abyte0);
@@ -1725,11 +1730,11 @@ public class Model extends Animable {
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
-		for (int k = 0; k < frameLoader.anInt638; k++) {
-			int l = frameLoader.anIntArray639[k];
-			method472(skinlist.anIntArray342[l], skinlist.anIntArrayArray343[l],
-					frameLoader.anIntArray640[k], frameLoader.anIntArray641[k],
-					frameLoader.anIntArray642[k]);
+		for (int k = 0; k < frameLoader.transformationCount; k++) {
+			int l = frameLoader.transformationIndices[k];
+			method472(skinlist.opcodes[l], skinlist.skinList[l],
+					frameLoader.transformX[k], frameLoader.transformY[k],
+					frameLoader.transformZ[k]);
 		}
 
 	}
@@ -1755,15 +1760,15 @@ public class Model extends Animable {
 		anInt1683 = 0;
 		int l = 0;
 		int i1 = ai[l++];
-		for (int j1 = 0; j1 < frameLoader.anInt638; j1++) {
+		for (int j1 = 0; j1 < frameLoader.transformationCount; j1++) {
 			int k1;
-			for (k1 = frameLoader.anIntArray639[j1]; k1 > i1; i1 = ai[l++])
+			for (k1 = frameLoader.transformationIndices[j1]; k1 > i1; i1 = ai[l++])
 				;
-			if (k1 != i1 || skinlist.anIntArray342[k1] == 0)
-				method472(skinlist.anIntArray342[k1],
-						skinlist.anIntArrayArray343[k1],
-						frameLoader.anIntArray640[j1], frameLoader.anIntArray641[j1],
-						frameLoader.anIntArray642[j1]);
+			if (k1 != i1 || skinlist.opcodes[k1] == 0)
+				method472(skinlist.opcodes[k1],
+						skinlist.skinList[k1],
+						frameLoader.transformX[j1], frameLoader.transformY[j1],
+						frameLoader.transformZ[j1]);
 		}
 
 		anInt1681 = 0;
@@ -1771,16 +1776,16 @@ public class Model extends Animable {
 		anInt1683 = 0;
 		l = 0;
 		i1 = ai[l++];
-		for (int l1 = 0; l1 < frameLoader_1.anInt638; l1++) {
+		for (int l1 = 0; l1 < frameLoader_1.transformationCount; l1++) {
 			int i2;
-			for (i2 = frameLoader_1.anIntArray639[l1]; i2 > i1; i1 = ai[l++])
+			for (i2 = frameLoader_1.transformationIndices[l1]; i2 > i1; i1 = ai[l++])
 				;
-			if (i2 == i1 || skinlist.anIntArray342[i2] == 0)
-				method472(skinlist.anIntArray342[i2],
-						skinlist.anIntArrayArray343[i2],
-						frameLoader_1.anIntArray640[l1],
-						frameLoader_1.anIntArray641[l1],
-						frameLoader_1.anIntArray642[l1]);
+			if (i2 == i1 || skinlist.opcodes[i2] == 0)
+				method472(skinlist.opcodes[i2],
+						skinlist.skinList[i2],
+						frameLoader_1.transformX[l1],
+						frameLoader_1.transformY[l1],
+						frameLoader_1.transformZ[l1]);
 		}
 
 	}
@@ -2850,10 +2855,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	private static int anInt1619 = -192;
 	public static int anInt1620;
 	public static Model aModel_1621 = new Model(true);
-	private static int anIntArray1622[] = new int[2000];
-	private static int anIntArray1623[] = new int[2000];
-	private static int anIntArray1624[] = new int[2000];
-	private static int anIntArray1625[] = new int[2000];
+	private static int anIntArray1622[] = new int[4000];
+	private static int anIntArray1623[] = new int[4000];
+	private static int anIntArray1624[] = new int[4000];
+	private static int anIntArray1625[] = new int[4000];
 	public int[] verticesParticle;
     public boolean scaledVertices;
 	public int vertexCount;
@@ -2896,21 +2901,21 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	private int lastRenderedRotation = 0;
 	static Class21 aClass21Array1661[];
 	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
-	static boolean hasAnEdgeToRestrict[] = new boolean[16000];
-	static boolean outOfReach[] = new boolean[16000];
-	static int projected_vertex_x[] = new int[16000];
-	static int projected_vertex_y[] = new int[16000];
-	static int projected_vertex_z[] = new int[16000];
-	static int anIntArray1667[] = new int[16000];
-	static int camera_vertex_y[] = new int[16000];
-	static int camera_vertex_x[] = new int[16000];
-	static int camera_vertex_z[] = new int[16000];
-	static int depthListIndices[] = new int[16000];
-	static int faceLists[][] = new int[16000][512];
+	static boolean hasAnEdgeToRestrict[] = new boolean[75000];
+	static boolean outOfReach[] = new boolean[75000];
+	static int projected_vertex_x[] = new int[75000];
+	static int projected_vertex_y[] = new int[75000];
+	static int projected_vertex_z[] = new int[75000];
+	static int anIntArray1667[] = new int[75000];
+	static int camera_vertex_y[] = new int[75000];
+	static int camera_vertex_x[] = new int[75000];
+	static int camera_vertex_z[] = new int[75000];
+	static int depthListIndices[] = new int[75000];
+	static int faceLists[][] = new int[36000][512];
 	static int anIntArray1673[] = new int[12];
-	static int anIntArrayArray1674[][] = new int[12][2000];
-	static int anIntArray1675[] = new int[2000];
-	static int anIntArray1676[] = new int[2000];
+	static int anIntArrayArray1674[][] = new int[12][4000];
+	static int anIntArray1675[] = new int[4000];
+	static int anIntArray1676[] = new int[4000];
 	static int anIntArray1677[] = new int[12];
 	static int anIntArray1678[] = new int[10];
 	static int anIntArray1679[] = new int[10];

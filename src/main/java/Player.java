@@ -20,12 +20,13 @@ final class Player extends Entity {
     int combatLevel;
     int title;
     boolean aBoolean1710 = false;
-    long aLong1718;
+    long modelID;
     long aLong1697 = -1L;
     private int anInt1715 = 9;
     boolean aBoolean1699 = false;
     int[] anIntArray1700 = new int[5];
     int[] equipment = new int[12];
+    public final int equipmentRecolours[][] = new int[12][4];
     static Class12 aClass12_1704 = new Class12(false, 260);
 
     public final Model method444(int i) {
@@ -114,6 +115,18 @@ final class Player extends Entity {
         this.gender = stream.readUnsignedByte();
         this.headIcon = stream.readUnsignedByte();
         this.skullIcon = stream.readUnsignedByte();
+        for (int slot = 0; slot < equipmentRecolours.length; slot++) {
+            boolean exists = stream.readUnsignedByte() == 1;
+            if (!exists) {
+                equipmentRecolours[slot] = null;
+                continue;
+            }
+            equipmentRecolours[slot] = new int[4];
+            equipmentRecolours[slot][0] = stream.readDWord();
+            equipmentRecolours[slot][1] = stream.readDWord();
+            equipmentRecolours[slot][2] = stream.readDWord();
+            equipmentRecolours[slot][3] = stream.readDWord();
+        }
         if(i == 0) {
             this.aClass5_1698 = null;
             this.team = 0;
@@ -189,36 +202,46 @@ final class Player extends Entity {
             this.combatLevel = stream.readUnsignedByte();
             this.title = stream.readUnsignedShort();
             this.aBoolean1710 = true;
-            this.aLong1718 = 0L;
+            this.modelID = 0L;
 
             for(i2 = 0; i2 < 12; ++i2) {
-                this.aLong1718 <<= 4;
+                this.modelID <<= 4;
                 if(this.equipment[i2] >= 256) {
-                    this.aLong1718 += (long)(this.equipment[i2] - 256);
+                    this.modelID += (long)(this.equipment[i2] - 256);
                 }
             }
 
             if(this.equipment[0] >= 256) {
-                this.aLong1718 += (long)(this.equipment[0] - 256 >> 4);
+                this.modelID += (long)(this.equipment[0] - 256 >> 4);
             }
 
             if(this.equipment[1] >= 256) {
-                this.aLong1718 += (long)(this.equipment[1] - 256 >> 8);
+                this.modelID += (long)(this.equipment[1] - 256 >> 8);
             }
 
             for(i2 = 0; i2 < 5; ++i2) {
-                this.aLong1718 <<= 3;
-                this.aLong1718 += (long)this.anIntArray1700[i2];
+                this.modelID <<= 3;
+                this.modelID += this.anIntArray1700[i2];
             }
-
-            this.aLong1718 <<= 1;
-            this.aLong1718 += (long)this.gender;
+            for (int slot = 0; slot < equipmentRecolours.length; slot++) {
+                if (equipmentRecolours[slot] != null) {
+                    int id = 0;
+                    for (int color : equipmentRecolours[slot])
+                        id += color;
+                    if (id != 0) {
+                        modelID <<= 5;
+                        modelID += id;
+                    }
+                }
+            }
+            this.modelID <<= 1;
+            this.modelID += this.gender;
         }
     }
 
     public final Model method452(int i) {
         if (null == this.aClass5_1698) {
-            long l = this.aLong1718;
+            long l = this.modelID;
             int k = -1;
             int i1 = -1;
             int j1 = -1;
@@ -326,8 +349,32 @@ final class Player extends Entity {
                     }
 
                     if(i3 >= 32768 ) {
-                        class30_sub2_sub4_sub6_4 = ItemDefinition.method198(i3 - 32768 ).method196(false, this.gender);
+                        int itemID = i3 - 32768;
+                        class30_sub2_sub4_sub6_4 = ItemDefinition.method198(itemID ).method196(false, this.gender);
                         if(class30_sub2_sub4_sub6_4 != null) {
+                            int[] colors = equipmentRecolours[j3];
+                            if (colors != null) {
+                                if (itemID == 20769 || itemID == 20771) {
+                                    if (colors[0] != 0)
+                                        class30_sub2_sub4_sub6_4.recolour(0xfebe, colors[0]);
+                                    if (colors[1] != 0)
+                                        class30_sub2_sub4_sub6_4.recolour(0xfeb0, colors[1]);
+                                    if (colors[2] != 0)
+                                        class30_sub2_sub4_sub6_4.recolour(0xfea2, colors[2]);
+                                    if (colors[3] != 0)
+                                        class30_sub2_sub4_sub6_4.recolour(0xf613, colors[3]);
+                                } else if(itemID == 24102) {
+                                    if (colors[0] != 0)
+                                        class30_sub2_sub4_sub6_4.recolour(25, colors[0]);
+                                } else if(itemID == 25314) {
+                                    if (colors[0] != 0)
+                                        class30_sub2_sub4_sub6_4.recolour(25, colors[0]);
+                                } else {
+                                    if (colors[0] != 0) {
+                                        class30_sub2_sub4_sub6_4.recolorForce(colors[0]);
+                                    }
+                                }
+                            }
                             var17[j2++] = class30_sub2_sub4_sub6_4;
                         }
                     }

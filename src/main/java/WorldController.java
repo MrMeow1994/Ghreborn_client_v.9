@@ -1009,7 +1009,7 @@ public class WorldController
 
         int j1 = i * curveSineY + i1 * curveCosineY >> 16;
         int k1 = i * curveCosineY - i1 * curveSineY >> 16;
-        if (j1 < 50 || j1 > WorldController.renderDistanceClamp) // Changed 3500 to 6000
+        if (j1 < 50 || j1 >(farZ * 140)) // Changed 3500 to 6000
             return false;
         int l1 = midX + (l << client.log_view_dist) / j1;
         int i2 = midY + (k1 << client.log_view_dist) / j1;

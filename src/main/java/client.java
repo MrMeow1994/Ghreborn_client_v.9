@@ -16,6 +16,7 @@ import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
@@ -31,6 +32,7 @@ public class client extends Applet_Sub1 {
     public static int cameratoggle;
     private String clanname;
     private boolean prayClicked;
+    public static SpriteLoader spriteLoader = new SpriteLoader();
     private boolean specialHover;
     private boolean autocast;
     public boolean isPoisoned;
@@ -269,7 +271,7 @@ public class client extends Applet_Sub1 {
     MouseDetection aMouseDetection_879;
     public static OnDemandFetcher onDemandFetcher;
     private Stream aStream_834;
-    private Stream stream;
+    Stream stream;
     private Stream aStream_847;
     private Stream in;
     private int[] mapCoordinates;
@@ -432,6 +434,7 @@ public class client extends Applet_Sub1 {
     private int anInt1058;
     private int anInt1208;
     private int anInt1118;
+    public int mapIncreaseX = 0;
     private int anInt1216;
     private String myUsername;
     private String myPassword;
@@ -630,7 +633,13 @@ public class client extends Applet_Sub1 {
         this.pushMessage(" ", 80, x);
         System.out.println("Reached appearInChat for: " + x);
     }
+    public int getMapIncreaseX() {
+        return mapIncreaseX = currentScreenMode != ScreenMode.FIXED ? currentGameWidth / 2 - 356 : 0;
+    }
 
+    public int getMapIncreaseY() {
+        return currentScreenMode != ScreenMode.FIXED ? currentGameHeight / 2 - 230 : 0;
+    }
     private static String getErrorLogDirectory() {
         return signlink.findcachedir() + Configuration.ERROR_LOG_DIRECTORY;
     }
@@ -712,13 +721,13 @@ public class client extends Applet_Sub1 {
         }
     }
     public void setInputFieldFocusOwner(Widget owner) {
-        for (Widget rsi : Widget.interfaceCache)
+        for (Widget rsi : Widget.interfaceCache.values())
             if (rsi != null)
                 rsi.isInFocus = rsi == owner;
     }
 
     public Widget getInputFieldFocusOwner() {
-        for (Widget rsi : Widget.interfaceCache)
+        for (Widget rsi : Widget.interfaceCache.values())
             if (rsi != null)
                 if (rsi.isInFocus)
                     return rsi;
@@ -726,7 +735,7 @@ public class client extends Applet_Sub1 {
     }
 
     public void resetInputFieldFocus() {
-        for (Widget rsi : Widget.interfaceCache)
+        for (Widget rsi : Widget.interfaceCache.values())
             if (rsi != null)
                 rsi.isInFocus = false;
         Widget.currentInputFieldId = -1;
@@ -736,7 +745,7 @@ public class client extends Applet_Sub1 {
         if (openInterfaceID == -1 && invOverlayInterfaceID <= 0) {
             return false;
         }
-        for (Widget rsi : Widget.interfaceCache) {
+        for (Widget rsi : Widget.interfaceCache.values()) {
             if (rsi != null) {
                 if (rsi.type == 16 && rsi.isInFocus) {
                     return true;
@@ -1438,9 +1447,9 @@ public class client extends Applet_Sub1 {
             this.newBoldFont.drawCenteredString(this.aString844, 259, 60 + yOffset, 0, -1);
             this.newBoldFont.drawCenteredString("Click to continue", 259, 80 + yOffset, 128, -1);
         } else if(this.backDialogID != -1) {
-            this.drawInterface(0, 20, Widget.interfaceCache[this.backDialogID], 20 + yOffset);
+            this.drawInterface(0, 20, Widget.interfaceCache.get(this.backDialogID), 20 + yOffset);
         } else if(this.dialogID != -1) {
-            this.drawInterface(0, 20, Widget.interfaceCache[this.dialogID], 20 + yOffset);
+            this.drawInterface(0, 20, Widget.interfaceCache.get(this.dialogID), 20 + yOffset);
         } else if(showChatComponents) {
             int j77 = -3;
             int j = 0;
@@ -2273,7 +2282,7 @@ public class client extends Applet_Sub1 {
                     if(i1 == 632 || i1 == 78 || i1 == 867 || i1 == 431 || i1 == 53 || i1 == 74 || i1 == 454 || i1 == 539 || i1 == 493 || i1 == 847 || i1 == 447 || i1 == 1125) {
                         l1 = this.menuActionCmd2[this.menuActionRow - 1];
                         j2 = this.menuActionCmd3[this.menuActionRow - 1];
-                        Widget class9 = Widget.interfaceCache[j2];
+                        Widget class9 = Widget.interfaceCache.get(j2);
                         if(class9.deleteOnDrag2 || class9.dragDeletes) {
                             this.aBoolean1242 = false;
                             this.anInt989 = 0;
@@ -2282,11 +2291,11 @@ public class client extends Applet_Sub1 {
                             this.anInt1086 = 2;
                             this.anInt1087 = super.saveClickX;
                             this.anInt1088 = super.saveClickY;
-                            if(Widget.interfaceCache[j2].parentID == openInterfaceID) {
+                            if(Widget.interfaceCache.get(j2).parentID == openInterfaceID) {
                                 this.anInt1086 = 1;
                             }
 
-                            if(Widget.interfaceCache[j2].parentID == this.backDialogID) {
+                            if(Widget.interfaceCache.get(j2).parentID == this.backDialogID) {
                                 this.anInt1086 = 3;
                             }
 
@@ -2559,7 +2568,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(lowMemory && signlink.cache_dat != null) {
-            k = onDemandFetcher.method555(79, 0);
+            k = onDemandFetcher.method555(0);
 
             for(j1 = 0; j1 < k; ++j1) {
                 i2 = onDemandFetcher.method559(j1, -203);
@@ -2817,7 +2826,7 @@ public class client extends Applet_Sub1 {
                 for(int l1 = 0; l1 < k1; ++l1) {
                     int i2 = class9.childX[l1] + i;
                     int j2 = class9.childY[l1] + l - j1;
-                    Widget class9_1 = Widget.interfaceCache[class9.children[l1]];
+                    Widget class9_1 = Widget.interfaceCache.get(class9.children[l1]);
                     i2 += class9_1.anInt263;
                     j2 += class9_1.anInt265;
                     if((class9_1.mOverInterToTrigger >= 0 || class9_1.defaultHoverColor != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
@@ -2942,7 +2951,7 @@ public class client extends Applet_Sub1 {
                                     }
                                 }
 
-                                Widget scrollable = Widget.interfaceCache[class9_1.invAutoScrollInterfaceId];
+                                Widget scrollable = Widget.interfaceCache.get(class9_1.invAutoScrollInterfaceId);
                                 scrollable.scrollMax = scrollable.height + 1;
                                 int heightPerRow = class9_1.invSpritePadY + 32;
                                 if (heightPerRow * rowCount > scrollable.scrollMax) {
@@ -3377,9 +3386,9 @@ public class client extends Applet_Sub1 {
                     this.reportAbuseInput = "";
                     this.canMute = false;
 
-                    for(j = 0; j < Widget.interfaceCache.length; ++j) {
-                        if(Widget.interfaceCache[j] != null && Widget.interfaceCache[j].contentType == 600) {
-                            this.reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache[j].parentID;
+                    for(j = 0; j < Widget.interfaceCache.size(); ++j) {
+                        if(Widget.interfaceCache.get(j) != null && Widget.interfaceCache.get(j).contentType == 600) {
+                            this.reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache.get(j).parentID;
                             break;
                         }
                     }
@@ -3966,9 +3975,9 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(this.invOverlayInterfaceID != -1) {
-                    this.drawInterface(0, x, Widget.interfaceCache[this.invOverlayInterfaceID], y);
+                    this.drawInterface(0, x, Widget.interfaceCache.get(this.invOverlayInterfaceID), y);
                 } else if(tabInterfaceIDs[tabID] != -1) {
-                    this.drawInterface(0, x, Widget.interfaceCache[tabInterfaceIDs[tabID]], y);
+                    this.drawInterface(0, x, Widget.interfaceCache.get(tabInterfaceIDs[tabID]), y);
                 }
             }
 
@@ -5679,6 +5688,9 @@ public class client extends Applet_Sub1 {
                     }
                 }
             }
+            /**
+             * Animations Loading *
+             */
             if(onDemandData.dataType == 2 && onDemandData.ID == this.nextSong && onDemandData.buffer != null) {
                 this.method21(this.songChanging, 0, onDemandData.buffer);
             }
@@ -5724,12 +5736,12 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method60(int i, byte byte0) {
-        Widget class9 = Widget.interfaceCache[i];
+        Widget class9 = Widget.interfaceCache.get(i);
 
         for(int j = 0; j < class9.children.length; ++j) {
             if (class9.children[j] == -1)
                 break;
-            Widget class9_1 = Widget.interfaceCache[class9.children[j]];
+            Widget class9_1 = Widget.interfaceCache.get(class9.children[j]);
             if (class9_1 == null)
                 System.err.println("Null child of index " + j + " inside interface " + i);
 
@@ -5860,7 +5872,7 @@ public class client extends Applet_Sub1 {
                         this.anInt1067 = -1;
                         this.processRightClick(0);
                         if(this.anInt1067 == this.anInt1084 && this.anInt1066 != this.anInt1085) {
-                            Widget exception = Widget.interfaceCache[this.anInt1084];
+                            Widget exception = Widget.interfaceCache.get(this.anInt1084);
                             byte k1 = 0;
                             if(this.anInt913 == 1 && exception.contentType == 206) {
                                 k1 = 1;
@@ -5943,23 +5955,28 @@ public class client extends Applet_Sub1 {
             this.method92(true);
             this.method78();
             this.processChatModeClick();
+            ColorWheel.proccessInterfaceClick(getMapIncreaseX(), getMapIncreaseY());
             if(super.clickMode2 == 1 || super.clickMode3 == 1) {
                 ++this.anInt1213;
             }
-            if (anInt1500 != 0 || anInt1044 != 0 || anInt1129 != 0) {
-                if (anInt1501 < 50 && !menuOpen) {
-                    anInt1501++;
-                    if (anInt1501 == 50) {
-                        if (anInt1500 != 0) {
-                            inputTaken = true;
-                        }
-                        if (anInt1044 != 0) {
-                            tabAreaAltered = true;
-                        }
+            if (this.anInt1500 == 0 && this.anInt1044 == 0 && this.anInt1129 == 0) {
+                if (this.anInt1501 < tooltipDelay) {
+                    ++this.anInt1501;
+                    if (this.anInt1501 == tooltipDelay && this.anInt1500 != 0) {
+                        this.inputTaken = true;
                     }
                 }
-            } else if (anInt1501 > 0) {
-                anInt1501--;
+            } else {
+                if (this.anInt1501 < tooltipDelay && !this.menuOpen) {
+                    ++this.anInt1501;
+                    if (this.anInt1501 == tooltipDelay && this.anInt1500 != 0) {
+                        this.inputTaken = true;
+                    }
+                }
+
+                if (this.anInt1501 > tooltipDelay) {
+                    --this.anInt1501;
+                }
             }
             if(this.anInt1023 == 2) {
                 this.method108(3);
@@ -6208,9 +6225,9 @@ public class client extends Applet_Sub1 {
                     this.reportAbuseInput = "";
                     this.canMute = false;
 
-                    for(int i = 0; i < Widget.interfaceCache.length; ++i) {
-                        if(Widget.interfaceCache[i] != null && Widget.interfaceCache[i].contentType == 600) {
-                            this.reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache[i].parentID;
+                    for(int i = 0; i < Widget.interfaceCache.size(); ++i) {
+                        if(Widget.interfaceCache.get(i) != null && Widget.interfaceCache.get(i).contentType == 600) {
+                            this.reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache.get(i).parentID;
                             break;
                         }
                     }
@@ -6221,6 +6238,7 @@ public class client extends Applet_Sub1 {
         }
 
     }
+    public int tooltipDelay = 50;
 
     private final void method63(int i) {
         Node_Sub1 class30_sub1 = (Node_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst();
@@ -6836,9 +6854,9 @@ public class client extends Applet_Sub1 {
                 atInventoryInterface = buttonPressed;
                 atInventoryIndex = j;
                 atInventoryInterfaceType = 2;
-                if (Widget.interfaceCache[buttonPressed].parentID == openInterfaceID)
+                if (Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID)
                     atInventoryInterfaceType = 1;
-                if (Widget.interfaceCache[buttonPressed].parentID == backDialogID)
+                if (Widget.interfaceCache.get(buttonPressed).parentID == backDialogID)
                     atInventoryInterfaceType = 3;
             }
             if(l == 582) {
@@ -6912,17 +6930,17 @@ public class client extends Applet_Sub1 {
                 this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
 
             if(l == 315) {
-                Widget var17 = Widget.interfaceCache[buttonPressed];
+                Widget var17 = Widget.interfaceCache.get(buttonPressed);
                 boolean class8_1 = true;
                 if(var17.contentType > 0) {
                     class8_1 = this.method48(505, var17);
@@ -7018,11 +7036,11 @@ public class client extends Applet_Sub1 {
                 this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -7061,11 +7079,11 @@ public class client extends Applet_Sub1 {
                 this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -7079,11 +7097,11 @@ public class client extends Applet_Sub1 {
                 this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -7141,11 +7159,11 @@ public class client extends Applet_Sub1 {
                     this.atInventoryInterface = buttonPressed;
                     this.atInventoryIndex = j;
                     this.atInventoryInterfaceType = 2;
-                    if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                    if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                         this.atInventoryInterfaceType = 1;
                     }
 
-                    if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                    if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                         this.atInventoryInterfaceType = 3;
                     }
                 }
@@ -7160,18 +7178,18 @@ public class client extends Applet_Sub1 {
                     this.atInventoryInterface = buttonPressed;
                     this.atInventoryIndex = j;
                     this.atInventoryInterfaceType = 2;
-                    if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                    if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                         this.atInventoryInterfaceType = 1;
                     }
 
-                    if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                    if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                         this.atInventoryInterfaceType = 3;
                     }
                 }
 
                 String var24;
                 if(l == 626) {
-                    Widget var17 = Widget.interfaceCache[buttonPressed];
+                    Widget var17 = Widget.interfaceCache.get(buttonPressed);
                     this.anInt1136 = 1;
                     this.anInt1137 = buttonPressed;
                     this.anInt1138 = var17.spellUsableOn;
@@ -7204,11 +7222,11 @@ public class client extends Applet_Sub1 {
                         this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7258,11 +7276,11 @@ public class client extends Applet_Sub1 {
                         this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7276,11 +7294,11 @@ public class client extends Applet_Sub1 {
                         this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7293,7 +7311,7 @@ public class client extends Applet_Sub1 {
 
                     int var29;
                     if(l == 1050) {
-                        var29 = Integer.parseInt(Widget.interfaceCache[4016].message);
+                        var29 = Integer.parseInt(Widget.interfaceCache.get(4016).message);
                         if(var29 > 0) {
                             this.runClicked = !this.runClicked;
                             this.sendFrame36(429, this.runClicked?0:1);
@@ -7303,7 +7321,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(this.menuActionName[i].contains("Toggle Run")) {
-                        var29 = Integer.parseInt(Widget.interfaceCache[4016].message);
+                        var29 = Integer.parseInt(Widget.interfaceCache.get(4016).message);
                         if(var29 > 0) {
                             this.runClicked = !this.runClicked;
                             this.sendFrame36(429, this.runClicked?0:1);
@@ -7549,11 +7567,11 @@ public class client extends Applet_Sub1 {
                     if(l == 646) {
                         this.stream.createFrame(185);
                         this.stream.writeWord(buttonPressed);
-                        var26 = Widget.interfaceCache[buttonPressed];
+                        var26 = Widget.interfaceCache.get(buttonPressed);
                         if(var26.valueIndexArray != null && var26.valueIndexArray[0][0] == 5) {
                             var23 = var26.valueIndexArray[0][1];
-                            if(this.variousSettings[var23] != var26.anIntArray212[0]) {
-                                this.variousSettings[var23] = var26.anIntArray212[0];
+                            if(this.variousSettings[var23] != var26.requiredValues[0]) {
+                                this.variousSettings[var23] = var26.requiredValues[0];
                                 this.method33(false, var23);
                                 this.tabAreaAltered = true;
                             }
@@ -7561,7 +7579,7 @@ public class client extends Applet_Sub1 {
 
                         switch(buttonPressed) {
                             case 18129:
-                                if(Widget.interfaceCache[18135].message.toLowerCase().contains("join")) {
+                                if(Widget.interfaceCache.get(18135).message.toLowerCase().contains("join")) {
                                     this.inputTaken = true;
                                     this.inputDialogState = 0;
                                     this.messagePromptRaised = true;
@@ -7779,11 +7797,11 @@ public class client extends Applet_Sub1 {
                         this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7798,11 +7816,11 @@ public class client extends Applet_Sub1 {
                         this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7816,9 +7834,9 @@ public class client extends Applet_Sub1 {
                                 this.reportAbuseInput = var24.substring(var23 + 5).trim();
                                 this.canMute = false;
 
-                                for(var27 = 0; var27 < Widget.interfaceCache.length; ++var27) {
-                                    if(Widget.interfaceCache[var27] != null && Widget.interfaceCache[var27].contentType == 600) {
-                                        this.reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache[var27].parentID;
+                                for(var27 = 0; var27 < Widget.interfaceCache.size(); ++var27) {
+                                    if(Widget.interfaceCache.get(var27) != null && Widget.interfaceCache.get(var27).contentType == 600) {
+                                        this.reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache.get(var27).parentID;
                                         break;
                                     }
                                 }
@@ -7879,11 +7897,11 @@ public class client extends Applet_Sub1 {
                         this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache.get(buttonPressed).parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7938,7 +7956,7 @@ public class client extends Applet_Sub1 {
                     ItemDefinition var37;
                     if(l == 1125) {
                         var37 = ItemDefinition.method198(i1);
-                        Widget var32 = Widget.interfaceCache[buttonPressed];
+                        Widget var32 = Widget.interfaceCache.get(buttonPressed);
                         if(var32 != null && var32.inventoryAmounts[j] >= 100000) {
                             var30 = var32.inventoryAmounts[j] + " x " + var37.name;
                         } else if(var37.description != null) {
@@ -7950,7 +7968,7 @@ public class client extends Applet_Sub1 {
                         this.pushMessage(var30, 0, "");
                     }
                     if (l == 1126) {
-                        Widget class9_4 = Widget.interfaceCache[buttonPressed];
+                        Widget class9_4 = Widget.interfaceCache.get(buttonPressed);
                         if (class9_4 != null) {
                             stream.createFrame(134);
                             stream.writeDWord(i1);
@@ -7958,7 +7976,7 @@ public class client extends Applet_Sub1 {
                         }
                     }
                     if (l == 1130) {
-                        Widget class9_4 = Widget.interfaceCache[buttonPressed];
+                        Widget class9_4 = Widget.interfaceCache.get(buttonPressed);
                         if (class9_4 != null) {
                             class9_4.itemSearchSelectedId = class9_4.inventoryItemId[j];
                             class9_4.itemSearchSelectedSlot = j;
@@ -7968,7 +7986,7 @@ public class client extends Applet_Sub1 {
                     if(l == 169) {
                         this.stream.createFrame(185);
                         this.stream.writeWord(buttonPressed);
-                        var26 = Widget.interfaceCache[buttonPressed];
+                        var26 = Widget.interfaceCache.get(buttonPressed);
                         if(var26.valueIndexArray != null && var26.valueIndexArray[0][0] == 5) {
                             var23 = var26.valueIndexArray[0][1];
                             this.variousSettings[var23] = 1 - this.variousSettings[var23];
@@ -8306,7 +8324,11 @@ public class client extends Applet_Sub1 {
         if(this.aMouseDetection_879 != null) {
             this.aMouseDetection_879.running = false;
         }
-
+        try {
+            spriteLoader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.aMouseDetection_879 = null;
         onDemandFetcher.method553();
         onDemandFetcher = null;
@@ -8669,9 +8691,9 @@ public class client extends Applet_Sub1 {
                         }
                         if (rsi.isItemSearchComponent && rsi.message.length() > 2
                                 && rsi.defaultInputFieldText.equals("Name")) {
-                            Widget subcomponent = Widget.interfaceCache[rsi.id + 2];
-                            Widget scroll = Widget.interfaceCache[rsi.id + 4];
-                            Widget toggle = Widget.interfaceCache[rsi.id + 9];
+                            Widget subcomponent = Widget.interfaceCache.get(rsi.id + 2);
+                            Widget scroll = Widget.interfaceCache.get(rsi.id + 4);
+                            Widget toggle = Widget.interfaceCache.get(rsi.id + 9);
                             scroll.itemSearchSelectedId = 0;
                             scroll.itemSearchSelectedSlot = -1;
                             Widget.selectedItemInterfaceId = 0;
@@ -8746,7 +8768,7 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if (this.inputString.equals("::prefetchmusic")) {
-                                    for (s = 0; s < onDemandFetcher.method555(79, 2); ++s) {
+                                    for (s = 0; s < onDemandFetcher.method555(2); ++s) {
                                         onDemandFetcher.method563((byte) 1, 2, s, (byte) 8);
                                     }
                                 }
@@ -8756,11 +8778,11 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if (this.inputString.equals("::dumpitemimg")) {
-                                    for (s = 0; s < 20000; ++s) {
+                                    for (s = 0; s < 30000; ++s) {
                                         Sprite j2 = ItemDefinition.method200(s, 1, 0, 9);
                                         ItemDefinition i3 = ItemDefinition.method198(s);
                                         if (j2 != null && i3.name != null) {
-                                            j2.dumpImage("directory/", "" + i3.name + (i3.certTemplateID != -1 ? " noted" : ""), j2, true);
+                                            j2.dumpImage("directory/", "" + s, j2, true);
                                         }
                                     }
                                 }
@@ -8783,7 +8805,6 @@ public class client extends Applet_Sub1 {
                             if (this.inputString.equals("::fpsoff")) {
                                 fpsOn = false;
                             }
-
                             if (this.inputString.equals("::hd")) {
                                 Configuration.hdTexturing = !Configuration.hdTexturing;
                             }
@@ -9452,7 +9473,7 @@ public class client extends Applet_Sub1 {
                     characterDisplay.createBones();
                     characterDisplay.method470(AnimationDefinition.anims[localPlayer.anInt1511].frames[0], '\u9e5e');
                     characterDisplay.method479(64, 850, -30, -50, -30, true);
-                    class9.anInt233 = 5;
+                    class9.mediaType = 5;
                     class9.mediaID = 0;
                     Widget.method208(0, this.aBoolean994, 5, characterDisplay);
                 }
@@ -9478,7 +9499,7 @@ public class client extends Applet_Sub1 {
                         staticFrame = localPlayer.anInt1511;
                         characterDisplay.createBones();
                         characterDisplay.method470(AnimationDefinition.anims[staticFrame].frames[0], '\u9e5e');
-                        class9.anInt233 = 5;
+                        class9.mediaType = 5;
                         class9.mediaID = 0;
                         Widget.method208(0, this.aBoolean994, 5, characterDisplay);
                     }
@@ -10450,14 +10471,14 @@ public class client extends Applet_Sub1 {
             if(currentScreenMode == client.ScreenMode.FIXED) {
                 if(super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
                     if(openInterfaceID != -1) {
-                        this.buildInterfaceMenu(4, 13037, Widget.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
+                        this.buildInterfaceMenu(4, 13037, Widget.interfaceCache.get(openInterfaceID), super.mouseX, 4, super.mouseY, 0);
                     } else {
                         this.build3dScreenMenu();
                     }
                 }
             } else if(currentScreenMode != client.ScreenMode.FIXED && this.getMousePositions()) {
                 if(super.mouseX > currentGameWidth / 2 - 356 && super.mouseY > currentGameHeight / 2 - 230 && super.mouseX < currentGameWidth / 2 + 356 && super.mouseY < currentGameHeight / 2 + 230 && openInterfaceID != -1) {
-                    this.buildInterfaceMenu(currentGameWidth / 2 - 356, 13037, Widget.interfaceCache[openInterfaceID], super.mouseX, currentGameHeight / 2 - 230, super.mouseY, 0);
+                    this.buildInterfaceMenu(currentGameWidth / 2 - 356, 13037, Widget.interfaceCache.get(openInterfaceID), super.mouseX, currentGameHeight / 2 - 230, super.mouseY, 0);
                 } else {
                     this.build3dScreenMenu();
                 }
@@ -10479,18 +10500,18 @@ public class client extends Applet_Sub1 {
                 j = currentScreenMode == client.ScreenMode.FIXED?0:currentGameWidth - 765;
                 if(super.mouseX > 548 + j && super.mouseX < 740 + j && super.mouseY > 207 + flag && super.mouseY < 468 + flag) {
                     if(this.invOverlayInterfaceID != -1) {
-                        this.buildInterfaceMenu(548 + j, 13037, Widget.interfaceCache[this.invOverlayInterfaceID], super.mouseX, 207 + flag, super.mouseY, 0);
+                        this.buildInterfaceMenu(548 + j, 13037, Widget.interfaceCache.get(this.invOverlayInterfaceID), super.mouseX, 207 + flag, super.mouseY, 0);
                     } else if(tabInterfaceIDs[tabID] != -1) {
-                        this.buildInterfaceMenu(548 + j, 13037, Widget.interfaceCache[tabInterfaceIDs[tabID]], super.mouseX, 207 + flag, super.mouseY, 0);
+                        this.buildInterfaceMenu(548 + j, 13037, Widget.interfaceCache.get(tabInterfaceIDs[tabID]), super.mouseX, 207 + flag, super.mouseY, 0);
                     }
                 }
             } else if(changeTabArea) {
                 flag = currentGameWidth >= 1000?37:74;
                 if(super.mouseX > currentGameWidth - 197 && super.mouseY > currentGameHeight - flag - 267 && super.mouseX < currentGameWidth - 7 && super.mouseY < currentGameHeight - flag - 7 && showTabComponents) {
                     if(this.invOverlayInterfaceID != -1) {
-                        this.buildInterfaceMenu(currentGameWidth - 197, 13037, Widget.interfaceCache[this.invOverlayInterfaceID], super.mouseX, currentGameHeight - flag - 267, super.mouseY, 0);
+                        this.buildInterfaceMenu(currentGameWidth - 197, 13037, Widget.interfaceCache.get(this.invOverlayInterfaceID), super.mouseX, currentGameHeight - flag - 267, super.mouseY, 0);
                     } else if(tabInterfaceIDs[tabID] != -1) {
-                        this.buildInterfaceMenu(currentGameWidth - 197, 13037, Widget.interfaceCache[tabInterfaceIDs[tabID]], super.mouseX, currentGameHeight - flag - 267, super.mouseY, 0);
+                        this.buildInterfaceMenu(currentGameWidth - 197, 13037, Widget.interfaceCache.get(tabInterfaceIDs[tabID]), super.mouseX, currentGameHeight - flag - 267, super.mouseY, 0);
                     }
                 }
             }
@@ -10507,7 +10528,7 @@ public class client extends Applet_Sub1 {
             anInt1315 = 0;
             if(super.mouseX > 0 && super.mouseY > (currentScreenMode == client.ScreenMode.FIXED?338:currentGameHeight - 165) && super.mouseX < 490 && super.mouseY < (currentScreenMode == client.ScreenMode.FIXED?463:currentGameHeight - 40) && showChatComponents) {
                 if(this.backDialogID != -1) {
-                    this.buildInterfaceMenu(20, 13037, Widget.interfaceCache[this.backDialogID], super.mouseX, currentScreenMode == client.ScreenMode.FIXED?358:currentGameHeight - 145, super.mouseY, 0);
+                    this.buildInterfaceMenu(20, 13037, Widget.interfaceCache.get(this.backDialogID), super.mouseX, currentScreenMode == client.ScreenMode.FIXED?358:currentGameHeight - 145, super.mouseY, 0);
                 } else if(super.mouseY < (currentScreenMode == client.ScreenMode.FIXED?463:currentGameHeight - 40) && super.mouseX < 490) {
                     this.buildChatAreaMenu(super.mouseY - (currentScreenMode == client.ScreenMode.FIXED?338:currentGameHeight - 165));
                 }
@@ -11657,8 +11678,15 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-                FrameLoader.method528(onDemandFetcher.method557(0));
+                FrameLoader.method528();
                 Model.method459(onDemandFetcher.getModelCount(), onDemandFetcher);
+                try {
+                    Path spriteDataPath = new File(signlink.findcachedir() + "main_file_sprites.dat").toPath();
+                    Path spriteMetaPath = new File(signlink.findcachedir() + "main_file_sprites.idx").toPath();
+                    spriteLoader.init(spriteDataPath, spriteMetaPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 this.method13(67, (byte)4, "Requesting Music");
                 signlink.midiVolume = 70;
                 if(!lowMemory && loginmusicEnabled) {
@@ -11689,37 +11717,43 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-                this.method13(70, (byte)4, "Requesting animations");
-                k = onDemandFetcher.method555(79, 1);
+               /* this.method13(70, (byte)4, "Requesting animations");
+                k = onDemandFetcher.method555(1);
 
                 int sprite;
                 for(sprite = 0; sprite < k; ++sprite) {
                     onDemandFetcher.method558(1, sprite);
                 }
 
-                while(onDemandFetcher.method552() > 0) {
-                    sprite = k - onDemandFetcher.method552();
-                    if(sprite > 0) {
-                        this.method13(70, (byte)4, "Loading animations - " + sprite * 100 / k + "%");
+                while (onDemandFetcher.method552() > 0) {
+
+                    int remaining = onDemandFetcher.method552();
+                    int loaded = k - remaining;
+
+                    if (loaded > 0) {
+                        int percent = (loaded * 100) / k;
+                        method13(70, (byte) 4, "Loading animations - " + percent + "%");
                     }
 
-                    this.method57(false);
+                    method57(false);
 
                     try {
-                        Thread.sleep(100L);
-                    } catch (Exception var24) {
-                        ;
+                        Thread.sleep(100); // 100 ms pause
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt(); // safer
+                        break;
                     }
 
-                    if(onDemandFetcher.anInt1349 > 3) {
-                        this.method28("ondemand");
+                    if (onDemandFetcher.anInt1349 > 3) {
+                        method28("ondemand");
                         return;
                     }
                 }
+*/
 
                 this.method13(75, (byte)4, "Requesting models");
-                k = onDemandFetcher.method555(79, 0);
-
+                k = onDemandFetcher.method555(0);
+                int sprite;
                 int i5;
                 for(sprite = 0; sprite < k; ++sprite) {
                     i5 = onDemandFetcher.method559(sprite, -203);
@@ -11741,12 +11775,12 @@ public class client extends Applet_Sub1 {
                     try {
                         Thread.sleep(100L);
                     } catch (Exception var23) {
-                        ;
+                        var23.printStackTrace();
                     }
                 }
 
                 this.method13(75, (byte)4, "Requesting HD textures");
-                k = onDemandFetcher.method555(79, 4);
+                k = onDemandFetcher.method555(4);
 
                 for(sprite = 0; sprite < k; ++sprite) {
                     i5 = onDemandFetcher.method559(sprite, -203);
@@ -11768,11 +11802,11 @@ public class client extends Applet_Sub1 {
                     try {
                         Thread.sleep(100L);
                     } catch (Exception var22) {
-                        ;
+                        var22.printStackTrace();
                     }
                 }
                 this.method13(75, (byte)4, "Requesting 2009 sounds");
-                k = onDemandFetcher.method555(79, 5);
+                k = onDemandFetcher.method555(5);
 
                 for(sprite = 0; sprite < k; ++sprite) {
                     i5 = onDemandFetcher.method559(sprite, -203);
@@ -11862,7 +11896,7 @@ public class client extends Applet_Sub1 {
 
                     onDemandFetcher.method554(aBoolean959, 0);
                     if(!lowMemory) {
-                        sprite = onDemandFetcher.method555(79, 2);
+                        sprite = onDemandFetcher.method555(2);
 
                         for(i5 = 1; i5 < sprite; ++i5) {
                             if(onDemandFetcher.method569(i5, 5)) {
@@ -12230,11 +12264,7 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final String method93(int i, int j) {
-        if(i <= 0) {
-            this.packet = this.in.readUnsignedByte();
-        }
-
+    public final String interfaceIntToString(int j) {
         return j < 999999999?String.valueOf(j):"?";
     }
 
@@ -12890,7 +12920,17 @@ public class client extends Applet_Sub1 {
         }
 
     }
-
+    public void drawBlackBox(int xPos, int yPos) {
+        DrawingArea.drawPixels(71, yPos - 1, xPos - 2, 7496785, 1);
+        DrawingArea.drawPixels(69, yPos, xPos + 174, 7496785, 1);
+        DrawingArea.drawPixels(1, yPos - 2, xPos - 2, 7496785, 178);
+        DrawingArea.drawPixels(1, yPos + 68, xPos, 7496785, 174);
+        DrawingArea.drawPixels(71, yPos - 1, xPos - 1, 3025699, 1);
+        DrawingArea.drawPixels(71, yPos - 1, xPos + 175, 3025699, 1);
+        DrawingArea.drawPixels(1, yPos - 1, xPos, 3025699, 175);
+        DrawingArea.drawPixels(1, yPos + 69, xPos, 3025699, 175);
+        DrawingArea.method335(0, yPos, 174, 68, 220, 0, xPos);
+    }
     public final void drawInterface(int scrollPosition, int xPosition, Widget class9, int yPosition) {
         if(class9.type == 0 && class9.children != null) {
             if(!class9.isMouseoverTriggered || this.anInt1026 == class9.id || this.anInt1048 == class9.id || this.anInt1039 == class9.id) {
@@ -12904,13 +12944,24 @@ public class client extends Applet_Sub1 {
                 for(int j2 = 0; j2 < i2; ++j2) {
                     int _x = class9.childX[j2] + xPosition;
                     int _y = class9.childY[j2] + yPosition - scrollPosition;
-                    Widget class9_1 = Widget.interfaceCache[class9.children[j2]];
+                    Widget class9_1 = Widget.interfaceCache.get(class9.children[j2]);
                     _x += class9_1.anInt263;
                     _y += class9_1.anInt265;
                     if(class9_1.contentType > 0) {
                         this.drawFriendsListOrWelcomeScreen(950, class9_1);
                     }
+                    int[] IDs = new int[] { 1196, 1199, 1206, 1215, 1224, 1231, 1240, 1249, 1258, 1267, 1274, 1283, 1573,
+                            1290, 1299, 1308, 1315, 1324, 1333, 1340, 1349, 1358, 1367, 1374, 1381, 1388, 1397, 1404, 1583,
+                            12038, 1414, 1421, 1430, 1437, 1446, 1453, 1460, 1469, 15878, 1602, 1613, 1624, 7456, 1478,
+                            1485, 1494, 1503, 1512, 1521, 1530, 1544, 1553, 1563, 1593, 1635, 12426, 12436, 12446, 12456,
+                            6004, 18471, 18977 };
 
+                    int boxWidth;
+                    for (boxWidth = 0; boxWidth < IDs.length; ++boxWidth) {
+                        if (class9_1.id == IDs[boxWidth] + 1) {
+                            this.drawBlackBox(_x, _y + 1);
+                        }
+                    }
                     if(class9_1.type == Widget.TYPE_CONTAINER) {
                         if(class9_1.scrollPosition > class9_1.scrollMax - class9_1.height) {
                             class9_1.scrollPosition = class9_1.scrollMax - class9_1.height;
@@ -12925,38 +12976,38 @@ public class client extends Applet_Sub1 {
                             this.drawScrollbar(class9_1.height, class9_1.scrollPosition, _y, _x + class9_1.width, class9_1.scrollMax, false);
                         }
                     } else if(class9_1.type != 1) {
-                        int k4;
-                        int j5;
-                        int i6;
+                        int boxHeight;
+                        int textDrawingArea_2;
+                        int xPos;
                         int i9;
                         int k9;
                         int var25;
-                        int var31;
+                        int yPos;
                         int var32;
                         if(class9_1.type == 2) {
                             var25 = 0;
 
-                            for(k4 = 0; k4 < class9_1.height; ++k4) {
-                                for(j5 = 0; j5 < class9_1.width; ++j5) {
-                                    i6 = _x + j5 * (32 + class9_1.invSpritePadX);
-                                    var31 = _y + k4 * (32 + class9_1.invSpritePadY);
+                            for(boxHeight = 0; boxHeight < class9_1.height; ++boxHeight) {
+                                for(textDrawingArea_2 = 0; textDrawingArea_2 < class9_1.width; ++textDrawingArea_2) {
+                                    xPos = _x + textDrawingArea_2 * (32 + class9_1.invSpritePadX);
+                                    yPos = _y + boxHeight * (32 + class9_1.invSpritePadY);
                                     if(var25 < 20) {
-                                        i6 += class9_1.spritesX[var25];
-                                        var31 += class9_1.spritesY[var25];
+                                        xPos += class9_1.spritesX[var25];
+                                        yPos += class9_1.spritesY[var25];
                                     }
 
                                     if(class9_1.inventoryItemId[var25] <= 0) {
                                         if(class9_1.sprites != null && var25 < 20) {
                                             Sprite var36 = class9_1.sprites[var25];
                                             if(var36 != null) {
-                                                var36.drawSprite(i6, var31);
+                                                var36.drawSprite(xPos, yPos);
                                             }
                                         }
                                     } else {
                                         var32 = 0;
                                         i9 = 0;
                                         k9 = class9_1.inventoryItemId[var25] - 1;
-                                        if(i6 > DrawingArea.leftX - 32 && i6 < DrawingArea.bottomX && var31 > DrawingArea.topY - 32 && var31 < DrawingArea.bottomY || this.anInt1086 != 0 && this.anInt1085 == var25) {
+                                        if(xPos > DrawingArea.leftX - 32 && xPos < DrawingArea.bottomX && yPos > DrawingArea.topY - 32 && yPos < DrawingArea.bottomY || this.anInt1086 != 0 && this.anInt1085 == var25) {
                                             int l9 = 0;
                                             if(this.anInt1282 == 1 && this.anInt1283 == var25 && this.anInt1284 == class9_1.id) {
                                                 l9 = 16777215;
@@ -12981,9 +13032,9 @@ public class client extends Applet_Sub1 {
                                                         i9 = 0;
                                                     }
 
-                                                    class30_sub2_sub1_sub1_2.method350(i6 + var32, var31 + i9, 128, this.aBoolean1043);
-                                                    if(var31 + i9 < DrawingArea.topY && class9.scrollPosition > 0) {
-                                                        k10 = this.anInt945 * (DrawingArea.topY - var31 - i9) / 3;
+                                                    class30_sub2_sub1_sub1_2.method350(xPos + var32, yPos + i9, 128, this.aBoolean1043);
+                                                    if(yPos + i9 < DrawingArea.topY && class9.scrollPosition > 0) {
+                                                        k10 = this.anInt945 * (DrawingArea.topY - yPos - i9) / 3;
                                                         if(k10 > this.anInt945 * 10) {
                                                             k10 = this.anInt945 * 10;
                                                         }
@@ -12996,8 +13047,8 @@ public class client extends Applet_Sub1 {
                                                         this.anInt1088 += k10;
                                                     }
 
-                                                    if(var31 + i9 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.scrollMax - class9.height) {
-                                                        k10 = this.anInt945 * (var31 + i9 + 32 - DrawingArea.bottomY) / 3;
+                                                    if(yPos + i9 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.scrollMax - class9.height) {
+                                                        k10 = this.anInt945 * (yPos + i9 + 32 - DrawingArea.bottomY) / 3;
                                                         if(k10 > this.anInt945 * 10) {
                                                             k10 = this.anInt945 * 10;
                                                         }
@@ -13010,24 +13061,24 @@ public class client extends Applet_Sub1 {
                                                         this.anInt1088 -= k10;
                                                     }
                                                 } else if(this.atInventoryInterfaceType != 0 && this.atInventoryIndex == var25 && this.atInventoryInterface == class9_1.id) {
-                                                    class30_sub2_sub1_sub1_2.method350(i6, var31, 128, this.aBoolean1043);
+                                                    class30_sub2_sub1_sub1_2.method350(xPos, yPos, 128, this.aBoolean1043);
                                                 } else {
-                                                    class30_sub2_sub1_sub1_2.drawSprite(i6, var31);
+                                                    class30_sub2_sub1_sub1_2.drawSprite(xPos, yPos);
                                                 }
                                                 if (class9_1.id == Widget.selectedItemInterfaceId
                                                         && class9_1.itemSearchSelectedSlot > -1
                                                         && class9_1.itemSearchSelectedSlot == var25) {
                                                     for (int i = 32; i > 0; i--) {
-                                                        Rasterizer.method338(i6 + i9, i, 256 - Byte.MAX_VALUE, 0x395D84, i,
-                                                                var31 + var32, -17319);
+                                                        Rasterizer.method338(xPos + i9, i, 256 - Byte.MAX_VALUE, 0x395D84, i,
+                                                                yPos + var32, -17319);
                                                     }
-                                                    Rasterizer.method338(i6 + i9, 32, 256, 0x395D84, 32, var31 + var32, -17319);
+                                                    Rasterizer.method338(xPos + i9, 32, 256, 0x395D84, 32, yPos + var32, -17319);
                                                 }
                                                 if(class30_sub2_sub1_sub1_2.maxWidth == 33 || class9_1.inventoryAmounts[var25] != 1) {
                                                     k10 = class9_1.inventoryAmounts[var25];
-                                                    this.smallText.method385(0, intToKOrMil(k10), var31 + 10 + i9, 822, i6 + 1 + var32);
-                                                    this.smallText.method385('\uff80', intToKOrMil(k10), var31 + 9 + i9, 822, i6 + var32);
-                                                    this.smallText.method385('\uff80', intToKOrMil(k10), var31 + 9 + i9, 822, i6 + var32);
+                                                    this.smallText.method385(0, intToKOrMil(k10), yPos + 10 + i9, 822, xPos + 1 + var32);
+                                                    this.smallText.method385('\uff80', intToKOrMil(k10), yPos + 9 + i9, 822, xPos + var32);
+                                                    this.smallText.method385('\uff80', intToKOrMil(k10), yPos + 9 + i9, 822, xPos + var32);
                                                 }
                                             }
                                         }
@@ -13043,27 +13094,27 @@ public class client extends Applet_Sub1 {
                             }
 
                             if(this.method131(class9_1, false)) {
-                                k4 = class9_1.secondaryColor;
+                                boxHeight = class9_1.secondaryColor;
                                 if(var27 && class9_1.secondaryHoverColor != 0) {
-                                    k4 = class9_1.secondaryHoverColor;
+                                    boxHeight = class9_1.secondaryHoverColor;
                                 }
                             } else {
-                                k4 = class9_1.textColor;
+                                boxHeight = class9_1.textColor;
                                 if(var27 && class9_1.defaultHoverColor != 0) {
-                                    k4 = class9_1.defaultHoverColor;
+                                    boxHeight = class9_1.defaultHoverColor;
                                 }
                             }
 
                             if(class9_1.opacity == 0) {
                                 if(class9_1.aBoolean227) {
-                                    DrawingArea.drawPixels(class9_1.height, _y, _x, k4, class9_1.width);
+                                    DrawingArea.drawPixels(class9_1.height, _y, _x, boxHeight, class9_1.width);
                                 } else {
-                                    DrawingArea.fillPixels(_x, class9_1.width, class9_1.height, k4, _y, true);
+                                    DrawingArea.fillPixels(_x, class9_1.width, class9_1.height, boxHeight, _y, true);
                                 }
                             } else if(class9_1.aBoolean227) {
-                                DrawingArea.method335(k4, _y, class9_1.width, class9_1.height, 256 - (class9_1.opacity & 255), 0, _x);
+                                DrawingArea.method335(boxHeight, _y, class9_1.width, class9_1.height, 256 - (class9_1.opacity & 255), 0, _x);
                             } else {
-                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.opacity & 255), k4, class9_1.width, _x, -17319);
+                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.opacity & 255), boxHeight, class9_1.width, _x, -17319);
                             }
                         } else {
                             RSFont class30_sub2_sub1_sub4_1;
@@ -13076,37 +13127,37 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if(this.method131(class9_1, false)) {
-                                    i6 = class9_1.secondaryColor;
+                                    xPos = class9_1.secondaryColor;
                                     if(var29 && class9_1.secondaryHoverColor != 0) {
-                                        i6 = class9_1.secondaryHoverColor;
+                                        xPos = class9_1.secondaryHoverColor;
                                     }
 
                                     if(class9_1.secondaryText.length() > 0) {
                                         var28 = class9_1.secondaryText;
                                     }
                                 } else {
-                                    i6 = class9_1.textColor;
+                                    xPos = class9_1.textColor;
                                     if(var29 && class9_1.defaultHoverColor != 0) {
-                                        i6 = class9_1.defaultHoverColor;
+                                        xPos = class9_1.defaultHoverColor;
                                     }
                                 }
 
                                 if(class9_1.atActionType == 6 && this.aBoolean1149) {
                                     var28 = "Please wait...";
-                                    i6 = class9_1.textColor;
+                                    xPos = class9_1.textColor;
                                 }
 
                                 if(DrawingArea.width == 479) {
-                                    if(i6 == 16776960) {
-                                        i6 = 255;
+                                    if(xPos == 16776960) {
+                                        xPos = 255;
                                     }
 
-                                    if(i6 == '\uc000') {
-                                        i6 = 16777215;
+                                    if(xPos == '\uc000') {
+                                        xPos = 16777215;
                                     }
                                 }
 
-                                for(var31 = _y + class30_sub2_sub1_sub4_1.baseCharacterHeight; var28.length() > 0; var31 += class30_sub2_sub1_sub4_1.baseCharacterHeight) {
+                                for(yPos = _y + class30_sub2_sub1_sub4_1.baseCharacterHeight; var28.length() > 0; yPos += class30_sub2_sub1_sub4_1.baseCharacterHeight) {
                                     if(var28.indexOf("%") != -1) {
                                         label372:
                                         while(true) {
@@ -13127,23 +13178,23 @@ public class client extends Applet_Sub1 {
                                                                                 break label372;
                                                                             }
 
-                                                                            var28 = var28.substring(0, var32) + this.method93(369, this.method124(341, class9_1, 4)) + var28.substring(var32 + 2);
+                                                                            var28 = var28.substring(0, var32) + this.interfaceIntToString(this.extractInterfaceValues(class9_1, 4)) + var28.substring(var32 + 2);
                                                                         }
                                                                     }
 
-                                                                    var28 = var28.substring(0, var32) + this.method93(369, this.method124(341, class9_1, 3)) + var28.substring(var32 + 2);
+                                                                    var28 = var28.substring(0, var32) + this.interfaceIntToString(this.extractInterfaceValues(class9_1, 3)) + var28.substring(var32 + 2);
                                                                 }
                                                             }
 
-                                                            var28 = var28.substring(0, var32) + this.method93(369, this.method124(341, class9_1, 2)) + var28.substring(var32 + 2);
+                                                            var28 = var28.substring(0, var32) + this.interfaceIntToString(this.extractInterfaceValues(class9_1, 2)) + var28.substring(var32 + 2);
                                                         }
                                                     }
 
-                                                    var28 = var28.substring(0, var32) + this.method93(369, this.method124(341, class9_1, 1)) + var28.substring(var32 + 2);
+                                                    var28 = var28.substring(0, var32) + this.interfaceIntToString(this.extractInterfaceValues(class9_1, 1)) + var28.substring(var32 + 2);
                                                 }
                                             }
 
-                                            var28 = var28.substring(0, var32) + this.method93(369, this.method124(341, class9_1, 0)) + var28.substring(var32 + 2);
+                                            var28 = var28.substring(0, var32) + this.interfaceIntToString(this.extractInterfaceValues(class9_1, 0)) + var28.substring(var32 + 2);
                                         }
                                     }
 
@@ -13158,9 +13209,9 @@ public class client extends Applet_Sub1 {
                                     }
 
                                     if(class9_1.centerText) {
-                                        class30_sub2_sub1_sub4_1.drawCenteredString(var35, _x + class9_1.width / 2, var31, i6, class9_1.textShadow?0:-1);
+                                        class30_sub2_sub1_sub4_1.drawCenteredString(var35, _x + class9_1.width / 2, yPos, xPos, class9_1.textShadow?0:-1);
                                     } else {
-                                        class30_sub2_sub1_sub4_1.drawBasicString(var35, _x, var31, i6, class9_1.textShadow?0:-1);
+                                        class30_sub2_sub1_sub4_1.drawBasicString(var35, _x, yPos, xPos, class9_1.textShadow?0:-1);
                                     }
                                 }
                             } else if(class9_1.type == 5) {
@@ -13176,11 +13227,11 @@ public class client extends Applet_Sub1 {
                                 }
                             } else if(class9_1.type == 6) {
                                 var25 = Rasterizer.centerX;
-                                k4 = Rasterizer.centerY;
+                                boxHeight = Rasterizer.centerY;
                                 Rasterizer.centerX = _x + class9_1.width / 2;
                                 Rasterizer.centerY = _y + class9_1.height / 2;
-                                j5 = Rasterizer.anIntArray1470[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
-                                i6 = Rasterizer.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
+                                textDrawingArea_2 = Rasterizer.anIntArray1470[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
+                                xPos = Rasterizer.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
                                 boolean var30 = this.method131(class9_1, false);
                                 if(var30) {
                                     var32 = class9_1.enabledAnimationId;
@@ -13197,26 +13248,26 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if(var33 != null) {
-                                    var33.renderSingle(0, class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, j5, i6);
+                                    var33.renderSingle(0, class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, textDrawingArea_2, xPos);
                                 }
 
                                 Rasterizer.centerX = var25;
-                                Rasterizer.centerY = k4;
+                                Rasterizer.centerY = boxHeight;
                             } else if(class9_1.type == 7) {
                                 class30_sub2_sub1_sub4_1 = class9_1.textDrawingAreas;
-                                k4 = 0;
+                                boxHeight = 0;
 
-                                for(j5 = 0; j5 < class9_1.height; ++j5) {
-                                    for(i6 = 0; i6 < class9_1.width; ++i6) {
-                                        if(class9_1.inventoryItemId[k4] > 0) {
-                                            ItemDefinition class8 = ItemDefinition.method198(class9_1.inventoryItemId[k4] - 1);
+                                for(textDrawingArea_2 = 0; textDrawingArea_2 < class9_1.height; ++textDrawingArea_2) {
+                                    for(xPos = 0; xPos < class9_1.width; ++xPos) {
+                                        if(class9_1.inventoryItemId[boxHeight] > 0) {
+                                            ItemDefinition class8 = ItemDefinition.method198(class9_1.inventoryItemId[boxHeight] - 1);
                                             String s2 = class8.name;
-                                            if(class8.stackable || class9_1.inventoryAmounts[k4] != 1) {
-                                                s2 = s2 + " x" + method14(class9_1.inventoryAmounts[k4], 0);
+                                            if(class8.stackable || class9_1.inventoryAmounts[boxHeight] != 1) {
+                                                s2 = s2 + " x" + method14(class9_1.inventoryAmounts[boxHeight], 0);
                                             }
 
-                                            i9 = _x + i6 * (115 + class9_1.invSpritePadX);
-                                            k9 = _y + j5 * (12 + class9_1.invSpritePadY);
+                                            i9 = _x + xPos * (115 + class9_1.invSpritePadX);
+                                            k9 = _y + textDrawingArea_2 * (12 + class9_1.invSpritePadY);
                                             if(class9_1.centerText) {
                                                 class30_sub2_sub1_sub4_1.drawCenteredString(s2, i9 + class9_1.width / 2, k9, class9_1.textColor, class9_1.textShadow?0:-1);
                                             } else {
@@ -13224,16 +13275,148 @@ public class client extends Applet_Sub1 {
                                             }
                                         }
 
-                                        ++k4;
+                                        ++boxHeight;
                                     }
                                 }
 
-                            } else if (class9_1.type == 8) {
-                                // if (interfaceIsSelected(child)) {
-                                // } else
-                                try {
-                                    drawHoverBox(_x, _y, class9_1.message);
-                                } catch (Exception e) {
+                            } else if (class9_1.type == 8
+                                    && (anInt1500 == class9_1.id || anInt1044 == class9_1.id || anInt1129 == class9_1.id)
+                                    && anInt1501 == tooltipDelay && !menuOpen) {
+                                boxWidth = 0;
+                                boxHeight = 0;
+                                TextDrawingArea textDrawingArea_21 = regularText;
+                                for (String s1 = class9_1.message; s1.length() > 0;) {
+                                    if (s1.indexOf("%") != -1) {
+                                        do {
+                                            int k7 = s1.indexOf("%1");
+                                            if (k7 == -1)
+                                                break;
+                                            s1 = s1.substring(0, k7) + interfaceIntToString(extractInterfaceValues(class9_1, 0))
+                                                    + s1.substring(k7 + 2);
+                                        } while (true);
+                                        do {
+                                            int l7 = s1.indexOf("%2");
+                                            if (l7 == -1)
+                                                break;
+                                            s1 = s1.substring(0, l7) + interfaceIntToString(extractInterfaceValues(class9_1, 1))
+                                                    + s1.substring(l7 + 2);
+                                        } while (true);
+                                        do {
+                                            int i8 = s1.indexOf("%3");
+                                            if (i8 == -1)
+                                                break;
+                                            s1 = s1.substring(0, i8) + interfaceIntToString(extractInterfaceValues(class9_1, 2))
+                                                    + s1.substring(i8 + 2);
+                                        } while (true);
+                                        do {
+                                            int j8 = s1.indexOf("%4");
+                                            if (j8 == -1)
+                                                break;
+                                            s1 = s1.substring(0, j8) + interfaceIntToString(extractInterfaceValues(class9_1, 3))
+                                                    + s1.substring(j8 + 2);
+                                        } while (true);
+                                        do {
+                                            int k8 = s1.indexOf("%5");
+                                            if (k8 == -1)
+                                                break;
+                                            s1 = s1.substring(0, k8) + interfaceIntToString(extractInterfaceValues(class9_1, 4))
+                                                    + s1.substring(k8 + 2);
+                                        } while (true);
+                                    }
+                                    int l7 = s1.indexOf("\\n");
+                                    String s4;
+                                    if (l7 != -1) {
+                                        s4 = s1.substring(0, l7);
+                                        s1 = s1.substring(l7 + 2);
+                                    } else {
+                                        s4 = s1;
+                                        s1 = "";
+                                    }
+                                    int j10 = textDrawingArea_21.getTextWidth(s4);
+                                    if (j10 > boxWidth) {
+                                        boxWidth = j10;
+                                    }
+                                    boxHeight += textDrawingArea_21.anInt1497 + 1;
+                                }
+                                boxWidth += 6;
+                                boxHeight += 7;
+                                xPos = (_x + class9_1.width) - 5 - boxWidth;
+                                yPos = _y + class9_1.height + 5;
+                                if (xPos < _x + 5)
+                                    xPos = _x + 5;
+                                if (xPos + boxWidth > xPosition + class9.width)
+                                    xPos = (xPosition + class9.width) - boxWidth;
+                                if (yPos + boxHeight > yPosition + class9.height)
+                                    yPos = (_y - boxHeight);
+                                DrawingArea.drawPixels(boxHeight, yPos, xPos, 0xFFFFA0, boxWidth);
+                                DrawingArea.fillPixels(xPos, boxWidth, boxHeight, 0, yPos, true);
+                                String s21 = class9_1.message;
+                                for (i9 = yPos + textDrawingArea_21.anInt1497 + 2; s21
+                                        .length() > 0; i9 += textDrawingArea_21.anInt1497 + 1) {
+                                    if (s21.indexOf("%") != -1) {
+                                        do {
+                                            int k7 = s21.indexOf("%1");
+                                            if (k7 == -1)
+                                                break;
+                                            s21 = s21.substring(0, k7)
+                                                    + interfaceIntToString(extractInterfaceValues(class9_1, 0))
+                                                    + s21.substring(k7 + 2);
+                                        } while (true);
+                                        do {
+                                            int l7 = s21.indexOf("%2");
+                                            if (l7 == -1)
+                                                break;
+                                            s21 = s21.substring(0, l7)
+                                                    + interfaceIntToString(extractInterfaceValues(class9_1, 1))
+                                                    + s21.substring(l7 + 2);
+                                        } while (true);
+                                        do {
+                                            int i8 = s21.indexOf("%3");
+                                            if (i8 == -1)
+                                                break;
+                                            s21 = s21.substring(0, i8)
+                                                    + interfaceIntToString(extractInterfaceValues(class9_1, 2))
+                                                    + s21.substring(i8 + 2);
+                                        } while (true);
+                                        do {
+                                            int j8 = s21.indexOf("%4");
+                                            if (j8 == -1)
+                                                break;
+                                            s21 = s21.substring(0, j8)
+                                                    + interfaceIntToString(extractInterfaceValues(class9_1, 3))
+                                                    + s21.substring(j8 + 2);
+                                        } while (true);
+                                        do {
+                                            int k8 = s21.indexOf("%5");
+                                            if (k8 == -1)
+                                                break;
+                                            s21 = s21.substring(0, k8)
+                                                    + interfaceIntToString(extractInterfaceValues(class9_1, 4))
+                                                    + s21.substring(k8 + 2);
+                                        } while (true);
+                                    }
+                                    int l111 = s21.indexOf("\\n");
+                                    String s5;
+                                    if (l111 != -1) {
+                                        s5 = s21.substring(0, l111);
+                                        s21 = s21.substring(l111 + 2);
+                                    } else {
+                                        s5 = s21;
+                                        s21 = "";
+                                    }
+                                    if (class9_1.centerText) {
+                                        textDrawingArea_21.method382(yPos, xPos + class9_1.width / 2, s5, i9, false);
+                                    } else {
+                                        if (s5.contains("\\r")) {
+                                            String text = s5.substring(0, s5.indexOf("\\r"));
+                                            String text2 = s5.substring(s5.indexOf("\\r") + 2);
+                                            textDrawingArea_21.method389(false, true,  xPos + 3, 0, text, i9);
+                                            int rightX = boxWidth + xPos - textDrawingArea_21.getTextWidth(text2) - 2;
+                                            textDrawingArea_21.method389(false, true,  rightX, 0, text2, i9);
+                                            System.out.println("Box: " + boxWidth + "");
+                                        } else
+                                            textDrawingArea_21.method389(false, true,  xPos + 3, 0, s5, i9);
+                                    }
                                 }
                             } else if (class9_1.type == 12) {
                                 try {
@@ -13848,21 +14031,21 @@ public class client extends Applet_Sub1 {
             this.method119(this.anInt945, false, this.openWalkableInterface);
             if(this.openWalkableInterface == 197 && currentScreenMode != client.ScreenMode.FIXED) {
                 this.skullIcons[0].drawSprite(currentGameWidth - 157, 168);
-                String x = Widget.interfaceCache[199].message.replace("@yel@", "");
+                String x = Widget.interfaceCache.get(199).message.replace("@yel@", "");
                 this.regularText.drawChatInput(14784541, currentGameWidth - 165, x, 207, true);
             } else if(this.openWalkableInterface == 201 && currentScreenMode != client.ScreenMode.FIXED) {
-                this.drawInterface(0, currentGameWidth - 560, Widget.interfaceCache[this.openWalkableInterface], -109);
+                this.drawInterface(0, currentGameWidth - 560, Widget.interfaceCache.get(this.openWalkableInterface), -109);
             } else {
-                this.drawInterface(0, currentScreenMode == client.ScreenMode.FIXED?0:currentGameWidth / 2 - 356, Widget.interfaceCache[this.openWalkableInterface], currentScreenMode == client.ScreenMode.FIXED?0:currentGameHeight / 2 - 230);
+                this.drawInterface(0, currentScreenMode == client.ScreenMode.FIXED?0:currentGameWidth / 2 - 356, Widget.interfaceCache.get(this.openWalkableInterface), currentScreenMode == client.ScreenMode.FIXED?0:currentGameHeight / 2 - 230);
             }
         }
 
         if(openInterfaceID != -1) {
             this.method119(this.anInt945, false, openInterfaceID);
             if(currentScreenMode == client.ScreenMode.FIXED) {
-                this.drawInterface(0, 0, Widget.interfaceCache[openInterfaceID], 0);
+                this.drawInterface(0, 0, Widget.interfaceCache.get(openInterfaceID), 0);
             } else {
-                this.drawInterface(0, currentGameWidth / 2 - 356, Widget.interfaceCache[openInterfaceID], currentScreenMode == client.ScreenMode.FIXED?0:currentGameHeight / 2 - 230);
+                this.drawInterface(0, currentGameWidth / 2 - 356, Widget.interfaceCache.get(openInterfaceID), currentScreenMode == client.ScreenMode.FIXED?0:currentGameHeight / 2 - 230);
             }
         }
 
@@ -14180,10 +14363,10 @@ public class client extends Applet_Sub1 {
         if(flag) {
             throw new NullPointerException();
         } else {
-            Widget class9 = Widget.interfaceCache[j];
+            Widget class9 = Widget.interfaceCache.get(j);
 
             for(int k = 0; k < class9.children.length && class9.children[k] != -1; ++k) {
-                Widget class9_1 = Widget.interfaceCache[class9.children[k]];
+                Widget class9_1 = Widget.interfaceCache.get(class9.children[k]);
                 if(class9_1.type == 1) {
                     flag1 |= this.method119(i, false, class9_1.id);
                 }
@@ -14401,8 +14584,7 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final int method124(int i, Widget class9, int j) {
-        i = 91 / i;
+    public final int extractInterfaceValues(Widget class9, int j) {
         if(class9.valueIndexArray != null && j < class9.valueIndexArray.length) {
             try {
                 int[] _ex = class9.valueIndexArray[j];
@@ -14434,7 +14616,7 @@ public class client extends Applet_Sub1 {
                     int varBit;
                     int l3;
                     if(j1 == 4) {
-                        j2 = Widget.interfaceCache[_ex[l++]];
+                        j2 = Widget.interfaceCache.get(_ex[l++]);
                         varBit = _ex[l++];
                         if(varBit >= 0 && varBit < ItemDefinition.anInt203 && (!ItemDefinition.method198(varBit).membersObject || aBoolean959)) {
                             for(l3 = 0; l3 < j2.inventoryItemId.length; ++l3) {
@@ -14470,7 +14652,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(j1 == 10) {
-                        j2 = Widget.interfaceCache[_ex[l++]];
+                        j2 = Widget.interfaceCache.get(_ex[l++]);
                         varBit = _ex[l++] + 1;
                         if(varBit >= 0 && varBit < ItemDefinition.anInt203 && (!ItemDefinition.method198(varBit).membersObject || aBoolean959)) {
                             for(l3 = 0; l3 < j2.inventoryItemId.length; ++l3) {
@@ -14595,14 +14777,14 @@ public class client extends Applet_Sub1 {
         int[] spriteID = new int[]{this.isPoisoned && this.hpHover?49:48, this.prayHover?49:48, this.runHover?49:48};
         int[] coloredOrbSprite = new int[]{37, this.clickedQuickPrayers?43:40, this.runClicked?41:42};
         int[] orbSprite = new int[]{44, 45, this.runClicked?46:47};
-        String cEnergy = Widget.interfaceCache[149].message.replaceAll("%", "");
-        Widget.interfaceCache[4016].message.replaceAll("%", "");
+        String cEnergy = Widget.interfaceCache.get(149).message.replaceAll("%", "");
+        Widget.interfaceCache.get(4016).message.replaceAll("%", "");
         int currentHP = this.currentLevels[3];
         int currentEnergy = Integer.parseInt(cEnergy);
 
         for(int i = 0; i < 3; ++i) {
-            String currentStats = Widget.interfaceCache[this.currentInterface[i]].message.replaceAll("%", "");
-            String maxStats = Widget.interfaceCache[this.maximumInterface[i]].message.replaceAll("%", "");
+            String currentStats = Widget.interfaceCache.get(this.currentInterface[i]).message.replaceAll("%", "");
+            String maxStats = Widget.interfaceCache.get(this.maximumInterface[i]).message.replaceAll("%", "");
             int currentLevel = Integer.parseInt(currentStats);
             int maxLevel = Integer.parseInt(maxStats);
             int level = (int)((double)currentLevel / (double)maxLevel * 100.0D);
@@ -14623,7 +14805,7 @@ public class client extends Applet_Sub1 {
             }
 
             this.gameframe[orbSprite[i]].drawSprite(this.orbIconX[i] + xOffset, this.orbIconY[i]);
-            this.smallText.method382(this.getOrbTextColor(i == 2?(this.runEnergy?currentEnergy:100):level), this.orbTextX[i] + xOffset, this.anInt939, "" + (i == 2?(this.runEnergy?cEnergy:Integer.valueOf(100)):(i == 0 && newDamage?Integer.valueOf(currentHP * 10):Widget.interfaceCache[this.currentInterface[i]].message.replaceAll("%", ""))), this.orbTextY[i], true);
+            this.smallText.method382(this.getOrbTextColor(i == 2?(this.runEnergy?currentEnergy:100):level), this.orbTextX[i] + xOffset, this.anInt939, "" + (i == 2?(this.runEnergy?cEnergy:Integer.valueOf(100)):(i == 0 && newDamage?Integer.valueOf(currentHP * 10):Widget.interfaceCache.get(this.currentInterface[i]).message.replaceAll("%", ""))), this.orbTextY[i], true);
         }
 
     }
@@ -15066,21 +15248,21 @@ public class client extends Applet_Sub1 {
             this.anInt883 = -211;
         }
 
-        if(class9.anIntArray245 == null) {
+        if(class9.valueCompareType == null) {
             return false;
         } else {
-            for(int i = 0; i < class9.anIntArray245.length; ++i) {
-                int j = this.method124(341, class9, i);
-                int k = class9.anIntArray212[i];
-                if(class9.anIntArray245[i] == 2) {
+            for(int i = 0; i < class9.valueCompareType.length; ++i) {
+                int j = this.extractInterfaceValues(class9, i);
+                int k = class9.requiredValues[i];
+                if(class9.valueCompareType[i] == 2) {
                     if(j >= k) {
                         return false;
                     }
-                } else if(class9.anIntArray245[i] == 3) {
+                } else if(class9.valueCompareType[i] == 3) {
                     if(j <= k) {
                         return false;
                     }
-                } else if(class9.anIntArray245[i] == 4) {
+                } else if(class9.valueCompareType[i] == 4) {
                     if(j == k) {
                         return false;
                     }
@@ -16006,7 +16188,7 @@ public class client extends Applet_Sub1 {
                 if(j1 == 0) {
                     this.aWorldController_946.method291(i1, j, i, (byte)-119);
                     objectDefinition_2 = ObjectDefinition.forID(j2);
-                    if(objectDefinition_2.aBoolean767) {
+                    if(objectDefinition_2.projectileCliped) {
                         this.collisionMaps[j].method215(l2, k2, objectDefinition_2.aBoolean757, true, i1, i);
                     }
                 }
@@ -16022,7 +16204,7 @@ public class client extends Applet_Sub1 {
                         return;
                     }
 
-                    if(objectDefinition_2.aBoolean767) {
+                    if(objectDefinition_2.projectileCliped) {
                         this.collisionMaps[j].method216(l2, objectDefinition_2.sizeX, i1, i, (byte)6, objectDefinition_2.sizeY, objectDefinition_2.aBoolean757);
                     }
                 }
@@ -16030,7 +16212,7 @@ public class client extends Applet_Sub1 {
                 if(j1 == 3) {
                     this.aWorldController_946.method294((byte)9, j, i, i1);
                     objectDefinition_2 = ObjectDefinition.forID(j2);
-                    if(objectDefinition_2.aBoolean767 && objectDefinition_2.hasactions) {
+                    if(objectDefinition_2.projectileCliped && objectDefinition_2.hasactions) {
                         this.collisionMaps[j].method218(360, i, i1);
                     }
                 }
@@ -16130,10 +16312,10 @@ public class client extends Applet_Sub1 {
     public void handleScrollPosition(String text, int frame) {
         if(text.startsWith(":scp:")) {
             int widget = Integer.parseInt(text.split(" ")[1]);
-            Widget widget1 = Widget.interfaceCache[frame];
+            Widget widget1 = Widget.interfaceCache.get(frame);
             widget1.scrollPosition = widget;
         } else if(text.startsWith(":scpfind:")) {
-            Widget widget2 = Widget.interfaceCache[frame];
+            Widget widget2 = Widget.interfaceCache.get(frame);
             this.sendString(7, widget2.scrollPosition + "");
         }
 
@@ -16329,9 +16511,9 @@ public class client extends Applet_Sub1 {
                         this.reportAbuseInput = "";
                         this.canMute = false;
 
-                        for(j15 = 0; j15 < Widget.interfaceCache.length; ++j15) {
-                            if(Widget.interfaceCache[j15] != null && Widget.interfaceCache[j15].contentType == var52) {
-                                openInterfaceID = Widget.interfaceCache[j15].parentID;
+                        for(j15 = 0; j15 < Widget.interfaceCache.size(); ++j15) {
+                            if(Widget.interfaceCache.get(j15) != null && Widget.interfaceCache.get(j15).contentType == var52) {
+                                openInterfaceID = Widget.interfaceCache.get(j15).parentID;
                                 break;
                             }
                         }
@@ -16344,7 +16526,7 @@ public class client extends Applet_Sub1 {
                 int var23;
                 if(this.packet == 2) {
                     var23 = this.in.readUnsignedShort();
-                    Widget.interfaceCache[var23].scrollPosition = 0;
+                    Widget.interfaceCache.get(var23).scrollPosition = 0;
                     this.packet = -1;
                     return true;
                 }
@@ -16352,7 +16534,7 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 3) {
                     var23 = this.in.readUnsignedShort();
                     j15 = this.in.readUnsignedShort();
-                    Widget.interfaceCache[var23].scrollMax = j15;
+                    Widget.interfaceCache.get(var23).scrollMax = j15;
                     this.packet = -1;
                     return true;
                 }
@@ -16457,11 +16639,11 @@ public class client extends Applet_Sub1 {
 
                 if(this.packet == 185) {
                     var23 = this.in.method436((byte)-74);
-                    Widget.interfaceCache[var23].anInt233 = 3;
+                    Widget.interfaceCache.get(var23).mediaType = 3;
                     if(localPlayer.aClass5_1698 == null) {
-                        Widget.interfaceCache[var23].mediaID = (localPlayer.anIntArray1700[0] << 25) + (localPlayer.anIntArray1700[4] << 20) + (localPlayer.equipment[0] << 15) + (localPlayer.equipment[8] << 10) + (localPlayer.equipment[11] << 5) + localPlayer.equipment[1];
+                        Widget.interfaceCache.get(var23).mediaID = (localPlayer.anIntArray1700[0] << 25) + (localPlayer.anIntArray1700[4] << 20) + (localPlayer.equipment[0] << 15) + (localPlayer.equipment[8] << 10) + (localPlayer.equipment[11] << 5) + localPlayer.equipment[1];
                     } else {
-                        Widget.interfaceCache[var23].mediaID = (int)(305419896L + localPlayer.aClass5_1698.aLong78);
+                        Widget.interfaceCache.get(var23).mediaID = (int)(305419896L + localPlayer.aClass5_1698.aLong78);
                     }
 
                     this.packet = -1;
@@ -16484,7 +16666,7 @@ public class client extends Applet_Sub1 {
                 Widget var24;
                 if(this.packet == 72) {
                     var23 = this.in.method434((byte)108);
-                    var24 = Widget.interfaceCache[var23];
+                    var24 = Widget.interfaceCache.get(var23);
 
                     for(j20 = 0; j20 < var24.inventoryItemId.length; ++j20) {
                         var24.inventoryItemId[j20] = -1;
@@ -16608,7 +16790,7 @@ public class client extends Applet_Sub1 {
                     var23 = this.in.readSignedWord();
                     j15 = this.in.method437(-665);
                     j20 = this.in.method434((byte)108);
-                    Widget var45 = Widget.interfaceCache[j20];
+                    Widget var45 = Widget.interfaceCache.get(j20);
                     var45.anInt263 = var23;
                     var45.anInt265 = j15;
                     this.packet = -1;
@@ -16904,8 +17086,8 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 75) {
                     var23 = this.in.method436((byte)-74);
                     j15 = this.in.method436((byte)-74);
-                    Widget.interfaceCache[j15].anInt233 = 2;
-                    Widget.interfaceCache[j15].mediaID = var23;
+                    Widget.interfaceCache.get(j15).mediaType = 2;
+                    Widget.interfaceCache.get(j15).mediaID = var23;
                     this.packet = -1;
                     return true;
                 }
@@ -17211,7 +17393,7 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 79) {
                     var23 = this.in.method434((byte)108);
                     j15 = this.in.readUShortA(true);
-                    var26 = Widget.interfaceCache[var23];
+                    var26 = Widget.interfaceCache.get(var23);
                     if(var26 != null && var26.type == 0) {
                         if(j15 < 0) {
                             j15 = 0;
@@ -17379,17 +17561,17 @@ public class client extends Applet_Sub1 {
                     j15 = this.in.readUnsignedShort();
                     j20 = this.in.readUnsignedShort();
                     if(j20 == '\uffff') {
-                        Widget.interfaceCache[var23].anInt233 = 0;
+                        Widget.interfaceCache.get(var23).mediaType = 0;
                         this.packet = -1;
                         return true;
                     }
 
                     ItemDefinition var29 = ItemDefinition.method198(j20);
-                    Widget.interfaceCache[var23].anInt233 = 4;
-                    Widget.interfaceCache[var23].mediaID = j20;
-                    Widget.interfaceCache[var23].modelRotation1 = var29.spritePitch;
-                    Widget.interfaceCache[var23].modelRotation2 = var29.spriteCameraRoll;
-                    Widget.interfaceCache[var23].modelZoom = var29.spriteScale * 100 / j15;
+                    Widget.interfaceCache.get(var23).mediaType = 4;
+                    Widget.interfaceCache.get(var23).mediaID = j20;
+                    Widget.interfaceCache.get(var23).modelRotation1 = var29.spritePitch;
+                    Widget.interfaceCache.get(var23).modelRotation2 = var29.spriteCameraRoll;
+                    Widget.interfaceCache.get(var23).modelZoom = var29.spriteScale * 100 / j15;
                     this.packet = -1;
                     return true;
                 }
@@ -17397,7 +17579,7 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 171) {
                     boolean var30 = this.in.readUnsignedByte() == 1;
                     j15 = this.in.readUnsignedShort();
-                    Widget.interfaceCache[j15].isMouseoverTriggered = var30;
+                    Widget.interfaceCache.get(j15).isMouseoverTriggered = var30;
                     this.packet = -1;
                     return true;
                 }
@@ -17433,8 +17615,8 @@ public class client extends Applet_Sub1 {
                             this.clanList[j15 - 18144] = s2;
                         }
 
-                        Widget.interfaceCache[j15].message = s2;
-                        if(Widget.interfaceCache[j15].parentID == tabInterfaceIDs[tabID]) {
+                        Widget.interfaceCache.get(j15).message = s2;
+                        if(Widget.interfaceCache.get(j15).parentID == tabInterfaceIDs[tabID]) {
                             this.tabAreaAltered = true;
                         }
 
@@ -17512,8 +17694,8 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 8) {
                     var23 = this.in.method436((byte)-74);
                     j15 = this.in.readUnsignedShort();
-                    Widget.interfaceCache[var23].anInt233 = 1;
-                    Widget.interfaceCache[var23].mediaID = j15;
+                    Widget.interfaceCache.get(var23).mediaType = 1;
+                    Widget.interfaceCache.get(var23).mediaID = j15;
                     this.packet = -1;
                     return true;
                 }
@@ -17524,7 +17706,7 @@ public class client extends Applet_Sub1 {
                     j20 = j15 >> 10 & 31;
                     i23 = j15 >> 5 & 31;
                     l25 = j15 & 31;
-                    Widget.interfaceCache[var23].textColor = (j20 << 19) + (i23 << 11) + (l25 << 3);
+                    Widget.interfaceCache.get(var23).textColor = ColorWheel.covertHSB(j15);
                     this.packet = -1;
                     return true;
                 }
@@ -17532,7 +17714,7 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 53) {
                     this.tabAreaAltered = true;
                     var23 = this.in.readUnsignedShort();
-                    var24 = Widget.interfaceCache[var23];
+                    var24 = Widget.interfaceCache.get(var23);
                     j20 = this.in.readUnsignedShort();
 
                     for(i23 = 0; i23 < j20; ++i23) {
@@ -17559,9 +17741,9 @@ public class client extends Applet_Sub1 {
                     j15 = this.in.readUnsignedShort();
                     j20 = this.in.readUnsignedShort();
                     i23 = this.in.method436((byte)-74);
-                    Widget.interfaceCache[j15].modelRotation1 = j20;
-                    Widget.interfaceCache[j15].modelRotation2 = i23;
-                    Widget.interfaceCache[j15].modelZoom = var23;
+                    Widget.interfaceCache.get(j15).modelRotation1 = j20;
+                    Widget.interfaceCache.get(j15).modelRotation2 = i23;
+                    Widget.interfaceCache.get(j15).modelZoom = var23;
                     this.packet = -1;
                     return true;
                 }
@@ -17710,7 +17892,7 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 200) {
                     var23 = this.in.readUnsignedShort();
                     j15 = this.in.readSignedWord();
-                    var26 = Widget.interfaceCache[var23];
+                    var26 = Widget.interfaceCache.get(var23);
                     var26.disabledAnimationId = j15;
                     var26.modelZoom = 1600;
                     if(j15 == -1) {
@@ -17748,7 +17930,7 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 34) {
                     this.tabAreaAltered = true;
                     var23 = this.in.readUnsignedShort();
-                    var24 = Widget.interfaceCache[var23];
+                    var24 = Widget.interfaceCache.get(var23);
 
                     while(this.in.currentPosition < this.packetSize) {
                         j20 = this.in.readUSmart();

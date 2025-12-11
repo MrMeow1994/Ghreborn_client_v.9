@@ -311,6 +311,21 @@ public class ParticleDefinition {
         DungCape.updateSteps();
         DungCape.setColorStep(0x000000);
         cache.add(DungCape);
+
+        // definition id 20
+        final ParticleDefinition compCape2 = new ParticleDefinition();
+        compCape2.setStartVelocity(new ParticleVector(0, -1, 0));
+        compCape2.setEndVelocity(new ParticleVector(0, -1, 0));
+        compCape2.setGravity(new ParticleVector(0, 2 / 4, 0));
+        compCape2.setLifeSpan(19);
+        compCape2.setStartColor(0xB08D2F);
+        compCape2.setSpawnRate(4);
+        compCape2.setStartSize(1.10f);
+        compCape2.setEndSize(0);
+        compCape2.setStartAlpha(0.095f);
+        compCape2.updateSteps();
+        compCape2.setColorStep(0x000000);
+        cache.add(compCape2);
     }
 
     private ParticleVector gravity;

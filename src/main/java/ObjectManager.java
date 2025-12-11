@@ -639,7 +639,7 @@ final class ObjectManager {
 				obj = new Node_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			worldController.method280(z, k2, y, 68, ((Animable) (obj)), byte0, key, x);
-			if(objectDefinition.aBoolean767 && objectDefinition.hasactions && class11 != null) {
+			if(objectDefinition.projectileCliped && objectDefinition.hasactions && class11 != null) {
 				class11.method213(y, 0, x);
 			}
 			return;
@@ -689,7 +689,7 @@ final class ObjectManager {
 					}
 				}
 			}
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
@@ -705,7 +705,7 @@ final class ObjectManager {
 			if(type >= 12 && type <= 17 && type != 13 && z > 0) {
 				anIntArrayArrayArray135[z][x][y] |= 0x924;
 			}
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
@@ -754,7 +754,7 @@ final class ObjectManager {
 					anIntArrayArrayArray135[z][x][y] |= 0x492;
 				}
 						}
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			if(objectDefinition.anInt775 != 16) {
@@ -784,7 +784,7 @@ final class ObjectManager {
 					aByteArrayArrayArray134[z][x][y] = 50;
 							}
 			}
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
@@ -819,7 +819,7 @@ final class ObjectManager {
 					anIntArrayArrayArray135[z][x][y] |= 0x249;
 							}
 			}
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			if(objectDefinition.anInt775 != 16) {
@@ -849,7 +849,7 @@ final class ObjectManager {
 					aByteArrayArrayArray134[z][x][y] = 50;
 							}
 			}
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
@@ -862,7 +862,7 @@ final class ObjectManager {
 				obj6 = new Node_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			worldController.method284(key, byte0, k2, 1, ((Animable) (obj6)), 1, z, 0, (byte)110, y, x);
-			if(objectDefinition.aBoolean767 && class11 != null) {
+			if(objectDefinition.projectileCliped && class11 != null) {
 				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
@@ -1257,7 +1257,7 @@ final class ObjectManager {
 				obj = new Node_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method280(k1, l2, y, 68, ((Animable) (obj)), byte1, key, x);
-			if(objectDefinition.aBoolean767 && objectDefinition.hasactions) {
+			if(objectDefinition.projectileCliped && objectDefinition.hasactions) {
 				class11.method213(y, 0, x);
 			}
 			return;
@@ -1285,7 +1285,7 @@ final class ObjectManager {
 				}
 				worldController.method284(key, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, (byte)110, y, x);
 			}
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
@@ -1298,7 +1298,7 @@ final class ObjectManager {
 				obj2 = new Node_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method284(key, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, (byte)110, y, x);
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;
@@ -1311,7 +1311,7 @@ final class ObjectManager {
 				obj3 = new Node_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte1, x, null, l2, 0, k1);
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
@@ -1324,7 +1324,7 @@ final class ObjectManager {
 				obj4 = new Node_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte1, x, null, l2, 0, k1);
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
@@ -1341,7 +1341,7 @@ final class ObjectManager {
 				obj12 = new Node_Sub2_Sub4_Sub5(id, j3, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte1, x, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
@@ -1354,7 +1354,7 @@ final class ObjectManager {
 				obj5 = new Node_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte1, x, null, l2, 0, k1);
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
@@ -1367,7 +1367,7 @@ final class ObjectManager {
 				obj6 = new Node_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			worldController.method284(key, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, (byte)110, y, x);
-			if(objectDefinition.aBoolean767) {
+			if(objectDefinition.projectileCliped) {
 				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.sizeX, objectDefinition.sizeY, x, y, orientation);
 			}
 			return;

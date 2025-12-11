@@ -466,6 +466,16 @@ public final class Sprite extends DrawingArea {
       }
 
    }
+   public Sprite(int width, int height, int offsetX, int offsetY, int[] pixels) {
+      this.myWidth = width;
+      this.myHeight = height;
+      this.drawOffsetX = offsetX;
+      this.drawOffsetY = offsetY;
+      this.myPixels = pixels;
+
+      setTransparency(255, 0, 255);
+   }
+
    private void applyPinkOverlay() {
       Color overlayColor = new Color(0, 0, 0, 255); // RGB for light magenta pink
       int overlayRed = overlayColor.getRed();

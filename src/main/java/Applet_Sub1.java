@@ -17,7 +17,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.MalformedURLException;
 import javax.swing.*;
 
 public class Applet_Sub1 extends Applet implements Runnable, MouseListener, MouseMotionListener, KeyListener, FocusListener, WindowListener, MouseWheelListener {
@@ -34,15 +33,15 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
     public int saveClickX;
     public int saveClickY;
     public long aLong29;
-    public int anInt22;
+    public int clickMode1;
     private int anInt32;
     public int anInt8;
     public boolean aBoolean9 = false;
     private int anInt5 = 20;
     public boolean aBoolean16 = true;
     public int anInt18;
-    public int anInt23;
-    public int anInt24;
+    public int clickX;
+    public int clickY;
     public long aLong25;
     public boolean mouseWheelDown;
     public int mouseWheelX;
@@ -192,34 +191,34 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
         int var13;
         int var14;
         if(tabInterfaceID != -1) {
-            rsi = Widget.interfaceCache[tabInterfaceID];
+            rsi = Widget.interfaceCache.get(tabInterfaceID);
             var13 = client.currentScreenMode.equals(client.ScreenMode.FIXED)?547:client.currentGameWidth - 197;
             var14 = client.currentScreenMode.equals(client.ScreenMode.FIXED)?205:client.currentGameHeight - (client.currentGameWidth >= 960?37:74) - 267;
 
             for(index = 0; index < rsi.children.length; ++index) {
-                if(Widget.interfaceCache[rsi.children[index]].scrollMax > 0) {
+                if(Widget.interfaceCache.get(rsi.children[index]).scrollMax > 0) {
                     childID = index;
                     positionX = rsi.childX[index];
                     positionY = rsi.childY[index];
-                    width = Widget.interfaceCache[rsi.children[index]].width;
-                    height = Widget.interfaceCache[rsi.children[index]].height;
+                    width = Widget.interfaceCache.get(rsi.children[index]).width;
+                    height = Widget.interfaceCache.get(rsi.children[index]).height;
                     break;
                 }
             }
 
             if(this.mouseX > var13 + positionX && this.mouseY > var14 + positionY && this.mouseX < var13 + positionX + width && this.mouseY < var14 + positionY + height) {
-                Widget.interfaceCache[rsi.children[childID]].scrollPosition += rotation * 30;
+                Widget.interfaceCache.get(rsi.children[childID]).scrollPosition += rotation * 30;
             }
         }
 
         if(client.openInterfaceID != -1) {
-            rsi = Widget.interfaceCache[client.openInterfaceID];
+            rsi = Widget.interfaceCache.get(client.openInterfaceID);
             var13 = !client.currentScreenMode.equals(client.ScreenMode.FIXED) && !client.centerMainScreenInterface()?client.currentGameWidth / 2 - 256:4;
             var14 = !client.currentScreenMode.equals(client.ScreenMode.FIXED) && !client.centerMainScreenInterface()?client.currentGameHeight / 2 - 167:4;
 
             for(index = 0; index < rsi.children.length; ++index) {
-                if(Widget.interfaceCache[rsi.children[index]].scrollMax > 0 && this.mouseX > var13 + rsi.childX[index] && this.mouseY > var14 + rsi.childY[index] && this.mouseX < var13 + rsi.childX[index] + Widget.interfaceCache[rsi.children[index]].width && this.mouseY < var14 + rsi.childY[index] + Widget.interfaceCache[rsi.children[index]].height) {
-                    Widget.interfaceCache[rsi.children[index]].scrollPosition += rotation * 30;
+                if(Widget.interfaceCache.get(rsi.children[index]).scrollMax > 0 && this.mouseX > var13 + rsi.childX[index] && this.mouseY > var14 + rsi.childY[index] && this.mouseX < var13 + rsi.childX[index] + Widget.interfaceCache.get(rsi.children[index]).width && this.mouseY < var14 + rsi.childY[index] + Widget.interfaceCache.get(rsi.children[index]).height) {
+                    Widget.interfaceCache.get(rsi.children[index]).scrollPosition += rotation * 30;
                 }
             }
         }
@@ -317,11 +316,11 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
                 }
 
                 while(i1 < 256) {
-                    this.clickMode3 = this.anInt22;
-                    this.saveClickX = this.anInt23;
-                    this.saveClickY = this.anInt24;
+                    this.clickMode3 = this.clickMode1;
+                    this.saveClickX = this.clickX;
+                    this.saveClickY = this.clickY;
                     this.aLong29 = this.aLong25;
-                    this.anInt22 = 0;
+                    this.clickMode1 = 0;
                     this.method7(24869);
                     this.anInt32 = this.anInt33;
                     i1 += j;
@@ -440,18 +439,18 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
         }
 
         this.anInt18 = 0;
-        this.anInt23 = i;
-        this.anInt24 = j;
+        this.clickX = i;
+        this.clickY = j;
         this.aLong25 = System.currentTimeMillis();
         if(SwingUtilities.isMiddleMouseButton(mouseevent)) {
             this.mouseWheelDown = true;
             this.mouseWheelX = i;
             this.mouseWheelY = j;
         } else if(SwingUtilities.isRightMouseButton(mouseevent)) {
-            this.anInt22 = 2;
+            this.clickMode1 = 2;
             this.clickMode2 = 2;
         } else if(SwingUtilities.isLeftMouseButton(mouseevent)) {
-            this.anInt22 = 1;
+            this.clickMode1 = 1;
             this.clickMode2 = 1;
         }
     }

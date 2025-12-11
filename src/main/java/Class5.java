@@ -372,11 +372,11 @@ return class5;
 					break;
 
 				case 2:
-					name = stream.readNewString();
+					name = stream.readString();
 					break;
 
 				case 3:
-					aByteArray89 = stream.readNewString().getBytes();
+					aByteArray89 = stream.readString().getBytes();
 					break;
 
 				case 12:
@@ -410,7 +410,7 @@ return class5;
 				case 30: case 31: case 32: case 33: case 34:
 					if (aStringArray66 == null)
 						aStringArray66 = new String[5];
-					String action = stream.readNewString();
+					String action = stream.readString();
 					aStringArray66[opcode - 30] = action.equalsIgnoreCase("hidden") ? null : action;
 					break;
 

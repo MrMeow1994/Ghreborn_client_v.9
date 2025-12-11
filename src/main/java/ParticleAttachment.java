@@ -12,6 +12,9 @@ public class ParticleAttachment {
         // Completionist cape
         attachments.put(65297, new int[][] { { 494, 0 }, { 488, 0 }, { 485, 0 }, { 476, 0 }, { 482, 0 }, { 479, 0 }, { 491, 0 } });
         attachments.put(65316, new int[][] { { 494, 0 }, { 488, 0 }, { 485, 0 }, { 476, 0 }, { 482, 0 }, { 479, 0 }, { 491, 0 } });
+        // Completionist cape gold
+        attachments.put(65295, new int[][] { { 494, 20 }, { 488, 20 }, { 485, 20 }, { 476, 20 }, { 482, 20 }, { 479, 20 }, { 491, 20 } });
+        attachments.put(65328, new int[][] { { 494, 20 }, { 488, 20 }, { 485, 20 }, { 476, 20 }, { 482, 20 }, { 479, 20 }, { 491, 20 } });
 
         /*master dungeoneering cape*/
         attachments.put(59885, new int[][] {{ 151, 19 }, { 149, 19 }, { 148, 19 }, { 147, 19 }, { 146, 19 }, { 170, 19 }, { 169, 19 }, { 168, 19 }, { 167, 19 }, { 118, 19 }, { 121, 19 }});

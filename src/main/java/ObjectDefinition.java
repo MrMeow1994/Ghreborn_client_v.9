@@ -71,7 +71,7 @@ public final class ObjectDefinition {
 		anIntArray747 = null;
 		sizeX = 1;
 		sizeY = 1;
-		aBoolean767 = true;
+		projectileCliped = true;
 		aBoolean757 = true;
 		hasactions = false;//hasactions
 		aBoolean762 = false;
@@ -351,9 +351,10 @@ public final class ObjectDefinition {
 				sizeX = stream.readUnsignedByte();
 				else if (opcode == 15)
 				sizeY = stream.readUnsignedByte();
-				else if (opcode == 17)
-					aBoolean767 = false;
-				else if (opcode == 18)
+				else if (opcode == 17) {
+				projectileCliped = false;
+				aBoolean757 = false;
+			} else if (opcode == 18)
 					aBoolean757 = false;
 				else if (opcode == 19) {
 					int i = stream.readUnsignedByte();
@@ -515,11 +516,11 @@ public final class ObjectDefinition {
 				hasactions = true;
 		}
 		if (aBoolean766) {
-			aBoolean767 = false;
+			projectileCliped = false;
 			aBoolean757 = false;
 		}
 		if (anInt760 == -1)
-			anInt760 = aBoolean767 ? 1 : 0;
+			anInt760 = projectileCliped ? 1 : 0;
 	}
 
 	public ObjectDefinition() {
@@ -553,7 +554,7 @@ public final class ObjectDefinition {
 	public boolean aBoolean764;
 	public static client clientInstance;
 	public boolean aBoolean766;
-	public boolean aBoolean767;
+	public boolean projectileCliped;
 	public int anInt768;
 	public boolean aBoolean769;
 	public static int anInt771;

@@ -4,24 +4,24 @@
 
 public class Skinlist
 {
+    public int[] opcodes;
+    public int[][] skinList;
+
     public Skinlist(Stream stream, int junk)
     {
         int anInt341 = stream.readUnsignedShort();
-	anIntArray342 = new int[anInt341];
-        anIntArrayArray343 = new int[anInt341][];
+        opcodes = new int[anInt341];
+        skinList = new int[anInt341][];
         for(int j = 0; j < anInt341; j++)
-            anIntArray342[j] = stream.readUnsignedShort();
+            opcodes[j] = stream.readUnsignedShort();
 
 	for(int j = 0; j < anInt341; j++)
-	    anIntArrayArray343[j] = new int[stream.readUnsignedShort()];
+	    skinList[j] = new int[stream.readUnsignedShort()];
 
         for(int j = 0; j < anInt341; j++)
-		for (int l = 0; l < anIntArrayArray343[j].length; l++)
-			anIntArrayArray343[j][l] = stream.readUnsignedShort();
+		for (int l = 0; l < skinList[j].length; l++)
+			skinList[j][l] = stream.readUnsignedShort();
     }
 
-    private int anInt340;
-    public int anInt341;
-    public int anIntArray342[];
-    public int anIntArrayArray343[][];
+
 }
