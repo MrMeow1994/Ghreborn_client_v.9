@@ -7051,7 +7051,7 @@ public class client extends Applet_Sub1 {
                 var20 = this.menuActionName[i];
                 var19 = var20.indexOf("<col=ffffff>");
                 if(var19 != -1) {
-                    long s6 = TextClass.longForName(var20.substring(var19 + 5).trim());
+                    long s6 = TextClass.longForName(var20.substring(var19 + 12).trim());
                     if(l == 337) {
                         this.method41((byte)68, s6);
                     }
@@ -7112,7 +7112,7 @@ public class client extends Applet_Sub1 {
                     var20 = this.menuActionName[i];
                     var19 = var20.indexOf("<col=ffffff>");
                     if(var19 != -1) {
-                        var20 = var20.substring(var19 + 5).trim();
+                        var20 = var20.substring(var19 + 12).trim();
                         var21 = TextClass.fixName(TextClass.nameForLong(TextClass.longForName(var20)));
                         boolean s10 = false;
 
@@ -7831,7 +7831,7 @@ public class client extends Applet_Sub1 {
                         if(var23 != -1) {
                             if(openInterfaceID == -1) {
                                 this.clearTopInterfaces(537);
-                                this.reportAbuseInput = var24.substring(var23 + 5).trim();
+                                this.reportAbuseInput = var24.substring(var23 + 12).trim();
                                 this.canMute = false;
 
                                 for(var27 = 0; var27 < Widget.interfaceCache.size(); ++var27) {
@@ -7866,7 +7866,7 @@ public class client extends Applet_Sub1 {
                         var24 = this.menuActionName[i];
                         var23 = var24.indexOf("<col=ffffff>");
                         if(var23 != -1) {
-                            long var36 = TextClass.longForName(var24.substring(var23 + 5).trim());
+                            long var36 = TextClass.longForName(var24.substring(var23 + 12).trim());
                             int var33 = -1;
 
                             for(int i4 = 0; i4 < this.friendsCount; ++i4) {
@@ -12874,21 +12874,13 @@ public class client extends Applet_Sub1 {
             } else {
                 --i;
             }
-
             this.menuActionName[this.menuActionRow] = "Remove <col=ffffff>" + this.friendsList[i];
             this.menuActionID[this.menuActionRow] = 792;
             ++this.menuActionRow;
             this.menuActionName[this.menuActionRow] = "Message <col=ffffff>" + this.friendsList[i];
             this.menuActionID[this.menuActionRow] = 639;
             ++this.menuActionRow;
-            if(this.myPrivilege >= 2) {
-                this.menuActionName[this.menuActionRow] = "TeleToMe <col=ffffff>" + this.friendsList[i];
-                this.menuActionID[this.menuActionRow] = 638;
-                ++this.menuActionRow;
-                this.menuActionName[this.menuActionRow] = "TeleTo <col=ffffff>" + this.friendsList[i];
-                this.menuActionID[this.menuActionRow] = 637;
-                ++this.menuActionRow;
-            }
+
 
             return true;
         } else if(i >= 401 && i <= 500) {
