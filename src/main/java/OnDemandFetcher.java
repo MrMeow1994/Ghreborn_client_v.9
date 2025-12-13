@@ -397,15 +397,18 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
             loopCycle = 0;
          }
 
-         // --- Prepare request packet ---
+// --- Prepare request packet for 32-bit ID ---
          ioBuffer[0] = (byte) data.dataType;
-         ioBuffer[1] = (byte) (data.ID >> 8);
-         ioBuffer[2] = (byte) data.ID;
+         ioBuffer[1] = (byte) (data.ID >> 24); // highest byte
+         ioBuffer[2] = (byte) (data.ID >> 16);
+         ioBuffer[3] = (byte) (data.ID >> 8);
+         ioBuffer[4] = (byte) data.ID;         // lowest byte
 
-         ioBuffer[3] = (byte) (data.incomplete ? 2 : (client.loggedIn ? 0 : 1));
+
+         ioBuffer[5] = (byte) (data.incomplete ? 2 : (client.loggedIn ? 0 : 1));
 
          // --- Write request ---
-         outputStream.write(ioBuffer, 0, 4);
+         outputStream.write(ioBuffer, 0, 6);
 
          anInt1334 = 0;
          anInt1349 = -10000;

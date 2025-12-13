@@ -403,10 +403,10 @@ public class Widget {
         shopWidget(aclass30_sub2_sub1_sub4);
         skilllevel(aclass30_sub2_sub1_sub4);
         skillTab602(aclass30_sub2_sub1_sub4);
-        prayerTabInterface();
-        quickPrayersInterface();
-        curseTabInterface();
-        quickCursesInterface();
+       // prayerTabInterface();
+        //quickPrayersInterface();
+       // curseTabInterface();
+        //quickCursesInterface();
         SpawnContainer.get().load();
         aClass12_238 = null;
     }

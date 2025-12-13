@@ -146,7 +146,7 @@ final class Player extends Entity {
                     }
 
                     if(this.equipment[i2] >= 32768  && this.equipment[i2] - 32768  < ItemDefinition.anInt203) {
-                        int l1 = ItemDefinition.method198(this.equipment[i2] - 32768 ).anInt202;
+                        int l1 = ItemDefinition.method198(this.equipment[i2] - 32768 ).team;
                         if(l1 != 0) {
                             this.team = l1;
                         }
