@@ -66,6 +66,12 @@ public class Widget {
     public int[] children;
     public int[] childX;
     public int[] childY;
+    public int itemSpriteId1;
+    public int itemSpriteId2;
+    public int itemSpriteZoom1;
+    public int itemSpriteZoom2;
+    public int itemSpriteIndex;
+    public boolean greyScale;
     public boolean aBoolean251;
     public boolean deleteOnDrag2;
     public boolean aBoolean227;
@@ -134,6 +140,11 @@ public class Widget {
     private String popupString;
 
     public Widget() {
+        itemSpriteId1 = -1;
+        itemSpriteId2 = -1;
+        itemSpriteZoom1 = -1;
+        itemSpriteZoom2 = -1;
+        itemSpriteIndex = 0;
         enabledSpriteId = disabledSpriteId = -1;
     }
 
@@ -273,6 +284,8 @@ public class Widget {
                         if(class9.parentID == 3824) {
                             class9.actions[4] = "Buy X";
                         }
+                        if (class9.parentID == 1644)
+                            class9.actions[2] = "Operate";
                     }
                 }
 
@@ -359,9 +372,9 @@ public class Widget {
                     class9.actions = new String[6];
                     for(k4 = 0; k4 < 5; ++k4) {
                         class9.actions[k4] = stream.readString();
-                        if(class9.actions[k4].length() == 0) {
+                        if(class9.actions[k4].length() == 0)
                             class9.actions[k4] = null;
-                        }
+
                     }
                 }
 
@@ -403,6 +416,10 @@ public class Widget {
         shopWidget(aclass30_sub2_sub1_sub4);
         skilllevel(aclass30_sub2_sub1_sub4);
         skillTab602(aclass30_sub2_sub1_sub4);
+        musictab(aclass30_sub2_sub1_sub4);
+        SummonTab(aclass30_sub2_sub1_sub4);
+        scrollCreation(aclass30_sub2_sub1_sub4);
+        pouchCreation(aclass30_sub2_sub1_sub4);
        // prayerTabInterface();
         //quickPrayersInterface();
        // curseTabInterface();
@@ -438,6 +455,29 @@ public class Widget {
         rsi.width = 765;
         rsi.height = 503;
         return rsi;
+    }
+    public static void addClickableTextmusic(int id, String text, String tooltip, RSFont tda[], int idx, int color,
+                                             boolean center, boolean shadow, int width) {
+        Widget tab = addTabInterface(id);
+        tab.parentID = id;
+        tab.id = id;
+        tab.type = 4;
+        tab.atActionType = 1;
+        tab.width = width;
+        tab.height = 15;
+        tab.contentType = 0;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = -1;
+        tab.centerText = center;
+        tab.textShadow = shadow;
+        tab.textDrawingAreas = tda[idx];
+        tab.message = text;
+
+        tab.textColor = color;
+        tab.secondaryColor = 0;
+
+        tab.secondaryHoverColor = 0;
+        tab.tooltip = tooltip;
     }
     public static void addInputField(int identity, int characterLimit, int color, String text, int width, int height,
                                      boolean asterisks, boolean updatesEveryInput, String regex, Consumer<String> inputFieldListener, boolean sendPacket) {
@@ -857,7 +897,7 @@ public class Widget {
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(sid, spriteName);
         tab.enabledSprite = imageLoader(sid, spriteName);
-        tab.width = tab.disabledSprite.myWidth;
+        tab.width = tab.enabledSprite.myWidth;
         tab.height = tab.enabledSprite.myHeight;
         tab.tooltip = tooltip;
     }
@@ -879,19 +919,7 @@ public class Widget {
     }
 
     public static void addSprite(int id, int spriteId, String spriteName) {
-        interfaceCache.put(id, new Widget());
-        Widget tab = interfaceCache.get(id);
-        tab.id = id;
-        tab.parentID = id;
-        tab.type = 5;
-        tab.atActionType = 0;
-        tab.contentType = 0;
-        tab.opacity = 0;
-        tab.mOverInterToTrigger = 52;
-        tab.disabledSprite = imageLoader(spriteId, spriteName);
-        tab.enabledSprite = imageLoader(spriteId, spriteName);
-        tab.width = 512;
-        tab.height = 334;
+        addSprite(id, spriteId, spriteName, -1, -1);
     }
 
     public void totalChildren(int t) {
@@ -1629,6 +1657,1220 @@ public class Widget {
         addLunar3RunesBigBox(30322, 9075, 564, 563, 2, 1, 0, 30013, 30012, 95,
                 "Spellbook Swap",
                 "Change to another spellbook for 1\\nspell cast", RSFont, 38, 0, 5);
+    }
+
+    public static void SummonTab(RSFont[] TDA) {
+        Widget localRSInterface = addTabInterface(17011);
+        addSprite(17012, 6, "SummonTab/SUMMON");
+        addButton(17013, 7, "/SummonTab/SUMMON", "Click");
+
+        addSprite(17014, 6, "SummonTab/SUMMON");
+        addConfigButton(17015, 17032, 14, 8, "/SummonTab/SUMMON", 20, 30,
+                "Call Familiar", 1, 5, 300);
+        addHoverButton(17018, "/SummonTab/SUMMON", 2, 38, 36,
+                "Beast of burden Inventory", -1, 17028, 1);
+        addHoveredButton(17028, "/SummonTab/SUMMON", 12, 38, 36, 17029);
+        addHoverButton(17029, "/SummonTab/SUMMON", 1, 38, 36, "Call Familiar",
+                -1, 17030, 1);
+        addHoveredButton(17030, "/SummonTab/SUMMON", 13, 38, 36, 17031);
+        addHoverButton(17023, "/SummonTab/SUMMON", 3, 38, 36,
+                "Dismiss Familiar", -1, 17033, 1);
+        addHoveredButton(17033, "/SummonTab/SUMMON", 15, 38, 36, 17034);
+        addSprite(17016, 5, "SummonTab/SUMMON");
+        addText(17017, "", TDA, 2, 14329120, false, true);
+        addSprite(17019, 9, "SummonTab/SUMMON");
+        addText(17021, "", TDA, 0, 16753920, false, true);
+        addSprite(17020, 10, "SummonTab/SUMMON");
+        addSprite(17024, 11, "SummonTab/SUMMON");
+        addText(17025, "", TDA, 0, 16753920, false, true);
+        addText(17026, "", TDA, 0, 16753920, false, true);
+        addHead2(17027, 75, 55, 2000);
+        localRSInterface.totalChildren(19);
+        localRSInterface.child(0, 17012, 10, 25);
+        localRSInterface.child(1, 17013, 24, 7);
+        localRSInterface.child(2, 17014, 10, 25);
+        localRSInterface.child(3, 17015, 11, 25);
+        localRSInterface.child(4, 17016, 15, 140);
+        localRSInterface.child(5, 17017, 45, 143);
+        localRSInterface.child(6, 17018, 20, 170);
+        localRSInterface.child(7, 17019, 115, 167);
+        localRSInterface.child(8, 17020, 143, 170);
+        localRSInterface.child(9, 17021, 135, 197);
+        localRSInterface.child(10, 17029, 20, 213);
+        localRSInterface.child(11, 17023, 67, 193);
+        localRSInterface.child(12, 17024, 135, 214);
+        localRSInterface.child(13, 17025, 135, 240);
+        localRSInterface.child(14, 17026, 21, 59);
+        localRSInterface.child(15, 17027, 75, 55);
+        localRSInterface.child(16, 17028, 20, 170);
+        localRSInterface.child(17, 17030, 20, 213);
+        localRSInterface.child(18, 17033, 67, 193);
+    }
+    public static void pouchCreation(RSFont TDA[]) {
+        int totalScrolls = pouchItems.length;
+        int xPadding = 53;
+        int yPadding = 57;
+        int xPos = 13;
+        int yPos = 20;
+        Widget rsinterface = addTabInterface(23471);
+        setChildren(7, rsinterface);
+        addSprite(23472, 1, "interfaces/summoning/creation/summoning");
+        addButton(23475, 0, "interfaces/summoning/creation/tab",
+                "Transform Scrolls");
+        addSprite(23474, 1, "interfaces/summoning/creation/pouch");
+        addSprite(23473, 1, "interfaces/summoning/creation/tab");
+        addSprite(23476, 0, "interfaces/summoning/creation/scroll");
+        addInAreaHover(23477, "interfaces/summoning/creation/close", 1, 0, 16,
+                16, "Close", 250, 3);
+        Widget scroll = addTabInterface(23478);
+        setChildren(3 * totalScrolls, scroll);
+        for (int i = 0; i < totalScrolls; i++) {
+            addInAreaHover(23479 + i * 8, "interfaces/summoning/creation/box",
+                    0, 1, 48, 52, "nothing", -1, 0);
+            int req[] = { 1, 2, 3 };
+            addPouch(23480 + i * 8, req, 1, pouchItems[i],
+                    summoningLevelRequirements[i], pouchNames[i], TDA, i, 5);
+            addSprite(23485 + i * 8, pouchItems[i], null, 50, 50);
+            setBounds(23479 + i * 8, 36 + (i % 8) * xPadding, 0 + (i / 8)
+                    * yPadding, 0 + i * 2, scroll);
+            setBounds(23480 + i * 8, 43 + (i % 8) * xPadding, 2 + (i / 8)
+                    * yPadding, 1 + i * 2, scroll);
+        }
+
+        for (int i = 0; i < totalScrolls; i++) {
+            int drawX = 5 + (i % 8) * xPadding;
+            if (drawX > 292)
+                drawX -= 90;
+            int drawY = 55 + (i / 8) * yPadding;
+            if (drawY > 160)
+                drawY -= 80;
+            setBounds(23481 + i * 8, drawX, drawY, 2 + (totalScrolls - 1) * 2
+                    + i, scroll);
+        }
+
+        scroll.parentID = 23478;
+        scroll.id = 23478;
+        scroll.atActionType = 0;
+        scroll.contentType = 0;
+        scroll.width = 474;
+        scroll.height = 257;
+        scroll.scrollMax = 570;
+        setBounds(23472, xPos, yPos, 0, rsinterface);
+        setBounds(23473, xPos + 9, yPos + 9, 1, rsinterface);
+        setBounds(23474, xPos + 29, yPos + 10, 2, rsinterface);
+        setBounds(23475, xPos + 79, yPos + 9, 3, rsinterface);
+        setBounds(23476, xPos + 106, yPos + 10, 4, rsinterface);
+        setBounds(23477, xPos + 461, yPos + 10, 5, rsinterface);
+        setBounds(23478, 0, yPos + 39, 6, rsinterface);
+    }
+
+    public static void scrollCreation(RSFont TDA[]) {
+        int totalScrolls = pouchItems.length;
+        int xPadding = 53;
+        int yPadding = 57;
+        int xPos = 13;
+        int yPos = 20;
+        Widget rsinterface = addTabInterface(22760);
+        setChildren(7, rsinterface);
+        addSprite(22761, 0, "interfaces/summoning/creation/summoning");
+        addButton(22762, 0, "interfaces/summoning/creation/tab",
+                "Infuse Pouches");
+        addSprite(22763, 0, "interfaces/summoning/creation/pouch");
+        addSprite(22764, 1, "interfaces/summoning/creation/tab");
+        addSprite(22765, 1, "interfaces/summoning/creation/scroll");
+        addInAreaHover(22766, "interfaces/summoning/creation/close", 1, 0, 16,
+                16, "Close", 250, 3);
+        Widget scroll = addTabInterface(22767);
+        setChildren(4 * totalScrolls, scroll);
+        for (int i = 0; i < totalScrolls; i++) {
+            addInAreaHover(22768 + i * 9, "interfaces/summoning/creation/box",
+                    0, 1, 48, 52, "nothing", -1, 0);
+            addScroll(22769 + i * 9, pouchItems[i], 1, scrollItems[i],
+                    summoningLevelRequirements[i], scrollNames[i], TDA, i, 5);
+            addSprite(22776 + i * 9, pouchItems[i], null, 50, 50);
+            setBounds(22768 + i * 9, 36 + (i % 8) * xPadding, 0 + (i / 8)
+                    * yPadding, 0 + i * 3, scroll);
+            setBounds(22769 + i * 9, 43 + (i % 8) * xPadding, 2 + (i / 8)
+                    * yPadding, 1 + i * 3, scroll);
+            setBounds(22776 + i * 9, 28 + (i % 8) * xPadding, 28 + (i / 8)
+                    * yPadding, 2 + i * 3, scroll);
+        }
+
+        for (int i = 0; i < totalScrolls; i++) {
+            int drawX = 5 + (i % 8) * xPadding;
+            if (drawX > 292)
+                drawX -= 90;
+            int drawY = 55 + (i / 8) * yPadding;
+            if (drawY > 160)
+                drawY -= 80;
+            setBounds(22770 + i * 9, drawX, drawY, 3 + (totalScrolls - 1) * 3
+                    + i, scroll);
+        }
+
+        scroll.parentID = 22767;
+        scroll.id = 22767;
+        scroll.atActionType = 0;
+        scroll.contentType = 0;
+        scroll.width = 474;
+        scroll.height = 257;
+        scroll.scrollMax = 570;
+        setBounds(22761, xPos, yPos, 0, rsinterface);
+        setBounds(22762, xPos + 9, yPos + 9, 1, rsinterface);
+        setBounds(22763, xPos + 29, yPos + 10, 2, rsinterface);
+        setBounds(22764, xPos + 79, yPos + 9, 3, rsinterface);
+        setBounds(22765, xPos + 106, yPos + 10, 4, rsinterface);
+        setBounds(22766, xPos + 461, yPos + 10, 5, rsinterface);
+        setBounds(22767, 0, yPos + 39, 6, rsinterface);
+    }
+
+    public static void addInAreaHover(int i, String imageName, int sId,
+                                      int sId2, int w, int h, String text, int contentType, int actionType) {
+        Widget tab = addTabInterface(i);
+        tab.id = i;
+        tab.parentID = i;
+        tab.type = 5;
+        tab.atActionType = actionType;
+        tab.contentType = contentType;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = i;
+        if (sId != -1)
+            tab.enabledSprite = imageLoader(sId, imageName);
+        tab.disabledSprite = imageLoader(sId2, imageName);
+        tab.width = w;
+        tab.height = h;
+        tab.tooltip = text;
+    }
+
+    public static void addSprite(int id, int spriteId, String spriteName,
+                                 int zoom1, int zoom2) // summon pouch creation
+    {
+        interfaceCache.put(id, new Widget());
+        Widget tab = interfaceCache.get(id);
+        tab.id = id;
+        tab.parentID = id;
+        tab.type = 5;
+        tab.atActionType = 0;
+        tab.contentType = 0;
+        tab.opacity = 0;
+        tab.mOverInterToTrigger = 52;
+        if (spriteName == null) {
+            tab.itemSpriteZoom1 = zoom1;
+            tab.itemSpriteId1 = spriteId;
+            tab.itemSpriteZoom2 = zoom2;
+            tab.itemSpriteId2 = spriteId;
+        } else {
+            tab.disabledSprite = imageLoader(spriteId, spriteName);
+            tab.enabledSprite = imageLoader(spriteId, spriteName);
+        }
+        tab.width = 512;
+        tab.height = 334;
+    }
+
+    public static void addScroll(int ID, int r1, int ra1, int r2, int lvl,
+                                 String name, RSFont TDA[], int imageID, int type) {
+        Widget rsInterface = addTabInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 5;
+        rsInterface.atActionType = type;
+        rsInterface.contentType = 0;
+        rsInterface.mOverInterToTrigger = ID + 1;
+        rsInterface.width = 32;
+        rsInterface.height = 32;
+        rsInterface.tooltip = (new StringBuilder()).append("Transform @or1@")
+                .append(name).toString();
+        rsInterface.spellName = name;
+        rsInterface.valueCompareType = new int[2];
+        rsInterface.requiredValues = new int[2];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = ra1;
+        rsInterface.valueCompareType[1] = 3;
+        rsInterface.requiredValues[1] = lvl - 1;
+        rsInterface.valueIndexArray = new int[3][];
+        rsInterface.valueIndexArray[0] = new int[4];
+        rsInterface.valueIndexArray[0][0] = 4;
+        rsInterface.valueIndexArray[0][1] = 3214;
+        rsInterface.valueIndexArray[0][2] = r1;
+        rsInterface.valueIndexArray[0][3] = 0;
+        rsInterface.valueIndexArray[1] = new int[3];
+        rsInterface.valueIndexArray[1][0] = 1;
+        rsInterface.valueIndexArray[1][1] = 6;
+        rsInterface.valueIndexArray[1][2] = 0;
+        rsInterface.itemSpriteId1 = r2;
+        rsInterface.itemSpriteId2 = r2;
+        rsInterface.itemSpriteIndex = imageID;
+        rsInterface.greyScale = true;
+        Widget hover = addTabInterface(ID + 1);
+        hover.mOverInterToTrigger = -1;
+        hover.isMouseoverTriggered = true;
+        setChildren(5, hover);
+        addSprite(ID + 2, 0, "Lunar/BOX");
+        addText(ID + 3, (new StringBuilder()).append("Level ").append(lvl)
+                        .append(": ").append(name).toString(), 0xff981f, true, true,
+                52, 1);
+        addText(ID + 4, "This item requires", 0xaf6a1a, true, true, 52, 0);
+        addRuneText(ID + 5, ra1, r1, TDA);
+        addSprite(ID + 6, r1, null);
+        setBounds(ID + 2, 0, 0, 0, hover);
+        setBounds(ID + 3, 90, 4, 1, hover);
+        setBounds(ID + 4, 90, 19, 2, hover);
+        setBounds(ID + 5, 87, 66, 3, hover);
+        setBounds(ID + 6, 72, 33, 4, hover);
+    }
+    public static void addText(int i, String s, int k, boolean l, boolean m,
+                               int a, int j) {
+        Widget rsinterface = addTabInterface(i);
+        rsinterface.parentID = i;
+        rsinterface.id = i;
+        rsinterface.type = 4;
+        rsinterface.atActionType = 0;
+        rsinterface.width = 0;
+        rsinterface.height = 0;
+        rsinterface.contentType = 0;
+        rsinterface.mOverInterToTrigger = a;
+        rsinterface.centerText = l;
+        rsinterface.textShadow = m;
+        rsinterface.textDrawingAreas = fonts[j];
+        rsinterface.message = s;
+        rsinterface.textColor = k;
+    }
+    public static void addPouch(int ID, int r1[], int ra1, int r2, int lvl,
+                                String name, RSFont TDA[], int imageID, int type) {
+        Widget rsInterface = addTabInterface(ID);
+        rsInterface.id = ID;
+        rsInterface.parentID = 1151;
+        rsInterface.type = 5;
+        rsInterface.atActionType = type;
+        rsInterface.contentType = 0;
+        rsInterface.mOverInterToTrigger = ID + 1;
+        rsInterface.width = 32;
+        rsInterface.height = 32;
+        rsInterface.tooltip = (new StringBuilder()).append("Infuse @or1@")
+                .append(name).toString();
+        rsInterface.spellName = name;
+        rsInterface.valueCompareType = new int[2];
+        rsInterface.requiredValues = new int[2];
+        rsInterface.valueCompareType[0] = 3;
+        rsInterface.requiredValues[0] = ra1;
+        rsInterface.valueCompareType[1] = 3;
+        rsInterface.requiredValues[1] = lvl - 1;
+        rsInterface.valueIndexArray = new int[2 + r1.length][];
+        for (int i = 0; i < r1.length; i++) {
+            rsInterface.valueIndexArray[i] = new int[4];
+            rsInterface.valueIndexArray[i][0] = 4;
+            rsInterface.valueIndexArray[i][1] = 3214;
+            rsInterface.valueIndexArray[i][2] = r1[i];
+            rsInterface.valueIndexArray[i][3] = 0;
+        }
+
+        rsInterface.valueIndexArray[1] = new int[3];
+        rsInterface.valueIndexArray[1][0] = 1;
+        rsInterface.valueIndexArray[1][1] = 6;
+        rsInterface.valueIndexArray[1][2] = 0;
+        rsInterface.itemSpriteId1 = r2;
+        rsInterface.itemSpriteId2 = r2;
+        rsInterface.itemSpriteIndex = imageID;
+        rsInterface.greyScale = true;
+        Widget hover = addTabInterface(ID + 1);
+        hover.mOverInterToTrigger = -1;
+        hover.isMouseoverTriggered = true;
+        setChildren(5, hover);
+        addSprite(ID + 2, 0, "Lunar/BOX");
+        addText(ID + 3, (new StringBuilder()).append("Level ").append(lvl)
+                        .append(": ").append(name).toString(), 0xff981f, true, true,
+                52, 1);
+        addText(ID + 4, "This item requires", 0xaf6a1a, true, true, 52, 0);
+        addRuneText(ID + 5, ra1, r1[0], TDA);
+        addSprite(ID + 6, r1[0], null);
+        addSprite(ID + 7, r1[1], null);
+        addSprite(ID + 8, r1[2], null);
+        setBounds(ID + 2, 0, 0, 0, hover);
+        setBounds(ID + 3, 90, 4, 1, hover);
+        setBounds(ID + 4, 90, 19, 2, hover);
+        setBounds(ID + 5, 87, 66, 3, hover);
+        setBounds(ID + 6, 14, 33, 4, hover);
+    }
+    public static void addConfigButton(int ID, int pID, int bID, int bID2,
+                                       String bName, int width, int height, String tT, int configID,
+                                       int aT, int configFrame) {
+        Widget Tab = addTabInterface(ID);
+        Tab.parentID = pID;
+        Tab.id = ID;
+        Tab.type = 5;
+        Tab.atActionType = aT;
+        Tab.contentType = 0;
+        Tab.width = width;
+        Tab.height = height;
+        Tab.opacity = 0;
+        Tab.mOverInterToTrigger = -1;
+        Tab.valueCompareType = new int[1];
+        Tab.requiredValues = new int[1];
+        Tab.valueCompareType[0] = 1;
+        Tab.requiredValues[0] = configID;
+        Tab.valueIndexArray = new int[1][3];
+        Tab.valueIndexArray[0][0] = 5;
+        Tab.valueIndexArray[0][1] = configFrame;
+        Tab.valueIndexArray[0][2] = 0;
+        Tab.enabledSprite = imageLoader(bID, bName);
+        Tab.disabledSprite = imageLoader(bID2, bName);
+        Tab.tooltip = tT;
+    }
+
+    private static void addHead2(int id, int w, int h, int zoom) {// tewst
+        Widget rsinterface = addInterface(id);
+        rsinterface.type = 6;
+        rsinterface.mediaType = 2;
+        rsinterface.mediaID = 4000;//
+        rsinterface.modelZoom = zoom;
+        rsinterface.modelRotation1 = 40;// 40;//wait
+        rsinterface.modelRotation2 = 1900;// 1900;
+        rsinterface.height = h;
+        rsinterface.width = w;
+    }
+
+    private static void addHead3(int id, int j, int k, int l) {
+        Widget rsinterface = addInterface(id);
+        rsinterface.type = 6;
+        rsinterface.modelZoom = l;
+        rsinterface.modelRotation1 = 40;
+        rsinterface.modelRotation2 = 1900;
+        rsinterface.height = k;
+        rsinterface.width = j;
+    }
+
+    public static void musictab(RSFont[] tda) {
+        Widget scroll = interfaceCache.get(4262);
+        scroll.scrollMax = 12235;
+        scroll.width = 168;
+        scroll.height = 190;
+        setChildren(815, scroll);
+
+        int yPosition = 0;
+        int index = 0;
+        String[] musicTracks = {
+                "7th Realm",
+                "A Familiar Feeling",
+                "A New Menace",
+                "A Pirate's Life for Me",
+                "Adorno I",
+                "Adorno II",
+                "Adorno III",
+                "Adorno IV",
+                "Adorno IX",
+                "Adorno V",
+                "Adorno VI",
+                "Adorno VII",
+                "Adorno VIII",
+                "Adorno X",
+                "Adventure",
+                "Al Kharid",
+                "All for the Pest",
+                "All's Fairy in Love and War",
+                "Alone",
+                "Altar Ego",
+                "Alternative Root",
+                "Ambient Jungle",
+                "An Easter United",
+                "Ancestral Wisdom",
+                "Animal Apogee",
+                "Anywhere",
+                "Arabian",
+                "Arabian2",
+                "Arabian3",
+                "Arabique",
+                "Arboretum",
+                "Architect of War",
+                "Ardougne Ago",
+                "Arma Gonna Get You",
+                "Armadyl Alliance",
+                "Armageddon",
+                "Army of Darkness",
+                "Arrival",
+                "Artistry",
+                "Assault and Battery",
+                "Astea Frostweb",
+                "Attack1",
+                "Attack2",
+                "Attack3",
+                "Attack4",
+                "Attack5",
+                "Attack6",
+                "Attention",
+                "Autumn Voyage",
+                "Aye Car Rum Ba",
+                "Aztec",
+                "Back to Life",
+                "Background",
+                "Bal'lak the Pummeller",
+                "Ballad of Enchantment",
+                "Bandit Camp",
+                "Bandos Battalion",
+                "Bane of Summer",
+                "Barb Wire",
+                "Barbarianism",
+                "Barking Mad",
+                "Baroque",
+                "Battle of Souls",
+                "Beetle Juice",
+                "Beyond",
+                "Big Chords",
+                "Bish Bash Bosh",
+                "Bittersweet Bunny",
+                "Black of Knight",
+                "Black Zabeth",
+                "Black Zabeth: LIVE!",
+                "Blink",
+                "Blistering Barnacles",
+                "Bloodbath",
+                "Body Parts",
+                "Body Talk",
+                "Bolrie's Diary",
+                "Bone Dance",
+                "Bone Dry",
+                "Book of Spells",
+                "Borderland",
+                "Born to Do This",
+                "Bounty Hunter Level 1",
+                "Bounty Hunter Level 2",
+                "Bounty Hunter Level 3",
+                "Brain Battle",
+                "Breeze",
+                "Brew Hoo Hoo",
+                "Brimstail's Scales",
+                "Bubble and Squeak",
+                "Bulwark Beast",
+                "But We Can Fight",
+                "Cabin Fever",
+                "Cage Against the Machine",
+                "Camelot",
+                "Castle Wars",
+                "Castle Wars",
+                "Castle Warz",
+                "Catacombs and Tombs",
+                "Catch Me If You Can",
+                "Cave Background",
+                "Cave of Beasts",
+                "Cave of the Goblins",
+                "Cavern",
+                "Cavernous Mythology",
+                "Cellar Song",
+                "Chain of Command",
+                "Chain Reaction",
+                "Chamber",
+                "Charmin' Farmin'",
+                "Chef Surprize",
+                "Chickened Out",
+                "Chompy Hunt",
+                "Christmas Caverns",
+                "Circus",
+                "Citadel I",
+                "Citadel II",
+                "Citadel III",
+                "Citadel IV",
+                "Citadel IX ",
+                "Citadel Theme",
+                "Citadel V ",
+                "Citadel VI ",
+                "Citadel VII ",
+                "Citadel VIII ",
+                "Citadel X ",
+                "Citadel XI ",
+                "Citadel XII ",
+                "Citadel XIII ",
+                "Citadel XIV ",
+                "Citadel XV ",
+                "Citadel XVI ",
+                "City of the Dead",
+                "Clan Wars",
+                "Claustrophobia",
+                "Close Quarters",
+                "Colonel Grimsson",
+                "Command Centre",
+                "Competition",
+                "Competition",
+                "Complication",
+                "Conspiracy: Part 1",
+                "Conspiracy: Part 2",
+                "Contest",
+                "Cool for Ali Cats",
+                "Copris Lunaris",
+                "Corporal Punishment",
+                "Corporate Callousness",
+                "Corridors of Power",
+                "Courage",
+                "Creature Cruelty",
+                "Creepy",
+                "Crystal Castle",
+                "Crystal Cave",
+                "Crystal Sword",
+                "Cursed",
+                "Dagannoth Dawn",
+                "Dance of Death",
+                "Dance of the Undead",
+                "Dangerous",
+                "Dangerous Logic",
+                "Dangerous Road",
+                "Dangerous Way",
+                "Dark",
+                "Darkmeyer",
+                "Davy Jones's Locker",
+                "Dead and Buried",
+                "Dead Can Dance",
+                "Dead Quiet",
+                "Deadlands",
+                "Deadliest Catch",
+                "Deadliest Catch",
+                "Deep Down",
+                "Deep Wildy",
+                "Demise of the Dorgeshuun",
+                "Desert Heat",
+                "Desert Island Bear",
+                "Desert Smoke",
+                "Desert Voyage",
+                "Desolate Ruins",
+                "Desolo I",
+                "Desolo II",
+                "Desolo III",
+                "Desolo IV",
+                "Desolo IX",
+                "Desolo V",
+                "Desolo VI",
+                "Desolo VII",
+                "Desolo VIII",
+                "Desolo X",
+                "Destiny",
+                "Diango's Little Helpers",
+                "Dillo-gence is Key",
+                "Dimension X",
+                "Distant Land",
+                "Distant Land",
+                "Distillery Hilarity",
+                "Divine Skinweaver",
+                "Dogs of War",
+                "Don't Panic Zanik",
+                "Doorways",
+                "Dorgeshuun City",
+                "Dorgeshuun Deep",
+                "Down and Out",
+                "Down Below",
+                "Down to Earth",
+                "Dragontooth Island",
+                "Dreadnaught",
+                "Dream",
+                "Dream Theatre",
+                "Dreamstate",
+                "Duel Arena",
+                "Dunjun",
+                "Dusk in Yu'biusk",
+                "Dwarf Theme",
+                "Dynasty",
+                "Eagle Peak",
+                "Easter Jig",
+                "Egypt",
+                "Elven Mist",
+                "Elven Seed",
+                "Emotion",
+                "Emperor",
+                "Eruption",
+                "Escape",
+                "Espionage",
+                "Etcetera",
+                "Everlasting",
+                "Everlasting Fire",
+                "Everywhere",
+                "Evil Bob's Island",
+                "Exam Conditions",
+                "Exhibit 'A'",
+                "Expanse",
+                "Expecting",
+                "Expedition",
+                "Exposed",
+                "Face Off",
+                "Faerie",
+                "Faithless",
+                "Fanfare",
+                "Fanfare2",
+                "Fanfare3",
+                "Fangs for the Memory",
+                "Far Away",
+                "Far Away",
+                "Fe Fi Fo Fum",
+                "Fear and Loathing",
+                "Fenkenstrain's Refrain",
+                "Fight of the Dwarves",
+                "Fight or Flight",
+                "Final Destination",
+                "Find My Way",
+                "Fire and Brimstone",
+                "Fishing",
+                "Flesh-spoiler Haasghenahk",
+                "Floating Free",
+                "Flute Salad",
+                "Food for Thought",
+                "Forbidden",
+                "Forest",
+                "Forever",
+                "Forgettable Melody",
+                "Forgotten",
+                "Freshwater",
+                "Frogland",
+                "Frost Fight",
+                "Frostbite",
+                "Fruits de Mer",
+                "Funny Bunnies",
+                "Gaol",
+                "Garden",
+                "Garden of Autumn",
+                "Garden of Spring",
+                "Garden of Summer",
+                "Garden of Winter",
+                "Ghost of Christmas Presents",
+                "Give it Your Pest Shot",
+                "Glacialis I",
+                "Glacialis II",
+                "Glacialis III",
+                "Glacialis IV",
+                "Glacialis IX",
+                "Glacialis V",
+                "Glacialis VI",
+                "Glacialis VII",
+                "Glacialis VIII",
+                "Glacialis X",
+                "Glorious Recallation...",
+                "Glorious Recallation...",
+                "Glorious Recallation...",
+                "Gluttonous Behemoth",
+                "Gnome King",
+                "Gnome Village",
+                "Gnome Village2",
+                "Gnomeball",
+                "Go with the Flow",
+                "Goblin Game",
+                "Goblin Village",
+                "Godslayer",
+                "Golden Touch",
+                "Gravecreeper",
+                "Greatness",
+                "Grimly Fiendish",
+                "Grip of the Talon",
+                "Grotto",
+                "Ground Scape",
+                "Grumpy",
+                "Gunnarsgrunn",
+                "Guthix's Hunter",
+                "H.A.M. Fisted",
+                "Halloween Party",
+                "Ham and Seek",
+                "Ham Attack",
+                "Har'Lakk the Riftsplitter",
+                "Hare-brained Machines",
+                "Harmony",
+                "Harmony2",
+                "Haunted Mine",
+                "Have a Blast",
+                "Have an Ice Day",
+                "Head to Head",
+                "Healin' Feelin'",
+                "Heart and Mind",
+                "Hell's Bells",
+                "Hell's Bells",
+                "Hermit",
+                "High Seas",
+                "High Spirits",
+                "Historic Memories",
+                "Hobgoblin Geomancer",
+                "Home Sweet Home",
+                "Homescape",
+                "Honkytonky Harmony",
+                "Honkytonky Medieval",
+                "Honkytonky Newbie Melody",
+                "Honkytonky Parade",
+                "Honkytonky Sea Shanty",
+                "Hope Devourer",
+                "Horizon",
+                "Hot 'n' Bothered",
+                "Hypnotized",
+                "I'm Counting on You",
+                "Iban",
+                "Ice Day for Penguins",
+                "Ice Melody",
+                "Icy a Worried Gnome",
+                "Icy Bones",
+                "Icy Trouble Ahead",
+                "Illusive",
+                "Impetuous",
+                "In Between",
+                "In Security",
+                "In the Brine",
+                "In the Clink",
+                "In the Manor",
+                "In the Pits",
+                "Inadequacy",
+                "Incantation",
+                "Incarceration",
+                "Insect Queen",
+                "Inspiration",
+                "Into the Abyss",
+                "Intrepid",
+                "Island Life",
+                "Island of the Trolls",
+                "Isle of Everywhere",
+                "Itsy Bitsy...",
+                "Jailbird",
+                "Jaws of the Dagannoth",
+                "Jester Minute",
+                "Jolly-R",
+                "Joy of the Hunt",
+                "Judge and Jury",
+                "Jungle Bells",
+                "Jungle Community",
+                "Jungle Hunt",
+                "Jungle Island",
+                "Jungle Island XMAS",
+                "Jungle Troubles",
+                "Jungly1",
+                "Jungly2",
+                "Jungly3",
+                "Kal'Ger the Warmonger",
+                "Karamja Jam",
+                "Kethsi",
+                "Kharidian Nights",
+                "Kingdom",
+                "Knightly",
+                "Knightmare",
+                "La Mort",
+                "Labyrinth",
+                "Lair",
+                "Lair of Kang Admi",
+                "Lament",
+                "Lament of Meiyerditch",
+                "Lament of the Snow Queen",
+                "Lamistard's Labyrinth",
+                "Land Down Under",
+                "Land of Snow",
+                "Land of the Dwarves",
+                "Landlubber",
+                "Last Stand",
+                "Lasting",
+                "Lazy Wabbit",
+                "Legend",
+                "Legion",
+                "Lexicus Runewright",
+                "Life's a Beach!",
+                "Lighthouse",
+                "Lightness",
+                "Lightwalk",
+                "Little Cave of Horrors",
+                "Living Rock",
+                "Logical Progression",
+                "Lonesome",
+                "Long Ago",
+                "Long Way Home",
+                "Looking Back",
+                "Lore and Order",
+                "Lortnoc Tsep",
+                "Lost Soul",
+                "Love and Hate",
+                "Love Bites",
+                "Love Lost",
+                "Lullaby",
+                "Luminescent Icefiend",
+                "Mad Eadgar",
+                "Mage Arena",
+                "Magic and Mystery",
+                "Magic Dance",
+                "Magic Magic Magic",
+                "Magical Journey",
+                "Maiasaura",
+                "Major Miner",
+                "Making Waves",
+                "Malady",
+                "March",
+                "Marooned",
+                "Marzipan",
+                "Masquerade",
+                "Mastermindless",
+                "Mausoleum",
+                "Meddling Kids",
+                "Medieval",
+                "Mellow",
+                "Melodrama",
+                "Melzar's Maze",
+                "Meridian",
+                "Metalwork",
+                "Method of Madness",
+                "Miles Away",
+                "Mind Over Matter",
+                "Mindful",
+                "Miracle Dance",
+                "Mirage",
+                "Miscellania",
+                "Mobilising Armies",
+                "Monarch Waltz",
+                "Monkey Madness",
+                "Monkey See, Monkey Do",
+                "Monkey See, Monkey Do",
+                "Monkey See, Monkey Do",
+                "Monster Melee",
+                "Moody",
+                "Morytania",
+                "Mouse Trap",
+                "Mudskipper Melody",
+                "Mutant Medley",
+                "My Arm's Journey",
+                "Mystery Revealed",
+                "Narnode's Theme",
+                "Natural",
+                "Natural Selection",
+                "Necrolord",
+                "Neverland",
+                "Newbie Melody",
+                "Nial's Widow",
+                "Night of the Vampyre",
+                "Night-gazer Khighorahk",
+                "Nightfall",
+                "No Way Out",
+                "Nomad",
+                "Norse Code",
+                "Null and Void",
+                "Occulo I",
+                "Occulo II",
+                "Occulo III",
+                "Occulo IV",
+                "Occulo IX",
+                "Occulo V",
+                "Occulo VI",
+                "Occulo VII",
+                "Occulo VIII",
+                "Occulo X",
+                "Ogre the Top",
+                "On the Up",
+                "On the Wing",
+                "Only a King",
+                "Oriental",
+                "Out of Control",
+                "Out of the Deep",
+                "Over To Nardah",
+                "Overpass",
+                "Overture",
+                "Parade",
+                "Path of Peril",
+                "Pathways",
+                "Penguin Possible",
+                "Pest Control",
+                "Pest Control",
+                "Pharaoh's Tomb",
+                "Phasmatys",
+                "Pheasant Peasant",
+                "Pinball Wizard",
+                "Pirates of Penance",
+                "Pirates of Peril",
+                "Plane-freezer Lakhrahnaz",
+                "Poison Dreams",
+                "Poles Apart",
+                "Poles Apart",
+                "Precarious Void",
+                "Prime Time",
+                "Principality",
+                "Quest",
+                "Rammernaut",
+                "Rat a Tat Tat",
+                "Rat Hunt",
+                "Ready for Battle",
+                "Regal",
+                "Reggae",
+                "Reggae2",
+                "Rellekka",
+                "Rest for the Weary",
+                "Return of Lucien",
+                "Reunion",
+                "Right of Conquest",
+                "Right on Track",
+                "Righteousness",
+                "Rising Damp",
+                "Riverside",
+                "Roc and Roll",
+                "Rocky Rescue",
+                "Roll the Bones",
+                "Romancing the Crone",
+                "Romper Chomper",
+                "Root Canal",
+                "Roots and Flutes",
+                "Royale",
+                "Rune Essence",
+                "Runed Behemoth",
+                "Sad Meadow",
+                "Safety in Numbers",
+                "Saga",
+                "Sagittare",
+                "Saltwater",
+                "Sarah's Lullaby",
+                "Sarcophagus",
+                "Sarim's Vermin",
+                "Scape Cave",
+                "Scape Hunter",
+                "Scape Main",
+                "Scape Original",
+                "Scape Sad",
+                "Scape Santa",
+                "Scape Scared",
+                "Scape Soft",
+                "Scape Summon",
+                "Scape Theme",
+                "Scape Wild",
+                "Scarab",
+                "Scarabaeoidea",
+                "School's Out",
+                "Sea Shanty",
+                "Sea Shanty XMAS",
+                "Sea Shanty2",
+                "Seasonal Sports",
+                "Second Vision",
+                "Serenade",
+                "Serene",
+                "Settlement",
+                "Shadow-forger Ihlakhizan",
+                "Shadowland",
+                "Shaping Up",
+                "Shine",
+                "Shining",
+                "Shining Spirit",
+                "Shipwrecked",
+                "Showdown",
+                "Sigmund's Showdown",
+                "Silent Knight",
+                "Simian Scuffle",
+                "Skeletal Trio",
+                "Slain to Waste",
+                "Slice of Silent Movie",
+                "Slice of Station",
+                "Slither and Thither",
+                "Slug a Bug Ball",
+                "Slug Poison",
+                "Smorgasbord",
+                "Snack Attack",
+                "Sojourn",
+                "Something Fishy",
+                "Soul Wars",
+                "Soundscape",
+                "Spa Bizarre",
+                "Sphinx",
+                "Spirit",
+                "Spirits of Elid",
+                "Splendour",
+                "Spooky",
+                "Spooky Jungle",
+                "Spooky2",
+                "Spring Song",
+                "Stagnant",
+                "Starlight",
+                "Start",
+                "Stealing Creation",
+                "Still Night",
+                "Stillness",
+                "Stillwater",
+                "Stomp",
+                "Storeroom Shuffle",
+                "Storm Brew",
+                "Stranded",
+                "Strange Place",
+                "Stratosphere",
+                "Strength of Saradomin",
+                "Subterranea",
+                "Sunburn",
+                "Superstition",
+                "Surok's Theme",
+                "Suspicious",
+                "Tale of Keldagrim",
+                "Talking Forest",
+                "Tears of Guthix",
+                "Technology",
+                "Temple",
+                "Temple Desecrated",
+                "Temple of Light",
+                "Temple of Tribes",
+                "Terrorbird Tussle",
+                "The Adventurer",
+                "The Adventurers Re-United!",
+                "The Art of Hocus-Pocus",
+                "The Cellar Dwellers",
+                "The Chosen",
+                "The Chosen Commander",
+                "The Columbarium",
+                "The Dance of the Snow Queen",
+                "The Depths",
+                "The Desert",
+                "The Desolate Isle",
+                "The Duke",
+                "The Enchanter",
+                "The Evil Within",
+                "The Factory Floor",
+                "The Fallen Hero",
+                "The Far Side",
+                "The Galleon",
+                "The Genie",
+                "The Golem",
+                "The Heist",
+                "The Horn of Chill",
+                "The Last Shanty",
+                "The Longramble Scramble",
+                "The Lost Melody",
+                "The Lost Tribe",
+                "The Lunar Isle",
+                "The Mad Mole",
+                "The Mentor",
+                "The Mollusc Menace",
+                "The Monsters Below",
+                "The Muspah's Tomb",
+                "The Navigator",
+                "The Noble Rodent",
+                "The Other Side",
+                "The Pact",
+                "The Pengmersible",
+                "The Phoenix",
+                "The Plundered Tomb",
+                "The Power of Tears",
+                "The Quiz Master",
+                "The Records Chamber",
+                "The Rogues' Den",
+                "The Route of All Evil",
+                "The Route of the Problem",
+                "The Ruins of Camdozaal",
+                "The Shadow",
+                "The Slayer",
+                "The Sound of Guthix",
+                "The Task at Hand",
+                "The Terrible Caverns",
+                "The Terrible Tower",
+                "The Terrible Tunnels",
+                "The Throne of Bandos",
+                "The Tower",
+                "The Trade Parade",
+                "The Vacant Abyss",
+                "The Void Stares Back",
+                "The Waiting Game",
+                "The Wrong Path",
+                "Theme",
+                "These Stones",
+                "Thieves' Guild I",
+                "Thieves' Guild II",
+                "Thieves' Guild III",
+                "Thieves' Guild IV",
+                "Three of a Kind",
+                "Throne of the Demon",
+                "Time Out",
+                "Time to Mine",
+                "Tiptoe",
+                "Title Fight",
+                "To'Kash the Bloodchiller",
+                "TokTz-Ket-Ek-Mack",
+                "Tomb Raider",
+                "Tomorrow",
+                "Too Many Cooks...",
+                "Torqueo I",
+                "Torqueo II",
+                "Torqueo III",
+                "Torqueo IV",
+                "Torqueo IX",
+                "Torqueo V",
+                "Torqueo VI",
+                "Torqueo VII",
+                "Torqueo VIII",
+                "Torqueo X",
+                "Tournament!",
+                "Trawler",
+                "Trawler Minor",
+                "Tree Spirits",
+                "Trees Aren't Your Friends",
+                "Tremble",
+                "Tribal",
+                "Tribal Background",
+                "Tribal2",
+                "Trick or Treat?",
+                "Trinity",
+                "Troll Invasion",
+                "Trouble Brewing",
+                "Troubled",
+                "Troubled Spirit",
+                "Tune from the Dune",
+                "Twilight",
+                "TzHaar!",
+                "Unavoidable Conflict",
+                "Undead Army",
+                "Undead Dungeon",
+                "Under the Sand",
+                "Undercurrent",
+                "Underground",
+                "Underground Pass",
+                "Understanding",
+                "Unholy Cursebearer",
+                "Unknown Land",
+                "Untouchable",
+                "Upcoming",
+                "Upir Likhyi",
+                "Vanescula Fight",
+                "Venomous",
+                "Venture",
+                "Venture2",
+                "Victory is Mine",
+                "Village",
+                "Vision",
+                "Void Knights' Theme",
+                "Volcanic Vikings",
+                "Voodoo Cult",
+                "Voyage",
+                "Waiting for Battle",
+                "Waiting for the Hunt",
+                "Waking Dream",
+                "Wander",
+                "Warped Gulega",
+                "Warrior",
+                "Warriors' Guild",
+                "Waste Defaced",
+                "Waterfall",
+                "Waterlogged",
+                "Way of the Enchanter",
+                "Wayward",
+                "We Are the Fairies",
+                "Well of Voyage",
+                "Where Eagles Lair",
+                "Who Are We to Judge?",
+                "Wild Isle",
+                "Wild Side",
+                "Wilderness",
+                "Wilderness2",
+                "Wilderness3",
+                "Wildwood",
+                "Winter Funfare",
+                "Witching",
+                "Woe of the Wyvern",
+                "Wonder",
+                "Wonderous",
+                "Woodland",
+                "Work Work Work",
+                "Workshop",
+                "World-gorger Shukarhazh",
+                "Wrath and Ruin",
+                "Xenophobe",
+                "Yesteryear",
+                "Yk'Lagor the Thunderous",
+                "Yk'Lagor the Thunderous",
+                "Zamorak Zoo",
+                "Zanik's Theme",
+                "Zaros Stirs",
+                "Zaros Zeitgeist",
+                "Zealot",
+                "Zogre Dance",
+                "Zombie Invasion",
+                "Zombiism",
+        };
+
+        for (int i = 0; i < 815; i++) {
+            addClickableTextmusic(46387 + i, musicTracks[i], "Play <col=ff981f>"+musicTracks[i]+"</col>",  tda, 1, 0xff0000, false, true, 130);
+            setBounds(46387 + i, 10, yPosition + 3, index++, scroll);
+            yPosition += 15;
+        }
+
     }
     public static void skilllevel(RSFont[] tda) {
         Widget text = interfaceCache.get(7202);
@@ -2750,8 +3992,8 @@ public class Widget {
         Interface.contentType = 0;
         Interface.opacity = 0;
         Interface.mOverInterToTrigger = Hover;
-        Interface.disabledSpriteId = 480;
-        Interface.enabledSpriteId = -1;
+        Interface.disabledSprite = imageLoader(0, "Interfaces/PrayerTab/PRAYERGLOW");
+        Interface.enabledSprite = imageLoader(1, "Interfaces/PrayerTab/PRAYERGLOW");
         Interface.width = 34;
         Interface.height = 34;
         Interface.valueCompareType = new int[1];
@@ -2770,8 +4012,10 @@ public class Widget {
         Interface.atActionType = 0;
         Interface.contentType = 0;
         Interface.opacity = 0;
-        Interface.disabledSprite = client.spriteLoader.lookup(spriteOn);
-        if (spriteOff != -1) Interface.enabledSprite = client.spriteLoader.lookup(spriteOff);
+        Interface.disabledSprite = imageLoader(spriteOn,
+                "Interfaces/PrayerTab/PRAYERON");
+        if (spriteOff != -1) Interface.enabledSprite = imageLoader(spriteOff,
+                "Interfaces/PrayerTab/PRAYEROFF");
         Interface.width = 34;
         Interface.height = 34;
         Interface.valueCompareType = new int[1];
@@ -3069,7 +4313,7 @@ public class Widget {
     }
     public static void createSkillHover(int id, int x) {
         Widget hover = addInterface(id);
-        hover.type = 9;
+        hover.type = 8;
         hover.message = "TESTING!";
         hover.contentType = x;
         hover.width = 60;
@@ -3173,4 +4417,74 @@ public class Widget {
             }
         }
     }
+    private static int summoningLevelRequirements[] = { 1, 4, 10, 13, 16, 17,
+            18, 19, 22, 23, 25, 28, 29, 31, 32, 33, 34, 34, 34, 34, 36, 40, 41,
+            42, 43, 43, 43, 43, 43, 43, 43, 46, 46, 47, 49, 52, 54, 55, 56, 56,
+            57, 57, 57, 58, 61, 62, 63, 64, 66, 66, 67, 68, 69, 70, 71, 72, 73,
+            74, 75, 76, 76, 77, 78, 79, 79, 79, 80, 83, 83, 85, 86, 88, 89, 92,
+            93, 95, 96, 99 };
+    private static int pouchItems[] = { 12047, 12043, 12059, 12019, 12009,
+            12778, 12049, 12055, 12808, 12067, 12063, 12091, 12800, 12053,
+            12065, 12021, 12818, 12780, 12798, 12814, 12073, 12087, 12071,
+            12051, 12095, 12097, 12099, 12101, 12103, 12105, 12107, 12075,
+            12816, 12041, 12061, 12007, 12035, 12027, 12077, 12531, 12810,
+            12812, 12784, 12023, 12085, 12037, 12015, 12045, 12079, 12123,
+            12031, 12029, 12033, 12820, 12057, 14623, 12792, 12069, 12011,
+            12081, 12782, 12794, 12013, 12802, 12804, 12806, 12025, 12017,
+            12788, 12776, 12083, 12039, 12786, 12089, 12796, 12822, 12093,
+            12790 };
+    private static int scrollItems[] = { 12425, 12445, 12428, 12459, 12533,
+            12838, 12460, 12432, 12839, 12430, 12446, 12440, 12834, 12447,
+            12433, 12429, 12443, 12443, 12443, 12443, 12461, 12431, 12422,
+            12448, 12458, 12458, 12458, 12458, 12458, 12458, 12458, 12462,
+            12829, 12426, 12444, 12441, 12454, 12453, 12463, 12424, 12835,
+            12836, 12840, 12455, 12468, 12427, 12436, 12467, 12464, 12452,
+            12439, 12438, 12423, 12830, 12451, 14622, 12826, 12449, 12450,
+            12465, 12841, 12831, 12457, 12824, 12824, 12824, 12442, 12456,
+            12837, 12832, 12466, 12434, 12833, 12437, 12827, 12828, 12435,
+            12825 };
+    private static String scrollNames[] = { "Howl", "Dreadfowl Strike",
+            "Egg Spawn", "Slime Spray", "Stony Shell", "Pester",
+            "Electric Lash", "Venom Shot", "Fireball Assault", "Cheese Feast",
+            "Sandstorm", "Generate Compost", "Explode", "Vampire Touch",
+            "Insane Ferocity", "Multichop", "Call of Arms", "Call of Arms",
+            "Call of Arms", "Call of Arms", "Bronze Bull Rush", "Unburden",
+            "Herbcall", "Evil Flames", "Petrifying gaze", "Petrifying gaze",
+            "Petrifying gaze", "Petrifying gaze", "Petrifying gaze",
+            "Petrifying gaze", "Petrifying gaze", "Iron Bull Rush",
+            "Immense Heat", "Thieving Fingers", "Blood Drain", "Tireless Run",
+            "Abyssal Drain", "Dissolve", "Steel Bull Rush", "Fish Rain",
+            "Goad", "Ambush", "Rending", "Doomsphere Device", "Dust Cloud",
+            "Abyssal Stealth", "Ophidian Incubation", "Poisonous Blast",
+            "Mithril Bull Rush", "Toad Bark", "Testudo", "Swallow Whole",
+            "Fruitfall", "Famine", "Arctic Blast", "Rise from the Ashes",
+            "Volcanic Strength", "Crushing Claw", "Mantis Strike",
+            "Adamant Bull Rush", "Inferno", "Deadly Claw", "Acorn Missile",
+            "Titan's Consitution", "Titan's Consitution",
+            "Titan's Consitution", "Regrowth", "Spike Shot", "Ebon Thunder",
+            "Swamp Plague", "Rune Bull Rush", "Healing Aura", "Boil",
+            "Magic Focus", "Essence Shipment", "Iron Within", "Winter Storage",
+            "Steel of Legends" };
+    private static String pouchNames[] = { "Spirit wolf", "Dreadfowl",
+            "Spirit spider", "Thorny snail", "Granite crab", "Spirit mosquito",
+            "Desert wyrm", "Spirit scorpion", "Spirit tz-kih", "Albino rat",
+            "Spirit kalphite", "Compost mound", "Giant chinchompa",
+            "Vampire bat", "Honey badger", "Beaver", "Void ravager",
+            "Void spinner", "Void torcher", "Void shifter", "Bronze minotaur",
+            "Bull ant", "Macaw", "Evil turnip", "Sp. cockatrice",
+            "Sp. guthatrice", "Sp. saratrice", "Sp. zamatrice",
+            "Sp. pengatrice", "Sp. coraxatrice", "Sp. vulatrice",
+            "Iron minotaur", "Pyrelord", "Magpie", "Bloated leech",
+            "Spirit terrorbird", "Abyssal parasite", "Spirit jelly",
+            "Steel minotaur", "Ibis", "Spirit graahk", "Spirit kyatt",
+            "Spirit larupia", "Karam. overlord", "Smoke devil",
+            "Abyssal lurker", "Spirit cobra", "Stranger plant",
+            "Mithril minotaur", "Barker toad", "War tortoise", "Bunyip",
+            "Fruit bat", "Ravenous locust", "Arctic bear", "Phoenix",
+            "Obsidian golem", "Granite lobster", "Praying mantis",
+            "Adamant minotaur", "Forge regent", "Talon beast", "Giant ent",
+            "Fire titan", "Moss titan", "Ice titan", "Hydra",
+            "Spirit dagannoth", "Lava titan", "Swamp titan", "Rune minotaur",
+            "Unicorn stallion", "Geyser titan", "Wolpertinger",
+            "Abyssal titan", "Iron titan", "Pack yak", "Steel titan" };
 }

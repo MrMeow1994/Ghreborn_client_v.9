@@ -31,7 +31,7 @@ public final class Rasterizer extends DrawingArea {
         centerX = DrawingArea.width / 2;
         centerY = DrawingArea.height / 2;
     }
-
+    public static int fieldOfView = 512;
     public static void method365(int j, int k)
     {
         lineOffsets = new int[k];
@@ -4871,7 +4871,12 @@ i++;
     }
 
     public static void setDefaultBounds() {
-        setBounds(width, height);
+        lineOffsets = new int[height];
+        for(int l = 0; l < height; l++)
+            lineOffsets[l] = width  * l;
+
+        centerX = width / 2;
+        centerY = height / 2;
     }
 
     //by any chance do you have a backup of after texturing ah sec

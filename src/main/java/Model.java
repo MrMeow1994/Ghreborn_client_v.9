@@ -1059,7 +1059,7 @@ public class Model extends Animable {
 
 	public static void method459(int i,
 			OnDemandFetcherParent onDemandFetcherParent) {
-		aClass21Array1661 = new Class21[100000];
+		aClass21Array1661 = new Class21[104000];
 		newmodel = new boolean[100000];
 		aOnDemandFetcherParent_1662 = onDemandFetcherParent;
 	}
@@ -1071,14 +1071,18 @@ public class Model extends Animable {
 	public static Model method462(int i, int j) {
 		if (aClass21Array1661 == null)
 			return null;
+
+		if (j < 0 || j >= aClass21Array1661.length)
+			throw new RuntimeException("Invalid model id: " + j);
+
 		Class21 class21 = aClass21Array1661[j];
 		if (class21 == null) {
 			aOnDemandFetcherParent_1662.method548(j);
 			return null;
-		} else {
-			return new Model(j);
 		}
+		return new Model(j);
 	}
+
 
 	public static boolean method463(int i) {
 		if (aClass21Array1661 == null)
@@ -2632,9 +2636,12 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	}
 
 	private final void reduce(int i, int bufferOffset) {
-		if (face_color != null)
-			if (face_color[i] == 65535)
+		if (face_color != null) {
+			if (face_color[i] == 65535) {
 				return;
+			}
+		}
+
 		int j = Rasterizer.centerX;
 		int k = Rasterizer.centerY;
 		int l = 0;
@@ -2835,7 +2842,87 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			}
 		}
 	}
+	public void method5187(int var1) {
+		int var2 = SINE[var1];
+		int var3 = COSINE[var1];
 
+		for (int var4 = 0; var4 < this.vertexCount; ++var4) {
+			int var5 = var2 * this.verticesZ[var4] + var3 * this.verticesX[var4] >> 16;
+			this.verticesZ[var4] = var3 * this.verticesZ[var4] - var2 * this.verticesX[var4] >> 16;
+			this.verticesX[var4] = var5;
+		}
+
+		
+	}
+	public void method5184() {
+		for (int var1 = 0; var1 < this.vertexCount; ++var1) {
+			int var2 = this.verticesX[var1];
+			this.verticesX[var1] = this.verticesZ[var1];
+			this.verticesZ[var1] = -var2;
+		}
+
+		
+	}
+
+	public void method5177() {
+		for (int var1 = 0; var1 < this.vertexCount; ++var1) {
+			this.verticesX[var1] = -this.verticesX[var1];
+			this.verticesZ[var1] = -this.verticesZ[var1];
+		}
+
+		
+	}
+
+	public void method5186() {
+		for (int var1 = 0; var1 < this.vertexCount; ++var1) {
+			int var2 = this.verticesZ[var1];
+			this.verticesZ[var1] = this.verticesX[var1];
+			this.verticesX[var1] = -var2;
+		}
+
+		
+	}
+	public void method4488() {
+		for(int var1 = 0; var1 < this.vertexCount; ++var1) {
+			int var2 = this.verticesX[var1];
+			this.verticesX[var1] = this.verticesZ[var1];
+			this.verticesZ[var1] = -var2;
+		}
+
+		
+	}
+
+	public void method4484() {
+		for(int var1 = 0; var1 < this.vertexCount; ++var1) {
+			this.verticesX[var1] = -this.verticesX[var1];
+			this.verticesZ[var1] = -this.verticesZ[var1];
+		}
+
+		
+	}
+
+	public void method4537() {
+		for(int var1 = 0; var1 < this.vertexCount; ++var1) {
+			int var2 = this.verticesZ[var1];
+			this.verticesZ[var1] = this.verticesX[var1];
+			this.verticesX[var1] = -var2;
+		}
+
+		
+	}
+
+	public void changeOffset(int var1, int var2, int var3) {
+		for (int var4 = 0; var4 < this.vertexCount; ++var4) {
+			int[] var10000 = this.verticesX;
+			var10000[var4] += var1;
+			var10000 = this.verticesY;
+			var10000[var4] += var2;
+			var10000 = this.verticesZ;
+			var10000[var4] += var3;
+		}
+
+		
+	}
 	private final boolean method486(int i, int j, int k, int l, int i1, int j1, int k1, 
             int l1) {
 		if (j < k && j < l && j < i1)

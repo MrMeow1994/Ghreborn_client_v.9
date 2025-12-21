@@ -117,6 +117,46 @@ public final class Sprite extends DrawingArea {
       }
 
    }
+   public void drawSprite1(int i, int j, int k)
+   {
+      i += drawOffsetX;
+      j += drawOffsetY;
+      int i1 = i + j * DrawingArea.width;
+      int j1 = 0;
+      int k1 = myHeight;
+      int l1 = myWidth;
+      int i2 = DrawingArea.width - l1;
+      int j2 = 0;
+      if(j < DrawingArea.topY)
+      {
+         int k2 = DrawingArea.topY - j;
+         k1 -= k2;
+         j = DrawingArea.topY;
+         j1 += k2 * l1;
+         i1 += k2 * DrawingArea.width;
+      }
+      if(j + k1 > DrawingArea.bottomY)
+         k1 -= (j + k1) - DrawingArea.bottomY;
+      if(i < DrawingArea.leftX)
+      {
+         int l2 = DrawingArea.leftX - i;
+         l1 -= l2;
+         i = DrawingArea.leftX;
+         j1 += l2;
+         i1 += l2;
+         j2 += l2;
+         i2 += l2;
+      }
+      if(i + l1 > DrawingArea.bottomX)
+      {
+         int i3 = (i + l1) - DrawingArea.bottomX;
+         l1 -= i3;
+         j2 += i3;
+         i2 += i3;
+      }
+      if(l1 > 0 && k1 > 0)
+         method351(j1, l1, DrawingArea.pixels, 0, myPixels, j2, k1, i2, k, i1, 8);
+   }
 
    public static Image downScaleImage(Image image, int width, int height) {
       return width <= 765 && width <= 503?image:image.getScaledInstance(width, height, 4);
@@ -1109,6 +1149,20 @@ public final class Sprite extends DrawingArea {
 
          i1 += l;
          k1 += j1;
+      }
+
+   }
+
+   public void greyScale()
+   {
+      for(int index = 0; index < myWidth * myHeight; index++)
+      {
+         int alpha = myPixels[index] >>> 24;
+         int red = myPixels[index] >>> 16 & 0xff;
+         int green = myPixels[index] >>> 8 & 0xff;
+         int blue = myPixels[index] & 0xff;
+         int delta = (red + green + blue) / 3;
+         myPixels[index] = delta | delta << 8 | delta << 16 | alpha << 24;
       }
 
    }

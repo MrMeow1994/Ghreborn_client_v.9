@@ -484,7 +484,6 @@ public class RSFont extends DrawingArea {
         anInt4178 = 0;
         anInt4175 = 0;
     }
-
     public int getTextWidth(String string) {
         if(string == null) {
             return 0;
@@ -544,6 +543,7 @@ public class RSFont extends DrawingArea {
             return finalWidth;
         }
     }
+
 
     public void drawBasicString(String string, int drawX, int drawY, int color,
             int shadow) {

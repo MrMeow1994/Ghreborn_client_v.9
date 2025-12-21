@@ -132,25 +132,26 @@ public final class TextDrawingArea extends DrawingArea {
    }
 
    public int method384(String s, boolean flag) {
-      int j;
-      if(!flag) {
-         for(j = 1; j > 0; ++j) {
-            ;
-         }
-      }
-
-      if(s == null) {
+      if (s == null) {
          return 0;
-      } else {
-         j = 0;
-
-         for(int k = 0; k < s.length(); ++k) {
-            j += this.anIntArray1496[s.charAt(k)];
-         }
-
-         return j;
       }
+
+      int width = 0;
+
+      for (int k = 0; k < s.length(); k++) {
+         char c = s.charAt(k);
+
+         if (c >= 0 && c < anIntArray1496.length) {
+            width += anIntArray1496[c];
+         } else {
+            // fallback width for unsupported chars
+            width += anIntArray1496['?'];
+         }
+      }
+
+      return width;
    }
+
 
    public void method385(int i, String s, int j, int k, int l) {
       if(s != null) {

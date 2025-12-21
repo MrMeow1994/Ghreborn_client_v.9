@@ -82,6 +82,7 @@ public class client extends Applet_Sub1 {
     private static RSImageProducer aRSImageProducer_1165;
     private static boolean aBoolean1224 = true;
     private int menuActionRow;
+    private Sprite multiOverlay;
     private int digits;
     private int modifiableXValue = 1; // u dont care if it starts at 1? Can't see a real problem with it :P kk
     public static int TotalRead = 0;
@@ -357,7 +358,7 @@ public class client extends Applet_Sub1 {
     private int anInt1039;
     private String aString1266;
     private String aString1267;
-    private long aLong1215;
+    private long serverSessionKey;
     private int myPrivilege;
     public static boolean aBoolean1205;
     private int currentSkill = -1;
@@ -591,6 +592,7 @@ public class client extends Applet_Sub1 {
     private int anInt1081;
     private int[] anIntArray1090;
     private int anInt1105;
+    public static int spellID = 0;
     private boolean aBoolean1106;
     private int anInt1116;
     private String[] aStringArray1127;
@@ -1304,8 +1306,7 @@ public class client extends Applet_Sub1 {
                 return "Queen ";
             case 24:
                 return "Wunderkind ";
-            case 592:
-                return "The eternal ";
+
             default:
                 return "";
         }
@@ -1323,84 +1324,40 @@ public class client extends Applet_Sub1 {
                 return " the Ranger";
             case 1004:
                 return " the Cow";
+            case 592:
+                return " the eternal";
             default:
                 return "";
         }
     }
 
     public final String prefixColor(int s) {
-        switch(s) {
-            case 1:
-                return "@or2@";
-            case 2:
-                return "@or2@";
-            case 3:
-                return "@or2@";
-            case 4:
-                return "@or2@";
-            case 5:
-                return "@or2@";
-            case 6:
-                return "@or2@";
-            case 7:
-                return "@or2@";
-            case 8:
-                return "@or2@";
-            case 9:
-                return "@or2@";
-            case 10:
-                return "@or2@";
-            case 11:
-                return "@or2@";
-            case 12:
-                return "@or2@";
+        switch (s) {
             case 13:
-                return "@red@";
             case 14:
-                return "@red@";
             case 15:
-                return "@red@";
             case 16:
-                return "@red@";
-            case 17:
-                return "@or2@";
-            case 18:
-                return "@or2@";
-            case 19:
-                return "@or2@";
-            case 20:
-                return "@or2@";
-            case 21:
-                return "@or2@";
-            case 22:
-                return "@or2@";
-            case 23:
-                return "@or2@";
-            case 24:
-                return "@or2@";
+                return "<col=ff0000>"; // red
+
             case 592:
-                return "@whi@";
+                return "<col=ffffff>"; // white
+
             default:
-                return "@or2@";
+                return "<col=ff7000>"; // or2
         }
     }
 
     public final String suffixColor(int s) {
-        switch(s) {
-            case 1000:
-                return "@or2@";
-            case 1001:
-                return "@or2@";
-            case 1002:
-                return "@or2@";
-            case 1003:
-                return "@or2@";
+        switch (s) {
             case 1004:
-                return "@whi@";
+                return "<col=ffffff>"; // white
+            case 592:
+                return "<col=A10081>";
             default:
-                return "@or2@";
+                return "<col=ff7000>"; // or2
         }
     }
+
 
     private boolean chatStateCheck() {
         return this.messagePromptRaised || this.inputDialogState != 0 || this.aString844 != null || this.backDialogID != -1 || this.dialogID != -1;
@@ -2560,7 +2517,7 @@ public class client extends Applet_Sub1 {
             ;
         }
 
-        ObjectDefinition.aClass12_785.method224();
+        ObjectDefinition.baseModels.method224();
         loggedIn &= flag;
         if(super.gameFrame != null) {
             //this.stream.createFrame(210);
@@ -2611,8 +2568,8 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method23(boolean flag) {
-        ObjectDefinition.aClass12_785.method224();
-        ObjectDefinition.aClass12_780.method224();
+        ObjectDefinition.baseModels.method224();
+        ObjectDefinition.models.method224();
         Class5.aClass12_95.method224();
         ItemDefinition.aClass12_159.method224();
         ItemDefinition.aClass12_158.method224();
@@ -2818,38 +2775,47 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void buildInterfaceMenu(int i, int j, Widget class9, int k, int l, int i1, int j1) {
-        if(class9.type == 0 && class9.children != null && !class9.isMouseoverTriggered) {
-            if(k >= i && i1 >= l && k <= i + class9.width && i1 <= l + class9.height) {
+    private int hoverSpriteId = -1;
+
+    public final void buildInterfaceMenu(int xPadding, int j, Widget class9,
+                                         int xPos, int yPadding, int yPos, int yScrollPoint) {
+        if(class9.type != 0 || class9.children == null || class9.isMouseoverTriggered)
+            return;
+        if (xPos < xPadding || yPos < yPadding
+                || xPos > xPadding + class9.width
+                || yPos > yPadding + class9.height)
+            return;
                 int k1 = class9.children.length;
 
                 for(int l1 = 0; l1 < k1; ++l1) {
-                    int i2 = class9.childX[l1] + i;
-                    int j2 = class9.childY[l1] + l - j1;
+                    int xSpritePos = class9.childX[l1] + xPadding;
+                    int  ySpritePos = class9.childY[l1] + yPadding - yScrollPoint;
                     Widget class9_1 = Widget.interfaceCache.get(class9.children[l1]);
-                    i2 += class9_1.anInt263;
-                    j2 += class9_1.anInt265;
-                    if((class9_1.mOverInterToTrigger >= 0 || class9_1.defaultHoverColor != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                    xSpritePos += class9_1.anInt263;
+                     ySpritePos += class9_1.anInt265;
+                    if((class9_1.mOverInterToTrigger >= 0 || class9_1.defaultHoverColor != 0) && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                         if(class9_1.mOverInterToTrigger >= 0) {
                             this.anInt886 = class9_1.mOverInterToTrigger;
+                            hoverSpriteId = anInt886;
                         } else {
                             this.anInt886 = class9_1.id;
+                            hoverSpriteId = anInt886;
                         }
                     }
-                    if (class9_1.type == 9 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                    if (class9_1.type == 9 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                         anInt1315 = class9_1.id;
                     }
 
-                    if (class9_1.type == 8 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                    if (class9_1.type == 8 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                         this.anInt1315 = class9_1.id;
                     }
                     if(class9_1.type == 0) {
-                        this.buildInterfaceMenu(i2, 13037, class9_1, k, j2, i1, class9_1.scrollPosition);
+                        this.buildInterfaceMenu(xSpritePos, 13037, class9_1, xPos,  ySpritePos, yPos, class9_1.scrollPosition);
                         if(class9_1.scrollMax > class9_1.height) {
-                            this.method65(i2 + class9_1.width, class9_1.height, k, i1, class9_1, j2, true, class9_1.scrollMax, 0);
+                            this.method65(xSpritePos + class9_1.width, class9_1.height, xPos, yPos, class9_1,  ySpritePos, true, class9_1.scrollMax, 0);
                         }
                     } else {
-                        if(class9_1.atActionType == 1 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        if(class9_1.atActionType == 1 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                             boolean k2 = false;
                             if(class9_1.contentType != 0) {
                                 k2 = this.method103(class9_1, false);
@@ -2863,7 +2829,7 @@ public class client extends Applet_Sub1 {
                             }
                         }
 
-                        if(class9_1.atActionType == 2 && this.anInt1136 == 0 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        if(class9_1.atActionType == 2 && this.anInt1136 == 0 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                             String var20 = class9_1.selectedActionName;
                             if(var20.indexOf(" ") != -1) {
                                 var20 = var20.substring(0, var20.indexOf(" "));
@@ -2875,35 +2841,68 @@ public class client extends Applet_Sub1 {
                             ++this.menuActionRow;
                         }
 
-                        if(class9_1.atActionType == 3 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        if(class9_1.atActionType == 3 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                             this.menuActionName[this.menuActionRow] = "Close";
                             this.menuActionID[this.menuActionRow] = 200;
                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                             ++this.menuActionRow;
                         }
 
-                        if(class9_1.atActionType == 4 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        if(class9_1.atActionType == 4 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                             this.menuActionName[this.menuActionRow] = class9_1.tooltip;
                             this.menuActionID[this.menuActionRow] = 169;
                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                             ++this.menuActionRow;
                         }
 
-                        if(class9_1.atActionType == 5 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
-                            this.menuActionName[this.menuActionRow] = class9_1.tooltip;
-                            this.menuActionID[this.menuActionRow] = 646;
-                            this.menuActionCmd3[this.menuActionRow] = class9_1.id;
-                            ++this.menuActionRow;
+                        if(class9_1.atActionType == 5 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
+                            if (class9_1.tooltip.toLowerCase()
+                                    .startsWith("transform")) {
+                                class9_1.actions = new String[5];
+                                class9_1.actions[0] = "Transform";
+                                class9_1.actions[1] = "Transform-5";
+                                class9_1.actions[2] = "Transform-10";
+                                class9_1.actions[3] = "Transform-all";
+                                class9_1.actions[4] = "Transform-X";
+                                if (class9_1.actions != null) {
+                                    for (int j4 = 4; j4 >= 0; j4--)
+                                        if (class9_1.actions[j4] != null) {
+                                            menuActionName[menuActionRow] = class9_1.tooltip
+                                                    .replaceAll(
+                                                            "Transform",
+                                                            class9_1.actions[j4]);
+                                            if (j4 == 0)
+                                                menuActionID[menuActionRow] = 632;// 1
+                                            if (j4 == 1)
+                                                menuActionID[menuActionRow] = 78;// 5
+                                            if (j4 == 2)
+                                                menuActionID[menuActionRow] = 867;// 10
+                                            if (j4 == 3)
+                                                menuActionID[menuActionRow] = 431;// all
+                                            if (j4 == 4)
+                                                menuActionID[menuActionRow] = 53;// x
+                                            menuActionCmd1[menuActionRow] = class9_1.itemSpriteId1;
+                                            menuActionCmd2[menuActionRow] = class9_1.itemSpriteIndex;
+                                            menuActionCmd3[menuActionRow] = class9_1.parentID;
+                                            menuActionRow++;
+                                        }
+                                }
+                            } else {
+                                this.menuActionName[this.menuActionRow] = class9_1.tooltip;
+                                this.menuActionID[this.menuActionRow] = 646;
+                                this.menuActionCmd3[this.menuActionRow] = class9_1.id;
+                                ++this.menuActionRow;
+                            }
                         }
 
-                        if(class9_1.atActionType == 6 && !this.aBoolean1149 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+                        if(class9_1.atActionType == 6 && !this.aBoolean1149 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width && yPos <  ySpritePos + class9_1.height) {
                             this.menuActionName[this.menuActionRow] = class9_1.tooltip;
                             this.menuActionID[this.menuActionRow] = 679;
                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                             ++this.menuActionRow;
                         }
-                        if (class9_1.atActionType == 8 && !aBoolean1149 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width
-                                && i1 < j2 + class9_1.height) {
+                        if (class9_1.atActionType == 8 && !aBoolean1149 && xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + class9_1.width
+                                && yPos <  ySpritePos + class9_1.height) {
                             for (int s1 = 0; s1 < class9_1.tooltips.length; s1++) {
 								/*if (!Widget.interfaceCache[32007].isMouseoverTriggered) {
 									if (class9_1.id > 32016) {
@@ -2917,7 +2916,7 @@ public class client extends Applet_Sub1 {
                             }
                         }
                         int var21;
-                        if(k >= i2 && i1 >= j2 && k < i2 + (class9_1.type == 4?100:class9_1.width) && i1 < j2 + class9_1.height && class9_1.actions != null && (class9_1.type == 4 && class9_1.message.length() > 0 || class9_1.type == 5)) {
+                        if(xPos >= xSpritePos && yPos >=  ySpritePos && xPos < xSpritePos + (class9_1.type == 4?100:class9_1.width) && yPos <  ySpritePos + class9_1.height && class9_1.actions != null && (class9_1.type == 4 && class9_1.message.length() > 0 || class9_1.type == 5)) {
                             for(var21 = class9_1.actions.length - 1; var21 >= 0; --var21) {
                                 if(class9_1.actions[var21] != null) {
                                     this.menuActionName[this.menuActionRow] = class9_1.actions[var21] + (class9_1.type == 4?" " + class9_1.message:"");
@@ -2960,14 +2959,14 @@ public class client extends Applet_Sub1 {
                             }
                             for(int l2 = 0; l2 < class9_1.height; ++l2) {
                                 for(int i3 = 0; i3 < class9_1.width; ++i3) {
-                                    int j3 = i2 + i3 * (32 + class9_1.invSpritePadX);
-                                    int k3 = j2 + l2 * (32 + class9_1.invSpritePadY);
+                                    int j3 = xSpritePos + i3 * (32 + class9_1.invSpritePadX);
+                                    int k3 =  ySpritePos + l2 * (32 + class9_1.invSpritePadY);
                                     if(var21 < 20) {
                                         j3 += class9_1.spritesX[var21];
                                         k3 += class9_1.spritesY[var21];
                                     }
 
-                                    if(k >= j3 && i1 >= k3 && k < j3 + 32 && i1 < k3 + 32) {
+                                    if(xPos >= j3 && yPos >= k3 && xPos < j3 + 32 && yPos < k3 + 32) {
                                         this.anInt1066 = var21;
                                         this.anInt1067 = class9_1.id;
                                         if(class9_1.inventoryItemId[var21] > 0) {
@@ -3140,8 +3139,6 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-            }
-        }
     }
 
     public void drawTransparentScrollBar(int x, int y, int height, int maxScroll, int pos) {
@@ -5522,7 +5519,7 @@ public class client extends Applet_Sub1 {
             if(this.anInt1023 == 1) {
                 int j = this.method54((byte)-95);
                 if(j != 0 && System.currentTimeMillis() - this.aLong824 > 360000L) {
-                    signlink.reporterror(this.myUsername + " glcfb " + this.aLong1215 + "," + j + "," + lowMemory + "," + this.aClass14Array970[0] + "," + onDemandFetcher.method552() + "," + this.anInt918 + "," + this.currentRegionX + "," + this.currentRegionY);
+                    signlink.reporterror(this.myUsername + " glcfb " + this.serverSessionKey + "," + j + "," + lowMemory + "," + this.aClass14Array970[0] + "," + onDemandFetcher.method552() + "," + this.anInt918 + "," + this.currentRegionX + "," + this.currentRegionY);
                     this.aLong824 = System.currentTimeMillis();
                 }
             }
@@ -7192,6 +7189,7 @@ public class client extends Applet_Sub1 {
                     Widget var17 = Widget.interfaceCache.get(buttonPressed);
                     this.anInt1136 = 1;
                     this.anInt1137 = buttonPressed;
+                    spellID = var17.id;
                     this.anInt1138 = var17.spellUsableOn;
                     this.anInt1282 = 0;
                     this.tabAreaAltered = true;
@@ -8199,7 +8197,7 @@ public class client extends Applet_Sub1 {
                         if(this.myPrivilege != 2 && this.myPrivilege != 10 && this.myPrivilege != 9 && this.myPrivilege != 4) {
                             this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class19.aString739 + "</col>";
                         } else {
-                            this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class19.aString739 + "</col><col=255>(ID: </col><col=FFFFFF>" + class19.type + "</col><col=255>)</col><col=255>(Animation:</col><col=FFFFFF>" + class19.anInt781 + "</col><col=255>)</col>";
+                            this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class19.aString739 + "</col><col=255>(ID: </col><col=FFFFFF>" + class19.id + "</col><col=255>)</col><col=255>(Animation:</col><col=FFFFFF>" + class19.anInt781 + "</col><col=255>)</col>";
                         }
 
                         this.menuActionID[this.menuActionRow] = 1226;
@@ -8369,6 +8367,7 @@ public class client extends Applet_Sub1 {
         this.sideIcons = null;
         this.aSprite_1143 = null;
         this.aSprite_1144 = null;
+        this.multiOverlay = null;
         this.aBackground_1145 = null;
         this.aSprite_1146 = null;
         this.aSprite_1147 = null;
@@ -8779,7 +8778,7 @@ public class client extends Applet_Sub1 {
 
                                 if (this.inputString.equals("::dumpitemimg")) {
                                     for (s = 0; s < 30000; ++s) {
-                                        Sprite j2 = ItemDefinition.method200(s, 1, 0, 9);
+                                        Sprite j2 = ItemDefinition.method200(s, 1, 0);
                                         ItemDefinition i3 = ItemDefinition.method198(s);
                                         if (j2 != null && i3.name != null) {
                                             j2.dumpImage("directory/", "" + s, j2, true);
@@ -10619,8 +10618,8 @@ public class client extends Applet_Sub1 {
             if(responseCode == 0) {
                 this.socketStream.flushInputStream(this.in.buffer, 0, 8);
                 this.in.currentPosition = 0;
-                this.aLong1215 = this.in.readQWord(-35089);
-                int[] k1 = new int[]{(int)(Math.random() * 9.9999999E7D), (int)(Math.random() * 9.9999999E7D), (int)(this.aLong1215 >> 32), (int)this.aLong1215};
+                this.serverSessionKey = this.in.readQWord(-35089);
+                int[] k1 = new int[]{(int)(Math.random() * 9.9999999E7D), (int)(Math.random() * 9.9999999E7D), (int)(this.serverSessionKey >> 32), (int)this.serverSessionKey};
                 this.stream.currentPosition = 0;
                 this.stream.writeUnsignedByte(10);
                 this.stream.writeDWord(k1[0]);
@@ -11420,7 +11419,7 @@ public class client extends Applet_Sub1 {
                             if(this.myPrivilege != 2 && this.myPrivilege != 9 && this.myPrivilege != 10 && this.myPrivilege != 4) {
                                 this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s+"</col>";
                             } else {
-                                this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s + "</col><col=65280>(<col=ffffff>" + class5.aLong78 + "</col><col=65280>)</col>";
+                                this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s + "</col><col=65280>(ID: <col=ffffff>" + class5.aLong78 + "</col><col=65280>)</col>, <col=65280>(Anim: <col=ffffff>" + class5.anInt77 + "</col><col=65280>)";
                             }
 
                             this.menuActionID[this.menuActionRow] = 1025;
@@ -11442,9 +11441,9 @@ public class client extends Applet_Sub1 {
                 if(!flag) {
                     String s;
                     if(player.title == 0) {
-                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "<col=ffffff>" + player.name +"</col>"+ this.suffixColor(player.title) + this.suffixRank(player.title) + combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")";
+                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "</col><col=ffffff>" + player.name +"</col>"+ this.suffixColor(player.title) + this.suffixRank(player.title) +"</col>"+ combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")</col>";
                     } else {
-                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "<col=ffffff>" + player.name +"</col>"+ this.suffixColor(player.title) + this.suffixRank(player.title) + combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")";
+                        s = this.prefixColor(player.title) + this.prefixRank(player.title) + "</col><col=ffffff>" + player.name +"</col>"+ this.suffixColor(player.title) + this.suffixRank(player.title) +"</col>"+ combatDiffColor(localPlayer.combatLevel, player.combatLevel, true) + " (level-" + player.combatLevel + ")</col>";
                     }
 
                     int i1;
@@ -11690,7 +11689,7 @@ public class client extends Applet_Sub1 {
                 this.method13(67, (byte)4, "Requesting Music");
                 signlink.midiVolume = 70;
                 if(!lowMemory && loginmusicEnabled) {
-                    this.nextSong = 457;
+                    this.nextSong = 0;
 
                     try {
                         this.nextSong = Integer.parseInt(this.getParameter("music"));
@@ -11990,6 +11989,7 @@ public class client extends Applet_Sub1 {
                     this.aSprite_1025 = new Sprite(fileArchive_2, "scrollbar", 1);
                     this.aSprite_1143 = new Sprite(fileArchive_2, "redstone1", 0);
                     this.aSprite_1144 = new Sprite(fileArchive_2, "redstone2", 0);
+                    this.multiOverlay = new Sprite(fileArchive_2, "overlay_multiway", 0);
                     flip = true;
                     this.aBackground_1145 = new Background(fileArchive_2, "redstone3", 0);
                     this.aSprite_1146 = new Sprite(fileArchive_2, "redstone1", 0);
@@ -13005,7 +13005,7 @@ public class client extends Applet_Sub1 {
                                                 l9 = 16777215;
                                             }
 
-                                            Sprite class30_sub2_sub1_sub1_2 = ItemDefinition.method200(k9, class9_1.inventoryAmounts[var25], l9, 9);
+                                            Sprite class30_sub2_sub1_sub1_2 = ItemDefinition.method200(k9, class9_1.inventoryAmounts[var25], l9);
                                             if(class30_sub2_sub1_sub1_2 != null) {
                                                 int k10;
                                                 if(this.anInt1086 != 0 && this.anInt1085 == var25 && this.anInt1084 == class9_1.id) {
@@ -13206,16 +13206,47 @@ public class client extends Applet_Sub1 {
                                         class30_sub2_sub1_sub4_1.drawBasicString(var35, _x, yPos, xPos, class9_1.textShadow?0:-1);
                                     }
                                 }
-                            } else if(class9_1.type == 5) {
-                                Sprite var26;
-                                if(this.method131(class9_1, false)) {
-                                    var26 = class9_1.enabledSprite;
-                                } else {
-                                    var26 = class9_1.disabledSprite;
+                            } else if(class9_1.type == 5 || class9_1.type == 10) {
+                                Sprite sprite;
+                                if (class9_1.itemSpriteId1 != -1
+                                        && class9_1.disabledSprite == null) {
+                                    class9_1.disabledSprite = ItemDefinition
+                                            .getSprite(
+                                                    class9_1.itemSpriteId1,
+                                                    1,
+                                                    (class9_1.itemSpriteZoom1 == -1) ? 0
+                                                            : -1,
+                                                    class9_1.itemSpriteZoom1);
+                                    class9_1.enabledSprite = ItemDefinition
+                                            .getSprite(
+                                                    class9_1.itemSpriteId2,
+                                                    1,
+                                                    (class9_1.itemSpriteZoom2 == -1) ? 0
+                                                            : -1,
+                                                    class9_1.itemSpriteZoom2);
+                                    // rsChildren.sprite2 =
+                                    // ItemDef.getSprite(rsChildren.itemSpriteId2,
+                                    // rsChildren.invStackSizes[spriteIndex],
+                                    // selectedColour);
+                                  //  if (class9_1.greyScale)
+                                  //      class9_1.disabledSprite.greyScale();
                                 }
+                                if(this.method131(class9_1, false) || hoverSpriteId == class9_1.id)
+                                    sprite = class9_1.enabledSprite;
+                                 else
+                                    sprite = class9_1.disabledSprite;
 
-                                if(var26 != null) {
-                                    var26.drawSprite(_x, _y);
+                                if (anInt1136 == 1 && class9_1.id == spellID
+                                        && spellID != 0 && sprite != null) {
+                                    sprite.drawSprite(_x, _y, 0xffffff);
+                                } else {
+                                    if (sprite != null) {
+                                        if (class9_1.type == 5)
+                                            sprite.drawSprite(_x, _y);
+                                        else
+                                            sprite.drawSprite1(_x, _y,
+                                                    class9_1.opacity);
+                                    }
                                 }
                             } else if(class9_1.type == 6) {
                                 var25 = Rasterizer.centerX;
@@ -13943,13 +13974,25 @@ public class client extends Applet_Sub1 {
     }
 
     public static final String combatDiffColor(int i, int j, boolean flag) {
-        if(!flag) {
+        if (!flag) {
             throw new NullPointerException();
-        } else {
-            int k = i - j;
-            return k < -9?"<col=ff0000>":(k < -6?"<col=ff3000>":(k < -3?"<col=ff7000>":(k < 0?"<col=ffb000>":(k > 9?"<col=65280>":(k > 6?"<col=40ff00>":(k > 3?"<col=80ff00>":(k > 0?"<col=c0ff00>":"<col=ffff00>")))))));
         }
+
+        int k = i - j;
+        String col =
+                k < -9 ? "ff0000" :
+                        k < -6 ? "ff3000" :
+                                k < -3 ? "ff7000" :
+                                        k < 0  ? "ffb000" :
+                                                k > 9  ? "00ff00" :
+                                                        k > 6  ? "40ff00" :
+                                                                k > 3  ? "80ff00" :
+                                                                        k > 0  ? "c0ff00" :
+                                                                                "ffff00";
+
+        return "<col=" + col + ">";
     }
+
 
     public final void method111(byte byte0, int i) {
         if(byte0 == 2) {
@@ -14050,7 +14093,7 @@ public class client extends Applet_Sub1 {
 
         BroadcastManager.display(this);
         if(this.anInt1055 == 1) {
-            this.headIcons[1].drawSprite(currentScreenMode == client.ScreenMode.FIXED?472:currentGameWidth - 85, currentScreenMode == client.ScreenMode.FIXED?296:186);
+            multiOverlay.drawSprite(currentScreenMode == client.ScreenMode.FIXED?472:currentGameWidth - 85, currentScreenMode == client.ScreenMode.FIXED?296:186);
         }
 
         int var131;

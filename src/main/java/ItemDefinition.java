@@ -637,15 +637,15 @@ final class ItemDefinition {
             ItemDef.originalModelColors = new int[1];
             ItemDef.modifiedModelColors[0] = 7446;//color change
             ItemDef.originalModelColors[0] = 926;//color change 1
-            ItemDef.modelId = 8933;//itemdrop look
+            ItemDef.modelId = 98933;//itemdrop look
             ItemDef.spriteScale = 1595;//zoom
             ItemDef.spritePitch = 196; //rotation rotation up/down
             ItemDef.spriteCameraRoll = 2031;//rotation left/right
             ItemDef.spriteCameraYaw = 2047;//i think more zoom stuff
             ItemDef.spriteTranslateX = 0;
             ItemDef.spriteTranslateY = -3;
-            ItemDef.primaryMaleModel = 8932;//male weild
-            ItemDef.primaryFemaleModel = 8932;//female weild
+            ItemDef.primaryMaleModel = 98932;//male weild
+            ItemDef.primaryFemaleModel = 98932;//female weild
             ItemDef.primaryMaleHeadPiece = 2;  //offset
             ItemDef.primaryFemaleHeadPiece = -1;  //offset
             ItemDef.name = "Monkey Bag";
@@ -779,7 +779,7 @@ final class ItemDefinition {
             ItemDef.name = "Lucky Bandos godsword";
             ItemDef.description = "A brutally heavy sword. Requires Attack (75).".getBytes();
         }
-        if(i == 25342)  // change this if you need to "item number"
+        if(i == 25344)  // change this if you need to "item number"
         {
             ItemDef.itemActions = new String[5];
             ItemDef.itemActions[1] = "Wield";//New option
@@ -800,7 +800,7 @@ final class ItemDefinition {
             ItemDef.name = "Lucky Zamorakian spear";//Name of the new item
             ItemDef.description = "A versatile spear wielded by agents of chaos. Requires Attack (75).".getBytes();//examin info
         }
-        if(i == 25343)  // change this if you need to "item number"
+        if(i == 25345)  // change this if you need to "item number"
         {
             ItemDef.itemActions = new String[5];
             ItemDef.itemActions[1] = "Wield";//New option
@@ -821,7 +821,7 @@ final class ItemDefinition {
             ItemDef.name = "Lucky Saradomin sword";//Name of the new item
             ItemDef.description = "The incredible blade of an icyene. Requires Attack (75).".getBytes();//examin info
         }
-        if(i == 25344)  // change this if you need to "item number"
+        if(i == 25346)  // change this if you need to "item number"
         {
             ItemDef.itemActions = new String[5];
             ItemDef.itemActions[1] = "Wield";//New option
@@ -842,7 +842,7 @@ final class ItemDefinition {
             ItemDef.name = "Lucky abyssal whip";//Name of the new item
             ItemDef.description = "A weapon from the Abyss. Requires Attack (70).".getBytes();//examin info
         }
-        if(i == 25345)  // change this if you need to "item number"
+        if(i == 25347)  // change this if you need to "item number"
         {
             ItemDef.itemActions = new String[5];
             ItemDef.itemActions[1] = "Wield";//New option
@@ -912,45 +912,6 @@ final class ItemDefinition {
             ItemDef.name = "Ivandis helm";
             ItemDef.description = "It's a Ivandis helm".getBytes();
         }
-        if (i == 30139)  // change this if you need to "item number"
-        {
-            ItemDef.itemActions = new String[5];
-            ItemDef.itemActions[1] = "Wield";//New option
-            ItemDef.modifiedModelColors = new int[2];
-            ItemDef.originalModelColors = new int[2];
-            ItemDef.modifiedModelColors[0] = 43072;
-            ItemDef.originalModelColors[0] = 925;
-            ItemDef.modifiedModelColors[1] = 4550;
-            ItemDef.originalModelColors[1] = 925;
-            ItemDef.modelId = 14148; //Model ID
-            ItemDef.spriteScale = 1330; //zoom increase will make it smaller
-            ItemDef.spritePitch = 310; //model rotate up+down increase to move doen away from you
-            ItemDef.spriteCameraRoll = 1800; //model rotate side ways increase to move right in circle
-            ItemDef.spriteTranslateX = 0; // model offset increase to move to the right
-            ItemDef.spriteTranslateY = 1; //model offset increase to move up
-            ItemDef.primaryMaleModel = 14147;//male wearing
-            ItemDef.primaryFemaleModel = 14146;//female wearing
-            ItemDef.secondaryFemaleModel = 14146;//Female arms/sleeves
-            ItemDef.secondaryMaleModel = 14147;//male arms/sleeves
-            ItemDef.stackable = false;//Stackable
-            ItemDef.name = "Torva platebody";//Name of the new item
-            ItemDef.description = "Provides excellent protection".getBytes();//examin info
-        }
-        if (i == 30143) {
-            ItemDef.itemActions = new String[5];
-            ItemDef.itemActions[1] = "Wear";
-            ItemDef.modelId = 14150;
-            ItemDef.primaryMaleModel = 10110;
-            ItemDef.primaryFemaleModel = 14149;
-            ItemDef.secondaryMaleModel = -1;
-            ItemDef.secondaryFemaleModel = -1;
-            ItemDef.spriteScale = 2151;
-            ItemDef.spritePitch = 429;
-            ItemDef.spriteCameraRoll = 1189;
-            ItemDef.spriteTranslateY = 5;
-            ItemDef.name = "Torva platelegs";
-            ItemDef.description = "A pair of Torva platelegs".getBytes();
-        }
         if (i == 28358)  // change this if you need to "item number"
         {
             ItemDef.itemActions = new String[5];
@@ -989,25 +950,6 @@ final class ItemDefinition {
             ItemDef.spriteTranslateY = 5;
             ItemDef.name = "Ice Torva platelegs";
             ItemDef.description = "A pair of Ice Torva platelegs".getBytes();
-        }
-        if (i == 30137) {
-            ItemDef.itemActions = new String[5];
-            ItemDef.itemActions[1] = "Wear";
-            ItemDef.modifiedModelColors = new int[1];
-            ItemDef.originalModelColors = new int[1];
-            ItemDef.modifiedModelColors[0] = 0;
-            ItemDef.originalModelColors[0] = 0;
-            ItemDef.modelId = 14153;//item look
-            ItemDef.spriteScale = 700;
-            ItemDef.spritePitch = 1100;
-            ItemDef.spriteCameraRoll = 650;
-            ItemDef.spriteCameraYaw = 1148;
-            ItemDef.spriteTranslateX = 5;
-            ItemDef.spriteTranslateY = -25;
-            ItemDef.primaryMaleModel = 14151;
-            ItemDef.primaryFemaleModel = 14152;
-            ItemDef.name = "Torva full helm ";
-            ItemDef.description = "A ancient warior's full helm.".getBytes();
         }
 
         if (i == 25107) { //ladies legs
@@ -2643,37 +2585,21 @@ final class ItemDefinition {
             ItemDef.name = "Green Whip";
             ItemDef.description = "a Green Whip".getBytes();
         }
-        if (i == 25345) // Your desired item id (the one you use after ::pickup ##### #)
-        {
-            ItemDef.itemActions = new String[5];
-            ItemDef.itemActions[1] = "Wear"; // String name, this can be changed to wield, or attach, or whatever you want
-            ItemDef.modelId = 12122; // Drop/Inv Model
-            ItemDef.primaryMaleModel = 12121; // Male Wield Model
-            ItemDef.primaryFemaleModel = 12121; // Female Wield
-            ItemDef.secondaryMaleModel = -1; // Male arms/sleeves (Leave as -1 if not used)
-            ItemDef.secondaryFemaleModel = -1; // Female arms/sleeves (Leave as -1 if not used)
-            ItemDef.spriteScale = 800; // Zoom - Increase to make inv model smaller
-            ItemDef.spritePitch = 498; // Rotate up/down -  Increase to rotate upwards
-            ItemDef.spriteCameraRoll = 1300; // Rotate right/left - Increase to rotate right
-            ItemDef.spriteTranslateX = -1; // Position in inv, increase to move right
-            ItemDef.spriteTranslateY = -1; // Position in inv, increase to move up\t
-            ItemDef.name = "Bandos Cape"; // Item Name
-            ItemDef.description = "The Legendary God Cape".getBytes(); // Item Examine
-        }
+
         if (i == 23119) {
             ItemDef.itemActions = new String[5];
             ItemDef.itemActions[1] = "Wear";
             ItemDef.modifiedModelColors = new int[5];
             ItemDef.originalModelColors = new int[5];
-            ItemDef.modelId = 3288;
+            ItemDef.modelId = 93288;
             ItemDef.spriteScale = 2000;
             ItemDef.spritePitch = 500;
             ItemDef.spriteCameraRoll = 0;
             ItemDef.spriteTranslateX = -6;
             ItemDef.spriteTranslateY = 1;
             ItemDef.spriteCameraYaw = 14;
-            ItemDef.primaryMaleModel = 3287;
-            ItemDef.primaryFemaleModel = 3287;
+            ItemDef.primaryMaleModel = 93287;
+            ItemDef.primaryFemaleModel = 93287;
             ItemDef.primaryMaleHeadPiece = -1;
             ItemDef.primaryFemaleHeadPiece = -1;
             ItemDef.noteable = -1;
@@ -6559,15 +6485,15 @@ final class ItemDefinition {
         if (i == 26342) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wield";
-            class8.modelId = 64200;
+            class8.modelId = 94200;
             class8.spriteScale = 1570;
             class8.spritePitch = 400;
             class8.spriteCameraRoll = 360;
             class8.spriteCameraYaw = 0;
             class8.spriteTranslateX = 0;
             class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 64201;// wield
-            class8.primaryFemaleModel = 64201;
+            class8.primaryMaleModel = 94201;// wield
+            class8.primaryFemaleModel = 94201;
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -6579,15 +6505,15 @@ final class ItemDefinition {
         if (i == 26343) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wield";
-            class8.modelId = 64202;
+            class8.modelId = 94202;
             class8.spriteScale = 1570;
             class8.spritePitch = 400;
             class8.spriteCameraRoll = 360;
             class8.spriteCameraYaw = 0;
             class8.spriteTranslateX = 0;
             class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 64203;// wield
-            class8.primaryFemaleModel = 64203;
+            class8.primaryMaleModel = 94203;// wield
+            class8.primaryFemaleModel = 94203;
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -6599,15 +6525,15 @@ final class ItemDefinition {
         if (i == 26344) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wield";
-            class8.modelId = 64204;
+            class8.modelId = 94204;
             class8.spriteScale = 1570;
             class8.spritePitch = 400;
             class8.spriteCameraRoll = 360;
             class8.spriteCameraYaw = 0;
             class8.spriteTranslateX = 0;
             class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 64205;// wield
-            class8.primaryFemaleModel = 64205;
+            class8.primaryMaleModel = 94205;// wield
+            class8.primaryFemaleModel = 94205;
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -6620,15 +6546,15 @@ final class ItemDefinition {
         if (i == 26345) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wield";
-            class8.modelId = 64206;
+            class8.modelId = 94206;
             class8.spriteScale = 1570;
             class8.spritePitch = 400;
             class8.spriteCameraRoll = 360;
             class8.spriteCameraYaw = 0;
             class8.spriteTranslateX = 0;
             class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 64207;// wield
-            class8.primaryFemaleModel = 64207;
+            class8.primaryMaleModel = 94207;// wield
+            class8.primaryFemaleModel = 94207;
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -9189,42 +9115,6 @@ final class ItemDefinition {
             class8.name = "Dragon Godsword";
             class8.description = "A godsword From the Greatest Dragons.".getBytes();
         }
-        if (i == 29954) // Your desired item id (the one you use after ::pickup ##### #)
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield"; // String name, this can be changed to wield, or attach, or whatever you want
-            class8.modelId = 12556; // Drop/Inv Model
-            class8.primaryMaleModel = 12555; // Male Wield Model
-            class8.primaryFemaleModel = 12555; // Female Wield
-            class8.secondaryMaleModel = -1; // Male arms/sleeves (Leave as -1 if not used)
-            class8.secondaryFemaleModel = -1; // Female arms/sleeves (Leave as -1 if not used)
-            class8.spriteScale = 2000; // Zoom - Increase to make inv model smaller
-            class8.spritePitch = 500; // Rotate up/down -  Increase to rotate upwards
-            class8.spriteCameraRoll = 0; // Rotate right/left - Increase to rotate right
-            class8.spriteTranslateX = -1; // Position in  inv, increase to move right
-            class8.spriteTranslateY = -1; // Position in inv, increase to move up
-            class8.name = "Dungeoneering cape"; // Item Name
-            class8.description = "A nice looking cape.".getBytes(); // Item Examine
-        }
-        if(i == 25259) {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wear";
-            class8.modelId = '\u9e70';
-            class8.spriteScale = 1382;
-            class8.spritePitch = 364;
-            class8.spriteCameraRoll = 1158;
-            class8.spriteCameraYaw = 0;
-            class8.spriteTranslateX = 8;
-            class8.spriteTranslateY = -12;
-            class8.primaryMaleModel = '\ubd56';
-            class8.primaryFemaleModel = '\ubd56';
-            class8.secondaryMaleModel = -1;
-            class8.secondaryFemaleModel = -1;
-            class8.primaryMaleHeadPiece = -1;
-            class8.primaryFemaleHeadPiece = -1;
-            class8.name = "Dragon pickaxe";
-            class8.description = "Used for mining.".getBytes();
-        }
         if (i == 27979) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
@@ -9243,15 +9133,15 @@ final class ItemDefinition {
         if (i == 26338) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wield";
-            class8.modelId = 14200;
+            class8.modelId = 94300;
             class8.spriteScale = 1570;
             class8.spritePitch = 400;
             class8.spriteCameraRoll = 360;
             class8.spriteCameraYaw = 0;
             class8.spriteTranslateX = 0;
             class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 14201;// wield
-            class8.primaryFemaleModel = 14201;
+            class8.primaryMaleModel = 94301;// wield
+            class8.primaryFemaleModel = 94301;
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -9263,15 +9153,15 @@ final class ItemDefinition {
         if (i == 26339) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wield";
-            class8.modelId = 5221;
+            class8.modelId = 95221;
             class8.spriteScale = 1570;
             class8.spritePitch = 400;
             class8.spriteCameraRoll = 360;
             class8.spriteCameraYaw = 0;
             class8.spriteTranslateX = 0;
             class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 5222;// wield
-            class8.primaryFemaleModel = 5222;
+            class8.primaryMaleModel = 95222;// wield
+            class8.primaryFemaleModel = 95222;
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -9280,46 +9170,46 @@ final class ItemDefinition {
             class8.name = "Red Energy sword";
             class8.description = "A strong sword made of red energy.".getBytes();
         }
-        if (i == 26340) {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";
-            class8.modelId = 6221;
-            class8.spriteScale = 1570;
-            class8.spritePitch = 400;
-            class8.spriteCameraRoll = 360;
-            class8.spriteCameraYaw = 0;
-            class8.spriteTranslateX = 0;
-            class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 6222;// wield
-            class8.primaryFemaleModel = 6222;
-            class8.secondaryMaleModel = -1;
-            class8.secondaryFemaleModel = -1;
-            class8.primaryMaleHeadPiece = -1;
-            class8.primaryFemaleHeadPiece = -1;
-            // class8.aBoolean176 = false;
-            class8.name = "X-Mas Energy sword";
-            class8.description = "From Santa...".getBytes();
-        }
-        if (i == 26341) {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";
-            class8.modelId = 7221;
-            class8.spriteScale = 1570;
-            class8.spritePitch = 400;
-            class8.spriteCameraRoll = 360;
-            class8.spriteCameraYaw = 0;
-            class8.spriteTranslateX = 0;
-            class8.spriteTranslateY = -5;
-            class8.primaryMaleModel = 7222;// wield
-            class8.primaryFemaleModel = 7222;
-            class8.secondaryMaleModel = -1;
-            class8.secondaryFemaleModel = -1;
-            class8.primaryMaleHeadPiece = -1;
-            class8.primaryFemaleHeadPiece = -1;
-            // class8.aBoolean176 = false;
-            class8.name = "valentines Energy sword";
-            class8.description = "From traxxas Have a Happy valentines Day =)".getBytes();
-        }
+//        if (i == 26340) {
+//            class8.itemActions = new String[5];
+//            class8.itemActions[1] = "Wield";
+//            class8.modelId = 6221;
+//            class8.spriteScale = 1570;
+//            class8.spritePitch = 400;
+//            class8.spriteCameraRoll = 360;
+//            class8.spriteCameraYaw = 0;
+//            class8.spriteTranslateX = 0;
+//            class8.spriteTranslateY = -5;
+//            class8.primaryMaleModel = 6222;// wield
+//            class8.primaryFemaleModel = 6222;
+//            class8.secondaryMaleModel = -1;
+//            class8.secondaryFemaleModel = -1;
+//            class8.primaryMaleHeadPiece = -1;
+//            class8.primaryFemaleHeadPiece = -1;
+//            // class8.aBoolean176 = false;
+//            class8.name = "X-Mas Energy sword";
+//            class8.description = "From Santa...".getBytes();
+//        }
+//        if (i == 26341) {
+//            class8.itemActions = new String[5];
+//            class8.itemActions[1] = "Wield";
+//            class8.modelId = 7221;
+//            class8.spriteScale = 1570;
+//            class8.spritePitch = 400;
+//            class8.spriteCameraRoll = 360;
+//            class8.spriteCameraYaw = 0;
+//            class8.spriteTranslateX = 0;
+//            class8.spriteTranslateY = -5;
+//            class8.primaryMaleModel = 7222;// wield
+//            class8.primaryFemaleModel = 7222;
+//            class8.secondaryMaleModel = -1;
+//            class8.secondaryFemaleModel = -1;
+//            class8.primaryMaleHeadPiece = -1;
+//            class8.primaryFemaleHeadPiece = -1;
+//            // class8.aBoolean176 = false;
+//            class8.name = "valentines Energy sword";
+//            class8.description = "From traxxas Have a Happy valentines Day =)".getBytes();
+//        }
         if (i == 24200) // ItemID
         {
             class8.itemActions = new String[5];
@@ -9360,30 +9250,6 @@ final class ItemDefinition {
             class8.name = "Zaros Godsword";
             class8.description = "A sword containing magical power.".getBytes();
         }
-        if (i == 24590)  // change this if you need to "item number"
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wear";//New option
-            class8.modelId = 3000; //Model ID
-            class8.spriteScale = 730;//Model Zoom
-            class8.spritePitch = 567;//Model Rotation
-            class8.spriteCameraRoll = 1120;//
-            class8.spriteTranslateX = -4;//
-            class8.spriteTranslateY = -1;//
-            class8.primaryMaleModel = 3001;
-            class8.primaryFemaleModel = 3002;
-            class8.secondaryMaleHeadPiece = 63;
-            class8.secondaryFemaleHeadPiece = 120;
-            class8.groundScaleX = 100;
-            class8.groundScaleY = 100;
-            class8.groundScaleZ = 100;
-            class8.ambience = 15;
-            class8.diffusion = 100;
-            class8.spriteCameraYaw = 1923;
-            class8.stackable = false;
-            class8.name = "Ava's accumulator";
-            class8.description = "Ava's accumulator".getBytes();
-        }
         if (i == 26897) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
@@ -9406,116 +9272,6 @@ final class ItemDefinition {
             class8.description = "Stealthy.".getBytes();
         }
 
-        if (i == 24010)  // change this if you need to "item number"
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modelId = 14061; //
-            class8.stackable = false;//Stackable
-            class8.spriteScale = 1800; //zoom increase will make it smaller
-            class8.spritePitch = 470; //model rotate up+down increase to move down away from you
-            class8.spriteCameraRoll = 129; //model rotate side ways increase to move right in circle
-            class8.spriteTranslateX = -1; // model offset increase to move to the right
-            class8.spriteTranslateY = 1; //model offset increase to move up
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleModel = 14062;//male wearing
-            class8.primaryFemaleModel = 14062;//female wearing
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleHeadPiece = -1;//Unknown
-            class8.secondaryFemaleModel = -1;//Female arms/sleeves
-            class8.secondaryMaleModel = -1;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Vesta's longsword";//Name of the new item
-            class8.description = "This item degrades in combat, and will turn to dust.".getBytes();//examin info
-        }
-        if (i == 24011)  // change this if you need to "item number"
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modelId = 14063; //
-            class8.stackable = false;//Stackable
-            class8.spriteScale = 1600; //zoom increase will make it smaller
-            class8.spritePitch = 470; //model rotate up+down increase to move doen away from you
-            class8.spriteCameraRoll = 129; //model rotate side ways increase to move right in circle
-            class8.spriteTranslateX = -1; // model offset increase to move to the right
-            class8.spriteTranslateY = 1; //model offset increase to move up
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleModel = 14064;//male wearing
-            class8.primaryFemaleModel = 14064;//female wearing
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleHeadPiece = -1;//Unknown
-            class8.secondaryFemaleModel = -1;//Female arms/sleeves
-            class8.secondaryMaleModel = -1;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Vesta's spear";//Name of the new item
-            class8.description = "This item degrades in combat, and will turn to dust.".getBytes();//examin info
-        }
-        if (i == 24012)  // change this if you need to "item number"
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modelId = 14069; //
-            class8.stackable = false;//Stackable
-            class8.spriteScale = 650; //zoom increase will make it smaller
-            class8.spritePitch = 470; //model rotate up+down increase to move doen away from you
-            class8.spriteCameraRoll = 0; //model rotate side ways increase to move right in circle
-            class8.spriteTranslateX = -1; // model offset increase to move to the right
-            class8.spriteTranslateY = 1; //model offset increase to move up
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleModel = 14070;//male wearing
-            class8.primaryFemaleModel = 14070;//female wearing
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleHeadPiece = -1;//Unknown
-            class8.secondaryFemaleModel = -1;//Female arms/sleeves
-            class8.secondaryMaleModel = -1;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Morrigan's coif";//Name of the new item
-            class8.description = "This item degrades in combat, and will turn to dust.".getBytes();//examin info
-        }
-        if (i == 24013)  // change this if you need to "item number"
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modelId = 14071; //
-            class8.stackable = false;//Stackable
-            class8.spriteScale = 1600; //zoom increase will make it smaller
-            class8.spritePitch = 470; //model rotate up+down increase to move doen away from you
-            class8.spriteCameraRoll = 129; //model rotate side ways increase to move right in circle
-            class8.spriteTranslateX = -1; // model offset increase to move to the right
-            class8.spriteTranslateY = 1; //model offset increase to move up
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleModel = 14072;//male wearing
-            class8.primaryFemaleModel = 14072;//female wearing
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleHeadPiece = -1;//Unknown
-            class8.secondaryFemaleModel = -1;//Female arms/sleeves
-            class8.secondaryMaleModel = -1;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Morrigan's javelin";//Name of the new item
-            class8.description = "This item degrades in combat, and will turn to dust.".getBytes();//examin info
-        }
-        if (i == 24014)  // change this if you need to "item number"
-        {
-            class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modelId = 14073; //
-            class8.stackable = false;//Stackable
-            class8.spriteScale = 1000; //zoom increase will make it smaller
-            class8.spritePitch = 470; //model rotate up+down increase to move doen away from you
-            class8.spriteCameraRoll = 129; //model rotate side ways increase to move right in circle
-            class8.spriteTranslateX = -1; // model offset increase to move to the right
-            class8.spriteTranslateY = 1; //model offset increase to move up
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleModel = 14074;//male wearing
-            class8.primaryFemaleModel = 14074;//female wearing
-            class8.spriteCameraYaw = 28;
-            class8.primaryMaleHeadPiece = -1;//Unknown
-            class8.secondaryFemaleModel = -1;//Female arms/sleeves
-            class8.secondaryMaleModel = -1;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Morrigan's throwing axe";//Name of the new item
-            class8.description = "This item degrades in combat, and will turn to dust.".getBytes();//examin info
-        }
         if (i == 26898) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
@@ -18805,7 +18561,142 @@ final class ItemDefinition {
         class8.modelId = dropmdl;
     }
 
-    public static Sprite method200(int i, int j, int k, int l) {
+    public static Sprite getSprite(int i, int j, int k, int zoom) {
+        if (k == 0 && zoom != -1) {
+            Sprite sprite = (Sprite) aClass12_158.method222(i);
+            if (sprite != null && sprite.maxHeight != j
+                    && sprite.maxHeight != -1) {
+                sprite.unlink();
+                sprite = null;
+            }
+            if (sprite != null)
+                return sprite;
+        }
+        ItemDefinition itemDef = method198(i);
+        if (itemDef.stackIDs == null)
+            j = -1;
+        if (j > 1) {
+            int i1 = -1;
+            for (int j1 = 0; j1 < 10; j1++)
+                if (j >= itemDef.stackAmounts[j1]
+                        && itemDef.stackAmounts[j1] != 0)
+                    i1 = itemDef.stackIDs[j1];
+
+            if (i1 != -1)
+                itemDef = method198(i1);
+        }
+        Model model = itemDef.method201(1);
+        if (model == null)
+            return null;
+        Sprite sprite = null;
+        if (itemDef.certTemplateID != -1) {
+            sprite = method200(itemDef.certID, 10, -1);
+            if (sprite == null)
+                return null;
+        }
+        Sprite sprite2 = new Sprite(32, 32);
+        int k1 = Rasterizer.centerX;
+        int l1 = Rasterizer.centerY;
+        int ai[] = Rasterizer.lineOffsets;
+        int ai1[] = DrawingArea.pixels;
+        float depthBuffer[] = DrawingArea.depthBuffer;
+        int i2 = DrawingArea.width;
+        int j2 = DrawingArea.height;
+        int k2 = DrawingArea.leftX;
+        int l2 = DrawingArea.bottomX;
+        int i3 = DrawingArea.topY;
+        int j3 = DrawingArea.bottomY;
+        Rasterizer.aBoolean1464 = false;
+        DrawingArea.initDrawingArea(32, 32, sprite2.myPixels, new float[32*32]);
+        DrawingArea.drawPixels(32, 0, 0, 0, 32);
+        Rasterizer.setDefaultBounds();
+        int k3 = itemDef.spriteScale;
+        if (zoom != -1)
+            k3 = (itemDef.spriteScale * 100) / zoom;
+        if (k == -1)
+            k3 = (int) (k3 * 1.5D);
+        if (k > 0)
+            k3 = (int) (k3 * 1.04D);
+        int l3 = Rasterizer.anIntArray1470[itemDef.spritePitch] * k3 >> 16;
+        int i4 = Rasterizer.anIntArray1471[itemDef.spritePitch] * k3 >> 16;
+        model.renderSingle(0, itemDef.spriteCameraRoll, itemDef.spriteCameraYaw, itemDef.spritePitch, itemDef.spriteTranslateX, l3 + model.modelHeight / 2 + itemDef.spriteTranslateY, i4 + itemDef.spriteTranslateY);
+        for (int i5 = 31; i5 >= 0; i5--) {
+            for (int j4 = 31; j4 >= 0; j4--) {
+                if (sprite2.myPixels[i5 + j4 * 32] != 0)
+                    continue;
+                if (i5 > 0 && sprite2.myPixels[(i5 - 1) + j4 * 32] > 1) {
+                    sprite2.myPixels[i5 + j4 * 32] = 1;
+                    continue;
+                }
+                if (j4 > 0 && sprite2.myPixels[i5 + (j4 - 1) * 32] > 1) {
+                    sprite2.myPixels[i5 + j4 * 32] = 1;
+                    continue;
+                }
+                if (i5 < 31 && sprite2.myPixels[i5 + 1 + j4 * 32] > 1) {
+                    sprite2.myPixels[i5 + j4 * 32] = 1;
+                    continue;
+                }
+                if (j4 < 31 && sprite2.myPixels[i5 + (j4 + 1) * 32] > 1)
+                    sprite2.myPixels[i5 + j4 * 32] = 1;
+            }
+
+        }
+
+        if (k > 0) {
+            for (int j5 = 31; j5 >= 0; j5--) {
+                for (int k4 = 31; k4 >= 0; k4--) {
+                    if (sprite2.myPixels[j5 + k4 * 32] != 0)
+                        continue;
+                    if (j5 > 0 && sprite2.myPixels[(j5 - 1) + k4 * 32] == 1) {
+                        sprite2.myPixels[j5 + k4 * 32] = k;
+                        continue;
+                    }
+                    if (k4 > 0 && sprite2.myPixels[j5 + (k4 - 1) * 32] == 1) {
+                        sprite2.myPixels[j5 + k4 * 32] = k;
+                        continue;
+                    }
+                    if (j5 < 31 && sprite2.myPixels[j5 + 1 + k4 * 32] == 1) {
+                        sprite2.myPixels[j5 + k4 * 32] = k;
+                        continue;
+                    }
+                    if (k4 < 31 && sprite2.myPixels[j5 + (k4 + 1) * 32] == 1)
+                        sprite2.myPixels[j5 + k4 * 32] = k;
+                }
+
+            }
+
+        } else if (k == 0) {
+            for (int k5 = 31; k5 >= 0; k5--) {
+                for (int l4 = 31; l4 >= 0; l4--)
+                    if (sprite2.myPixels[k5 + l4 * 32] == 0 && k5 > 0 && l4 > 0
+                            && sprite2.myPixels[(k5 - 1) + (l4 - 1) * 32] > 0)
+                        sprite2.myPixels[k5 + l4 * 32] = 0x302020;
+
+            }
+
+        }
+        if (itemDef.certTemplateID != -1) {
+            int l5 = sprite.maxWidth;
+            int j6 = sprite.maxHeight;
+            sprite.maxWidth = 32;
+            sprite.maxHeight = 32;
+            sprite.drawSprite(0, 0);
+            sprite.maxWidth = l5;
+            sprite.maxHeight = j6;
+        }
+        if (k == 0)
+            aClass12_158.method223(sprite2, i,  (byte) 2);
+        DrawingArea.initDrawingArea(j2, i2, ai1, depthBuffer);
+        DrawingArea.setDrawingArea(j3, k2, l2, i3);
+        Rasterizer.centerX = k1;
+        Rasterizer.centerY = l1;
+        Rasterizer.lineOffsets = ai;
+        Rasterizer.aBoolean1464 = true;
+        sprite2.maxWidth = itemDef.stackable ? 33 : 32;
+        sprite2.maxHeight = j;
+        return sprite2;
+    }
+    public static Sprite method200(int i, int j, int k) {
         if (k == 0) {
             Sprite sprite = (Sprite) aClass12_158.method222(i);
             if (sprite != null && sprite.maxHeight != j && sprite.maxHeight != -1) {
@@ -18834,7 +18725,7 @@ final class ItemDefinition {
             return null;
         Sprite class30_sub2_sub1_sub1_2 = null;
         if (class8.certTemplateID != -1) {
-            class30_sub2_sub1_sub1_2 = method200(class8.certID, 10, -1, 9);
+            class30_sub2_sub1_sub1_2 = method200(class8.certID, 10, -1);
             if (class30_sub2_sub1_sub1_2 == null)
                 return null;
         }
@@ -18843,6 +18734,7 @@ final class ItemDefinition {
         int l1 = Rasterizer.centerY;
         int[] ai = Rasterizer.lineOffsets;
         int[] ai1 = DrawingArea.pixels;
+        float depthBuffer[] = DrawingArea.depthBuffer;
         int i2 = DrawingArea.width;
         int j2 = DrawingArea.height;
         int k2 = DrawingArea.leftX;
@@ -18850,9 +18742,9 @@ final class ItemDefinition {
         int i3 = DrawingArea.topY;
         int j3 = DrawingArea.bottomY;
         Rasterizer.aBoolean1464 = false;
-        DrawingArea.initDrawingArea(32, 32, class30_sub2_sub1_sub1_1.myPixels, null);
+        DrawingArea.initDrawingArea(32, 32, class30_sub2_sub1_sub1_1.myPixels, new float[32*32]);
         DrawingArea.drawPixels(32, 0, 0, 0, 32);
-        Rasterizer.method364();
+        Rasterizer.setDefaultBounds();
         int k3 = class8.spriteScale;
         if (k == -1)
             k3 = (int) ((double) k3 * 1.5D);
@@ -18910,15 +18802,13 @@ final class ItemDefinition {
         }
         if (k == 0)
             aClass12_158.method223(class30_sub2_sub1_sub1_1, i, (byte) 2);
-        DrawingArea.initDrawingArea(j2, i2, ai1, null);
+        DrawingArea.initDrawingArea(j2, i2, ai1, depthBuffer);
         DrawingArea.setDrawingArea(j3, k2, l2, i3);
         Rasterizer.centerX = k1;
         Rasterizer.centerY = l1;
         Rasterizer.lineOffsets = ai;
         Rasterizer.aBoolean1464 = true;
-        if (l < 9 || l > 9) {
-            for (int i6 = 1; i6 > 0; i6++) ;
-        }
+
         if (class8.stackable)
             class30_sub2_sub1_sub1_1.maxWidth = 33;
         else
@@ -19067,6 +18957,8 @@ final class ItemDefinition {
         stackAmounts = null;
         certID = -1;
         certTemplateID = -1;
+        lendID = -1;
+        lentItemID = -1;
         groundScaleX = 128;
         groundScaleY = 128;
         groundScaleZ = 128;

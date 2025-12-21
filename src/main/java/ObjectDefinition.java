@@ -31,14 +31,14 @@ public final class ObjectDefinition {
 		if (i > anIntArray755.length)
 			i = anIntArray755.length - 1;
 		for (int j = 0; j < 20; j++)
-			if (aObjectDefinitionArray782[j].type == i)
+			if (aObjectDefinitionArray782[j].id == i)
 				return aObjectDefinitionArray782[j];
 		anInt771 = (anInt771 + 1) % 20;
 		ObjectDefinition objectDefinition = aObjectDefinitionArray782[anInt771];
 		try {
 			aStream_753.currentPosition = anIntArray755[i];
 		} catch(Exception e) {}
-		objectDefinition.type = i;
+		objectDefinition.id = i;
 		objectDefinition.method573();
 		objectDefinition.method582(false, aStream_753);
 
@@ -86,7 +86,7 @@ public final class ObjectDefinition {
 		aStringArray786 = null;
 		anInt746 = -1;
 		anInt758 = -1;
-		aBoolean751 = false;
+		inverted = false;
 		aBoolean779 = true;
 		anInt748 = 128;
 		anInt772 = 128;
@@ -111,8 +111,8 @@ public final class ObjectDefinition {
 	}
 
 	public static void method575(int i) {
-		aClass12_785 = null;
-		aClass12_780 = null;
+		baseModels = null;
+		models = null;
 		anIntArray755 = null;
 		aObjectDefinitionArray782 = null;
 		aStream_753 = null;
@@ -219,32 +219,35 @@ public final class ObjectDefinition {
 		return var != -1 ? forID(var) : null;
 	}
 
-	public Model method581(int i, int j, int k, int l) {
+	public Model method581(int i, int var1, int k, int var2) {
 		Model model = null;
-		long l1;
+		long var7;
 		if (objectModelTypes == null) {
-			if (j != 10)
+			if (var1 != 10)
 				return null;
-			l1 = (long)((type << 6) + l) + ((long)(k + 1) << 32);
-			Model model_1 = (Model) aClass12_780.method222(l1);
+			var7 = (long)((id << 6) + var2) + ((long)(k + 1) << 32);
+			Model model_1 = (Model) models.method222(var7);
 			if (model_1 != null)
 				return model_1;
 			if (objectModelIDs == null)
 				return null;
-			boolean flag1 = aBoolean751 ^ (l > 3);
+			boolean flag1 = inverted;
+			if(var1 == 2 && var2 > 3) {
+				flag1 = !flag1;
+			}
 			int k1 = objectModelIDs.length;
 			for (int i2 = 0; i2 < k1; i2++) {
 				int l2 = objectModelIDs[i2];
 				if (flag1)
 					l2 += 0x10000;
-				model = (Model) aClass12_785.method222(l2);
+				model = (Model) baseModels.method222(l2);
 				if (model == null) {
 					model = Model.method462(anInt770, l2 & 0xffff);
 					if (model == null)
 						return null;
 					if (flag1)
 						model.method477(0);
-					aClass12_785.method223(model, l2, (byte)2);
+					baseModels.method223(model, l2, (byte)2);
 				}
 				if (k1 > 1)
 					A_MODEL_ARRAY_741[i2] = model;
@@ -255,7 +258,7 @@ public final class ObjectDefinition {
 		} else {
 			int i1 = -1;
 			for (int j1 = 0; j1 < objectModelTypes.length; j1++) {
-				if (objectModelTypes[j1] != j)
+				if (objectModelTypes[j1] != var1)
 					continue;
 				i1 = j1;
 				break;
@@ -263,22 +266,22 @@ public final class ObjectDefinition {
 
 			if (i1 == -1)
 				return null;
-			l1 = (long)((type << 8) + (i1 << 3) + l) + ((long)(k + 1) << 32);
-			Model model_2 = (Model) aClass12_780.method222(l1);
+			var7 = (long)((id << 8) + (i1 << 3) + var2) + ((long)(k + 1) << 32);
+			Model model_2 = (Model) models.method222(var7);
 			if (model_2 != null)
 				return model_2;
 			int j2 = objectModelIDs[i1];
-			boolean flag3 = aBoolean751 ^ (l > 3);
+			boolean flag3 = inverted ^ (var2 > 3);
 			if (flag3)
 				j2 += 0x10000;
-			model = (Model) aClass12_785.method222(j2);
+			model = (Model) baseModels.method222(j2);
 			if (model == null) {
 				model = Model.method462(anInt770, j2 & 0xffff);
 				if (model == null)
 					return null;
 				if (flag3)
 					model.method477(0);
-				aClass12_785.method223(model, j2, (byte)2);
+				baseModels.method223(model, j2, (byte)2);
 			}
 		}
 		boolean flag;
@@ -286,15 +289,26 @@ public final class ObjectDefinition {
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
 		Model model_3 = new Model(9, anIntArray784 == null, FrameLoader
-				.method532(k, false), l == 0 && k == -1 && !flag && !flag2, model);
+				.method532(k, false), var2 == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
 			model_3.createBones();
 			model_3.method470(k, 40542);
 			model_3.triangleSkin = null;
 			model_3.vertexSkin = null;
 		}
-		while (l-- > 0)
-			model_3.method473(360);
+		if(var1 == 4 && var2 > 3) {
+			model_3.method5187(256);
+			model_3.changeOffset(45, 0, -45);
+		}
+		var2 &= 3;
+		if(var2 == 1) {
+			model_3.method4488();
+		} else if(var2 == 2) {
+			model_3.method4484();
+		} else if(var2 == 3) {
+			model_3.method4537();
+		}
+
 		if (anIntArray784 != null) {
 			for (int k2 = 0; k2 < anIntArray784.length; k2++)
 				model_3.method476(anIntArray784[k2],
@@ -309,7 +323,7 @@ public final class ObjectDefinition {
 				!aBoolean769);
 		if (anInt760 == 1)
 			model_3.anInt1654 = model_3.modelHeight;
-		aClass12_780.method223(model_3, l1, (byte)2);
+		models.method223(model_3, var7, (byte)2);
 		return model_3;
 	}
 
@@ -409,7 +423,7 @@ public final class ObjectDefinition {
 				} else if (opcode == 60)
 					anInt746 = stream.readUnsignedShort();
 				else if (opcode == 62)
-					aBoolean751 = true;
+					inverted = true;
 				else if (opcode == 64)
 					aBoolean779 = false;
 				else if (opcode == 65)
@@ -524,7 +538,7 @@ public final class ObjectDefinition {
 	}
 
 	public ObjectDefinition() {
-		type = -1;
+		id = -1;
 	}
 
 	public boolean aBoolean736;
@@ -540,10 +554,10 @@ public final class ObjectDefinition {
 	public int[] anIntArray747;
 	public int anInt748;
 	public int anInt749;
-	public boolean aBoolean751;
+	public boolean inverted;
 	public static boolean aBoolean752;
 	public static Stream aStream_753;
-	public int type;
+	public int id;
 	public static int[] anIntArray755;
 	public boolean aBoolean757;
 	public int anInt758;
@@ -567,12 +581,12 @@ public final class ObjectDefinition {
 	public byte aByteArray777[];
 	public boolean hasactions;
 	public boolean aBoolean779;
-	public static Class12 aClass12_780 = new Class12(false, 30);
+	public static Class12 models = new Class12(false, 30);
 	public int anInt781;
 	public static ObjectDefinition[] aObjectDefinitionArray782;
 	public int anInt783;
 	public int[] anIntArray784;
-	public static Class12 aClass12_785 = new Class12(false, 500);
+	public static Class12 baseModels = new Class12(false, 500);
 	public String aStringArray786[];
 	public int anInt770;
 	public int anInt743;
