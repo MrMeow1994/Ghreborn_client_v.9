@@ -13371,6 +13371,22 @@ public class client extends Applet_Sub1 {
                                     xPos = (xPosition + class9.width) - boxWidth;
                                 if (yPos + boxHeight > yPosition + class9.height)
                                     yPos = (_y - boxHeight);
+                               // System.out.println("ID: "+class9_1.id);
+                                switch (class9_1.id) {
+                                    case 4118:
+                                    case 4112:
+                                    case 4124:
+                                    case 4130:
+                                    case 4136:
+                                    case 4142:
+                                    case 13917:
+                                    case 36175:
+                                        xPos -= 80;
+                                        break;
+                                    case 36176:
+                                        yPos -= 100;
+                                        break;
+                                }
                                 DrawingArea.drawPixels(boxHeight, yPos, xPos, 0xFFFFA0, boxWidth);
                                 DrawingArea.fillPixels(xPos, boxWidth, boxHeight, 0, yPos, true);
                                 String s21 = class9_1.message;
